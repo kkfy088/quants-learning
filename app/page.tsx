@@ -1,0 +1,543 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { crashDays } from "@/content/crash-course";
+import { deepDays } from "@/content/deep-track";
+import type { DayContent, TrackKind, ChatMessage } from "@/lib/types";
+import { loadProgress, saveProgress, getCompletedDays, toggleDayComplete, updateStreak, type EncryptedBlob, getEncryptedKey } from "@/lib/storage";
+import { encryptApiKey, decryptApiKey, sendMessage } from "@/lib/deepseek";
+import { resources, cheatsheets, quizzes } from "@/content/static";
+
+export default function Home() {
+  const [track, setTrack] = useState<TrackKind>("crash");
+  const [dayIdx, setDayIdx] = useState(0);
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [userCues, setUserCues] = useState<Record<string, string[]>>({});
+  const [userSummaries, setUserSummaries] = useState<Record<string, string>>({});
+  const [apiKey, setApiKey] = useState("");
+  const [streak, setStreak] = useState(1);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
+  const [showSetup, setShowSetup] = useState(false);
+  const [showResources, setShowResources] = useState(false);
+  const [showCheatsheets, setShowCheatsheets] = useState(false);
+  const [csIdx, setCsIdx] = useState(0);
+  const [encPassword, setEncPassword] = useState("");
+  const [apiKeyInput, setApiKeyInput] = useState("");
+  const [lockErrors, setLockErrors] = useState(0);
+  const [lockUntil, setLockUntil] = useState(0);
+
+  const days = track === "crash" ? crashDays : deepDays;
+  const day = days[dayIdx];
+  const dayKey = `${track}:${day?.id}`;
+
+  // Load state
+  useEffect(() => {
+    const p = loadProgress();
+    setCompleted(new Set(p.completedDays ?? []));
+    setUserCues(p.userCues ?? {});
+    setUserSummaries(p.userSummaries ?? {});
+    setChatHistory(p.chatHistory ?? []);
+    setStreak(updateStreak());
+  }, []);
+
+  // Auto-unlock if encrypted key exists
+  useEffect(() => {
+    if (apiKey || !getEncryptedKey()) return;
+    setShowSetup(true);
+  }, [apiKey]);
+
+  // Save periodically
+  useEffect(() => {
+    saveProgress({
+      completedDays: Array.from(completed),
+      userCues,
+      userSummaries,
+      chatHistory: chatHistory.slice(-50),
+    });
+  }, [completed, userCues, userSummaries, chatHistory]);
+
+  const handleToggleComplete = useCallback(() => {
+    const next = toggleDayComplete(dayKey);
+    setCompleted(new Set(next));
+  }, [dayKey]);
+
+  // ── Crypto ──
+  const handleSaveKey = async () => {
+    if (!apiKeyInput.trim()) return;
+    if (encPassword.length < 6) return;
+    try {
+      const blob = await encryptApiKey(apiKeyInput.trim(), encPassword);
+      localStorage.setItem("ql_enc_key", JSON.stringify(blob));
+      setApiKey(apiKeyInput.trim());
+      setApiKeyInput("");
+      setEncPassword("");
+      setShowSetup(false);
+    } catch {
+      alert("加密失败，请重试");
+    }
+  };
+
+  const handleUnlock = async () => {
+    if (lockUntil > Date.now()) return;
+    const blob = getEncryptedKey();
+    if (!blob || !encPassword) return;
+    try {
+      const key = await decryptApiKey(blob, encPassword);
+      setApiKey(key);
+      setEncPassword("");
+      setLockErrors(0);
+      setShowSetup(false);
+    } catch {
+      const errs = lockErrors + 1;
+      setLockErrors(errs);
+      if (errs >= 5) setLockUntil(Date.now() + 15 * 60000);
+      alert(`密码错误 (${errs}/5)${errs >= 5 ? "，已锁定15分钟" : ""}`);
+    }
+  };
+
+  const handleLock = () => {
+    setApiKey("");
+  };
+
+  // ── Chat ──
+  const handleSendChat = async () => {
+    if (!chatInput.trim() || !apiKey) return;
+    const msg = chatInput.trim();
+    setChatInput("");
+    setChatLoading(true);
+    const userMsg: ChatMessage = { role: "user", content: msg, timestamp: Date.now() };
+    setChatHistory((h) => [...h, userMsg]);
+    try {
+      const reply = await sendMessage({
+        apiKey,
+        message: msg,
+        context: `当前课程：${day.title}。学习线索：${day.cues.slice(0, 3).join("；")}`,
+        history: chatHistory,
+      });
+      const asst: ChatMessage = { role: "assistant", content: reply, timestamp: Date.now() };
+      setChatHistory((h) => [...h, asst]);
+    } catch (e) {
+      const err: ChatMessage = { role: "assistant", content: `❌ ${(e as Error).message}`, timestamp: Date.now() };
+      setChatHistory((h) => [...h, err]);
+    }
+    setChatLoading(false);
+  };
+
+  const handleCueClick = (cue: string) => {
+    setChatInput(cue);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSendChat();
+  };
+
+  // ── Sidebar weeks ──
+  const weeks = new Map<number, DayContent[]>();
+  days.forEach((d) => {
+    if (!weeks.has(d.week)) weeks.set(d.week, []);
+    weeks.get(d.week)!.push(d);
+  });
+
+  const hasKey = getEncryptedKey() !== null;
+  const lockedOut = lockUntil > Date.now();
+
+  return (
+    <>
+      {/* Header */}
+      <header className="header">
+        <div className="header-left">
+          <span className="hl-icon">📊</span>
+          <span className="hl-title">量化分析师成长之路</span>
+          <span className="hl-sub">供应链预测实战</span>
+          <span className="hl-sub">📅 Day {streak}</span>
+        </div>
+        <div className="track-tabs">
+          <button className={`track-tab ${track === "crash" ? "active" : ""}`} onClick={() => { setTrack("crash"); setDayIdx(0); }}>
+            ⚡5天速成
+          </button>
+          <button className={`track-tab ${track === "deep" ? "active" : ""}`} onClick={() => { setTrack("deep"); setDayIdx(0); }}>
+            📅100天修炼
+          </button>
+        </div>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <span className="day-badge">{track === "crash" ? "速成" : "深入"} Day {day.day}</span>
+          <div className="prog-wrap"><div className="prog-fill" style={{ width: `${((dayIdx + 1) / days.length) * 100}%` }} /></div>
+          <button className="btn" onClick={() => setShowResources(true)}>📚资源</button>
+          <button className="btn" onClick={() => setShowCheatsheets(true)}>📋速查</button>
+        </div>
+      </header>
+
+      {/* Main */}
+      <div className="main-layout">
+        {/* Sidebar */}
+        <aside className="sidebar">
+          <div className="side-hdr">
+            {track === "crash" ? "5天速成" : "100天修炼"}
+          </div>
+          {Array.from(weeks.entries()).map(([wk, ds]) => (
+            <div key={wk} className="wk-grp">
+              {track === "deep" && <div className="wk-lbl">W{wk}</div>}
+              {ds.map((d) => {
+                const dk = `${track}:${d.id}`;
+                const isDone = completed.has(dk);
+                const isActive = d.id === day.id;
+                return (
+                  <div
+                    key={d.id}
+                    className={`day-it ${isActive ? "active" : ""} ${isDone ? "done" : ""}`}
+                    onClick={() => setDayIdx(d.day - 1)}
+                  >
+                    <span className="day-n">{d.day}</span>
+                    <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {d.title}
+                    </span>
+                    <span className="day-ck">{isDone ? "✅" : ""}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </aside>
+
+        {/* Content Area */}
+        <div className="content-area">
+          <div className="cornell">
+            <div className="day-hdr">
+              <h2>{day.day}. {day.title}</h2>
+              <div className="meta">
+                <span>⏱ {day.duration} min</span>
+                <span>📅 W{day.week}</span>
+              </div>
+            </div>
+
+            <div className="cornell-main">
+              {/* Cue Column */}
+              <div className="cue-col">
+                <div className="cue-label">🔑 关键线索</div>
+                <div className="cue-list">
+                  {day.cues.map((cue, i) => (
+                    <div key={i} className="cue-item" onClick={() => handleCueClick(cue)}>{cue}</div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notes Column */}
+              <div className="notes-col">
+                <div className="notes" dangerouslySetInnerHTML={{ __html: day.content }} />
+
+                {/* Quiz */}
+                {quizzes.filter((q) => q.dayId === day.id).length > 0 && (
+                  <div className="quiz-box" style={{ display: "block" }}>
+                    <h4>🧠 自测</h4>
+                    {quizzes.filter((q) => q.dayId === day.id).map((q) => (
+                      <QuizWidget key={q.id} quiz={q} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="summary-area">
+              <div className="summary-label">📝 用自己的话总结</div>
+              <textarea
+                value={userSummaries[dayKey] ?? ""}
+                onChange={(e) => setUserSummaries((s) => ({ ...s, [dayKey]: e.target.value }))}
+                placeholder="今天学到的最重要的3个点..."
+              />
+            </div>
+          </div>
+
+          <div className="bottom-bar">
+            <div className="bottom-left">
+              <button className="btn" onClick={() => setDayIdx(Math.max(0, dayIdx - 1))} disabled={dayIdx === 0}>
+                ← 上一课
+              </button>
+              <span style={{ fontSize: 11, color: "var(--text2)" }}>
+                {dayIdx + 1} / {days.length}
+              </span>
+              <button className="btn" onClick={() => setDayIdx(Math.min(days.length - 1, dayIdx + 1))} disabled={dayIdx === days.length - 1}>
+                下一课 →
+              </button>
+            </div>
+            <div className="bottom-right">
+              <button className={`btn ${completed.has(dayKey) ? "btn-g" : "btn-a"}`} onClick={handleToggleComplete}>
+                {completed.has(dayKey) ? "✅ 已完成" : "✅ 完成今日"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Panel */}
+        <aside className="ai-panel">
+          <div className="ai-hdr">
+            <span className="ai-title">🤖 AI助手 <span className="ai-model">DeepSeek V4-Pro</span></span>
+            <div style={{ display: "flex", gap: 3 }}>
+              {apiKey && (
+                <button className="btn btn-r btn-sm" onClick={handleLock}>🔒锁定</button>
+              )}
+              <button className="btn btn-sm" onClick={() => setShowSetup(true)}>⚙️</button>
+            </div>
+          </div>
+
+          {showSetup && (
+            <div className="ai-setup">
+              <h4>配置 API Key</h4>
+              <p style={{ fontSize: 10 }}>在 <a href="https://platform.deepseek.com/api_keys" target="_blank" style={{ color: "var(--accent)" }}>platform.deepseek.com</a> 创建</p>
+
+              {hasKey && !apiKey ? (
+                <>
+                  <p style={{ fontSize: 10, color: "var(--warn)" }}>
+                    {lockedOut ? "⛔ 密码错误5次，请15分钟后再试" : "🔒 Key 已加密存储，输入密码解锁"}
+                  </p>
+                  <input
+                    type="password"
+                    placeholder="解锁密码（≥6位）"
+                    value={encPassword}
+                    onChange={(e) => setEncPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleUnlock()}
+                    style={{ width: "100%", padding: "5px 8px", borderRadius: 4, border: "1px solid var(--border)", fontSize: 11, marginBottom: 4 }}
+                    disabled={lockedOut}
+                  />
+                  <button className="btn btn-a" onClick={handleUnlock} disabled={lockedOut} style={{ width: "100%" }}>
+                    🔓 解锁
+                  </button>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="password"
+                    placeholder="sk-xxxxxxxx"
+                    value={apiKeyInput}
+                    onChange={(e) => setApiKeyInput(e.target.value)}
+                    style={{ width: "100%", padding: "5px 8px", borderRadius: 4, border: "1px solid var(--border)", fontSize: 11, marginBottom: 4 }}
+                  />
+                  <input
+                    type="password"
+                    placeholder="设置解锁密码（≥6位）"
+                    value={encPassword}
+                    onChange={(e) => setEncPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSaveKey()}
+                    style={{ width: "100%", padding: "5px 8px", borderRadius: 4, border: "1px solid var(--border)", fontSize: 11, marginBottom: 4 }}
+                  />
+                  <button className="btn btn-a" onClick={handleSaveKey} style={{ width: "100%" }}>
+                    🔒 加密保存
+                  </button>
+                  <div style={{ fontSize: 9, color: "var(--text2)", marginTop: 4 }}>
+                    Key 用 AES-256-GCM 加密，密码不存储。仅存浏览器本地。
+                  </div>
+                </>
+              )}
+              <button className="btn" onClick={() => setShowSetup(false)} style={{ width: "100%", marginTop: 4 }}>取消</button>
+            </div>
+          )}
+
+          <div className="ai-msgs">
+            {chatHistory.length === 0 && (
+              <div className="ai-empty">
+                <p>👋 我是你的量化学习助手</p>
+                <p style={{ fontSize: 10, color: "var(--text2)" }}>点击左侧线索或直接提问</p>
+                <p style={{ fontSize: 10, color: "var(--text2)" }}>当前模型：DeepSeek V4-Pro · Think Max</p>
+              </div>
+            )}
+            {chatHistory.map((m, i) => (
+              <div key={i} className={`ai-msg ${m.role}`}>
+                <div className="ai-msg-content" dangerouslySetInnerHTML={{ __html: m.content.replace(/\n/g, "<br>") }} />
+              </div>
+            ))}
+            {chatLoading && <div className="ai-typing">思考中...</div>}
+          </div>
+          <div className="ai-input-area">
+            <div style={{ display: "flex", gap: 4 }}>
+              <input
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={apiKey ? "Cmd+Enter 发送" : "请先配置 API Key"}
+                className="ai-input"
+                disabled={!apiKey}
+              />
+              <button className="btn btn-a" onClick={handleSendChat} disabled={!apiKey || !chatInput.trim()}>
+                发送
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      {/* Resources Modal */}
+      {showResources && (
+        <div className="modal-overlay" onClick={() => setShowResources(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-hdr">
+              <span>📚 资源宝库</span>
+              <button className="btn btn-sm" onClick={() => setShowResources(false)}>✕</button>
+            </div>
+            <div className="modal-body">
+              {(["dataset", "github", "video", "book", "tool", "community", "paper"] as const).map((cat) => {
+                const items = resources.filter((r) => r.category === cat);
+                const catLabels: Record<string, string> = {
+                  dataset: "📦 数据集", github: "💻 GitHub仓库", video: "🎬 视频教程",
+                  book: "📖 免费书籍", tool: "🛠 工具平台", community: "👥 学习社区", paper: "📄 必读论文",
+                };
+                return (
+                  <div key={cat} style={{ marginBottom: 12 }}>
+                    <h4 style={{ fontSize: 12, fontWeight: 600, marginBottom: 4 }}>{catLabels[cat] || cat}</h4>
+                    {items.map((r) => (
+                      <div key={r.id} style={{ padding: "4px 0", fontSize: 11, borderBottom: "1px solid #f5f5f5" }}>
+                        <a href={r.url} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", fontWeight: 500 }}>
+                          {r.title}
+                        </a>
+                        <span style={{ color: "var(--text2)", marginLeft: 6 }}>{r.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cheatsheet Modal */}
+      {showCheatsheets && (
+        <div className="modal-overlay" onClick={() => setShowCheatsheets(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-hdr">
+              <span>📋 速查表</span>
+              <button className="btn btn-sm" onClick={() => setShowCheatsheets(false)}>✕</button>
+            </div>
+            <div style={{ display: "flex", gap: 6, padding: "4px 12px", borderBottom: "1px solid var(--border)" }}>
+              {cheatsheets.map((cs, i) => (
+                <button key={cs.id} className={`btn btn-sm ${i === csIdx ? "btn-a" : ""}`} onClick={() => setCsIdx(i)}>
+                  {cs.icon} {cs.title}
+                </button>
+              ))}
+            </div>
+            <div className="modal-body">
+              {cheatsheets[csIdx]?.entries.map((e, i) => (
+                <div key={i} style={{ marginBottom: 8, padding: "6px 8px", background: "#f8f9fb", borderRadius: 4 }}>
+                  <div style={{ fontWeight: 600, fontSize: 11, marginBottom: 2 }}>{e.label}</div>
+                  <pre style={{ background: "#1e293b", color: "#e2e8f0", padding: "4px 6px", borderRadius: 3, fontSize: 10, overflowX: "auto" }}>
+                    <code>{e.code}</code>
+                  </pre>
+                  {e.note && <div style={{ fontSize: 10, color: "var(--text2)", marginTop: 2 }}>{e.note}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .header-left { display: flex; align-items: center; gap: 6px; }
+        .hl-icon { font-size: 16px; }
+        .hl-title { font-size: 12px; font-weight: 700; }
+        .hl-sub { font-size: 10px; color: var(--text2); }
+        .day-badge { background: var(--accent-lt); color: var(--accent); font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 8px; }
+        .prog-wrap { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+        .prog-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .4s; }
+        .btn { padding: 4px 8px; border: 1px solid var(--border); border-radius: 5px; background: var(--card-bg); color: var(--text); cursor: pointer; font-size: 10px; font-family: var(--sans); transition: all .15s; white-space: nowrap; }
+        .btn:hover { background: #f3f4f6; }
+        .btn:disabled { opacity: 0.4; cursor: default; }
+        .btn-a { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .btn-a:hover { background: #1d4ed8; }
+        .btn-r { background: #fef2f2; color: var(--danger); border-color: #fecaca; }
+        .btn-r:hover { background: #fee2e2; }
+        .btn-g { background: #f0fdf4; color: var(--success); border-color: #bbf7d0; }
+        .btn-g:hover { background: #dcfce7; }
+        .btn-sm { font-size: 8px; padding: 2px 5px; }
+        .track-tabs { display: flex; gap: 3px; }
+        .track-tab { padding: 4px 10px; border-radius: 5px; font-size: 10px; font-weight: 600; cursor: pointer; border: 1px solid transparent; background: transparent; color: var(--text2); font-family: var(--sans); }
+        .track-tab.active { background: var(--accent); color: #fff; }
+        .track-tab:hover:not(.active) { background: #f3f4f6; }
+
+        .sidebar { width: 185px; flex-shrink: 0; background: var(--card-bg); border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
+        .side-hdr { padding: 8px 12px; font-size: 10px; font-weight: 700; color: var(--text2); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        .wk-grp { margin: 2px 0; }
+        .wk-lbl { padding: 4px 12px; font-size: 9px; font-weight: 700; color: var(--purple); background: #faf5ff; border-bottom: 1px solid #ede9fe; }
+        .day-it { padding: 6px 12px; font-size: 11px; cursor: pointer; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; gap: 5px; transition: all .12s; color: var(--text2); }
+        .day-it:hover { background: #f8f9fb; color: var(--text); }
+        .day-it.active { background: var(--accent-lt); color: var(--accent); font-weight: 600; border-right: 3px solid var(--accent); }
+        .day-it .day-n { width: 18px; height: 18px; background: var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+        .day-it.active .day-n { background: var(--accent); color: #fff; }
+        .day-it .day-ck { font-size: 12px; opacity: .4; margin-left: auto; }
+        .day-it.done .day-ck { opacity: 1; color: var(--success); }
+
+        .content-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .cornell { padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .day-hdr { padding-bottom: 6px; border-bottom: 2px solid var(--border); }
+        .day-hdr h2 { font-size: 16px; font-weight: 700; }
+        .day-hdr .meta { font-size: 10px; color: var(--text2); margin-top: 2px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .cornell-main { display: flex; gap: 14px; flex: 1; min-height: 0; }
+        .cue-col { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; }
+        .cue-label { font-size: 9px; font-weight: 700; color: var(--text2); text-transform: uppercase; }
+        .cue-list { background: var(--cue-bg); border: 1px solid #d4dbf0; border-radius: var(--radius); padding: 8px; flex: 1; overflow-y: auto; font-size: 10px; line-height: 1.9; }
+        .cue-item { padding: 1px 0; color: var(--text2); cursor: pointer; }
+        .cue-item:hover { color: var(--accent); }
+        .cue-item::before { content: "▸ "; color: var(--accent); font-size: 8px; }
+        .notes-col { flex: 1; overflow-y: auto; padding-right: 4px; }
+
+        .summary-area { border-top: 2px solid var(--border); padding-top: 6px; }
+        .summary-label { font-size: 9px; font-weight: 700; color: var(--text2); text-transform: uppercase; margin-bottom: 3px; }
+        .summary-area textarea { width: 100%; border: 1px dashed var(--border); border-radius: var(--radius); padding: 6px 10px; font-size: 11px; font-family: var(--sans); resize: vertical; min-height: 36px; background: var(--summary-bg); }
+        .summary-area textarea:focus { outline: none; border-color: var(--warn); border-style: solid; }
+
+        .bottom-bar { padding: 6px 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); gap: 8px; }
+        .bottom-left { display: flex; align-items: center; gap: 8px; }
+        .bottom-right { display: flex; gap: 6px; }
+
+        .ai-panel { width: 300px; flex-shrink: 0; background: var(--card-bg); border-left: 1px solid var(--border); display: flex; flex-direction: column; }
+        .ai-hdr { padding: 8px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .ai-title { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .ai-model { font-size: 8px; color: var(--accent); background: var(--accent-lt); padding: 1px 4px; border-radius: 3px; }
+        .ai-setup { padding: 10px; border-bottom: 1px solid var(--border); font-size: 11px; }
+        .ai-setup h4 { font-size: 12px; margin-bottom: 4px; }
+        .ai-msgs { flex: 1; overflow-y: auto; padding: 8px; }
+        .ai-empty { text-align: center; padding: 20px; color: var(--text2); font-size: 11px; }
+        .ai-msg { margin-bottom: 8px; }
+        .ai-msg.user .ai-msg-content { background: var(--accent-lt); color: var(--accent); padding: 5px 8px; border-radius: var(--radius) var(--radius) 0 var(--radius); font-size: 11px; }
+        .ai-msg.assistant .ai-msg-content { background: #f8f9fb; padding: 5px 8px; border-radius: 0 var(--radius) var(--radius) var(--radius); font-size: 11px; }
+        .ai-typing { color: var(--text2); font-size: 10px; padding: 4px 8px; }
+        .ai-input-area { padding: 8px; border-top: 1px solid var(--border); }
+        .ai-input { flex: 1; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 11px; font-family: var(--sans); }
+        .ai-input:focus { outline: none; border-color: var(--accent); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
+        .modal-content { background: var(--card-bg); border-radius: 10px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        .modal-hdr { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 13px; }
+        .modal-body { padding: 12px 14px; }
+
+        .quiz-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 12px 16px; margin: 12px 0; }
+        .quiz-box h4 { color: var(--accent); margin: 0 0 6px; }
+      `}</style>
+    </>
+  );
+}
+
+function QuizWidget({ quiz }: { quiz: { id: string; question: string; options: string[]; answer: number; explanation: string } }) {
+  const [selected, setSelected] = useState<number | null>(null);
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div className="quiz-q">{quiz.question}</div>
+      <div>
+        {quiz.options.map((opt, i) => (
+          <span
+            key={i}
+            className={`quiz-opt ${selected === i ? (i === quiz.answer ? "correct" : "wrong") : ""}`}
+            onClick={() => setSelected(i)}
+          >
+            {opt}
+          </span>
+        ))}
+      </div>
+      {selected !== null && (
+        <div className="quiz-fb" style={{ display: "block", fontSize: 10, marginTop: 4 }}>
+          {selected === quiz.answer ? "✅ 正确！" : "❌ 不对哦。"} {quiz.explanation}
+        </div>
+      )}
+    </div>
+  );
+}

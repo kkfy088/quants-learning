@@ -1,2 +1,7 @@
 .workbuddy/
 deploy/
+out/
+
+.next/
+node_modules/
+archive/

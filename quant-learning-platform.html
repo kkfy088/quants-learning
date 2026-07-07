@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>量化分析师成长之路 — 供应链预测实战教程</title>
+<style>
+:root {
+  --bg:#fafbfc;--card-bg:#fff;--text:#1a1a2e;--text2:#555;--border:#e2e4e9;
+  --accent:#2563eb;--accent-lt:#dbeafe;--cue-bg:#f0f4ff;--summary-bg:#fff7ed;
+  --success:#059669;--warn:#d97706;--danger:#dc2626;--purple:#7c3aed;--pink:#ec4899;
+  --shadow:0 1px 3px rgba(0,0,0,.06);--radius:8px;
+  --mono:'SF Mono','Fira Code','Consolas',monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.7;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.header{background:var(--card-bg);border-bottom:1px solid var(--border);padding:0 12px;height:46px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10;gap:8px}
+.header-left{display:flex;align-items:center;gap:6px}
+.hl-icon{font-size:16px}.hl-title{font-size:12px;font-weight:700}.hl-sub{font-size:10px;color:var(--text2)}
+.header-right{display:flex;align-items:center;gap:6px}
+.day-badge{background:var(--accent-lt);color:var(--accent);font-size:9px;font-weight:600;padding:2px 7px;border-radius:8px}
+.prog-wrap{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s}
+.btn{padding:4px 8px;border:1px solid var(--border);border-radius:5px;background:var(--card-bg);color:var(--text);cursor:pointer;font-size:10px;font-family:var(--sans);transition:all .15s;white-space:nowrap}
+.btn:hover{background:#f3f4f6}
+.btn-a{background:var(--accent);color:#fff;border-color:var(--accent)}.btn-a:hover{background:#1d4ed8}
+.btn-r{background:#fef2f2;color:var(--danger);border-color:#fecaca}.btn-r:hover{background:#fee2e2}
+.btn-g{background:#f0fdf4;color:var(--success);border-color:#bbf7d0}.btn-g:hover{background:#dcfce7}
+.track-tabs{display:flex;gap:3px;margin:0 8px}
+.track-tab{padding:4px 10px;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--text2);font-family:var(--sans)}
+.track-tab.active{background:var(--accent);color:#fff}.track-tab:hover:not(.active){background:#f3f4f6}
+
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:185px;flex-shrink:0;background:var(--card-bg);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.side-hdr{padding:8px 12px;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;border-bottom:1px solid var(--border)}
+.wk-grp{margin:2px 0}
+.wk-lbl{padding:4px 12px;font-size:9px;font-weight:700;color:var(--purple);background:#faf5ff;border-bottom:1px solid #ede9fe}
+.day-it{padding:6px 12px;font-size:11px;cursor:pointer;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:5px;transition:all .12s;color:var(--text2)}
+.day-it:hover{background:#f8f9fb;color:var(--text)}
+.day-it.active{background:var(--accent-lt);color:var(--accent);font-weight:600;border-right:3px solid var(--accent)}
+.day-it .day-n{width:18px;height:18px;background:var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.day-it.active .day-n{background:var(--accent);color:#fff}
+.day-it .day-ck{font-size:12px;opacity:.4;margin-left:auto}.day-it.done .day-ck{opacity:1;color:var(--success)}
+
+.content-area{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.cornell{padding:14px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.day-hdr{padding-bottom:6px;border-bottom:2px solid var(--border)}
+.day-hdr h2{font-size:16px;font-weight:700}
+.day-hdr .meta{font-size:10px;color:var(--text2);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
+.cornell-main{display:flex;gap:14px;flex:1;min-height:0}
+.cue-col{width:180px;flex-shrink:0;display:flex;flex-direction:column;gap:5px}
+.cue-label{font-size:9px;font-weight:700;color:var(--text2);text-transform:uppercase}
+.cue-list{background:var(--cue-bg);border:1px solid #d4dbf0;border-radius:var(--radius);padding:8px;flex:1;overflow-y:auto;font-size:10px;line-height:1.9}
+.cue-item{padding:1px 0;color:var(--text2);cursor:pointer}.cue-item:hover{color:var(--accent)}.cue-item::before{content:"▸ ";color:var(--accent);font-size:8px}
+.cue-iw{border-top:1px solid #d4dbf0;padding-top:5px}
+.cue-iw textarea{width:100%;border:1px dashed var(--border);border-radius:3px;padding:5px;font-size:10px;font-family:var(--sans);resize:vertical;background:#fff;min-height:40px}
+.cue-iw textarea:focus{outline:none;border-color:var(--accent);border-style:solid}
+.notes-col{flex:1;overflow-y:auto;padding-right:4px}
+.notes{font-size:12px;line-height:1.8}
+.notes h3{font-size:14px;font-weight:700;margin:14px 0 5px;padding-bottom:2px;border-bottom:1px solid var(--border);color:var(--accent)}
+.notes h4{font-size:12px;font-weight:600;margin:10px 0 3px}
+.notes p{margin:5px 0}.notes ul,.notes ol{margin:3px 0 3px 16px}.notes li{margin:2px 0}
+.notes blockquote{border-left:3px solid var(--accent);padding:5px 10px;margin:6px 0;background:var(--accent-lt);border-radius:0 var(--radius) var(--radius) 0;font-size:11px;color:var(--text2)}
+.notes table{width:100%;border-collapse:collapse;margin:6px 0;font-size:11px}
+.notes th{background:#f3f4f6;padding:5px 7px;text-align:left;font-weight:600;border:1px solid var(--border)}
+.notes td{padding:5px 7px;border:1px solid var(--border)}.notes tr:nth-child(even){background:#fafbfc}
+.notes code{background:#f1f5f9;padding:1px 3px;border-radius:2px;font-family:var(--mono);font-size:10px;color:#d946ef}
+.notes pre{background:#1e293b;color:#e2e8f0;padding:8px 10px;border-radius:6px;overflow-x:auto;font-size:10px;line-height:1.45;margin:6px 0;position:relative}
+.notes pre code{background:none;color:inherit;padding:0;font-size:inherit}
+.cpy-btn{position:absolute;top:3px;right:5px;background:#334155;color:#cbd5e1;border:none;border-radius:3px;padding:1px 6px;font-size:8px;cursor:pointer}
+.cpy-btn:hover{background:#475569}
+.ex-box{background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius);padding:10px 14px;margin:10px 0}
+.ex-box h4{color:var(--warn);margin:0 0 4px}
+.bk-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius);padding:10px 14px;margin:10px 0}
+.bk-box h4{color:var(--success);margin:0 0 4px}
+.rs-box{background:#faf5ff;border:1px solid #e9d5ff;border-radius:var(--radius);padding:10px 14px;margin:10px 0}
+.rs-box h4{color:var(--purple);margin:0 0 4px}
+.pit-box{background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);padding:10px 14px;margin:10px 0}
+.pit-box h4{color:var(--danger);margin:0 0 4px}
+.quiz-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--radius);padding:12px 16px;margin:12px 0;display:none}
+.quiz-box h4{color:var(--accent);margin:0 0 6px}
+.quiz-q{margin:6px 0;font-weight:600}
+.quiz-opt{padding:4px 8px;margin:2px 4px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:11px;display:inline-block;background:#fff;transition:all .15s}
+.quiz-opt:hover{background:var(--accent-lt)}
+.quiz-opt.correct{background:#dcfce7;border-color:#86efac}
+.quiz-opt.wrong{background:#fee2e2;border-color:#fca5a5}
+.quiz-fb{font-size:10px;margin-top:4px;display:none}
+.notes a{color:var(--accent);text-decoration:none}.notes a:hover{text-decoration:underline}
+.key-pt{display:inline-block;background:var(--accent-lt);color:var(--accent);padding:1px 4px;border-radius:2px;font-size:10px;font-weight:600;margin:0 1px}
+.mini-d{background:#f8f9fb;border:1px solid var(--border);border-radius:var(--radius);padding:8px;margin:6px 0;font-family:var(--mono);font-size:9px;white-space:pre;overflow-x:auto;line-height:1.35;color:var(--text2)}
+
+.summary-area{border-top:2px solid var(--border);padding-top:6px}
+.summary-label{font-size:9px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:3px}
+.summary-area textarea{width:100%;border:1px dashed var(--border);border-radius:var(--radius);padding:6px 10px;font-size:11px;font-family:var(--sans);resize:vertical;min-height:36px;background:var(--summary-bg)}
+.summary-area textarea:focus{outline:none;border-color:var(--warn);border-style:solid}
+
+.ai-panel{width:300px;flex-shrink:0;background:var(--card-bg);border-left:1px solid var(--border);display:flex;flex-direction:column}
+.ai-hdr{padding:8px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ai-title{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px}
+.ai-model{font-size:8px;color:var(--text2);background:var(--border);padding:1px 4px;border-radius:4px}
+.ai-setup{padding:14px 10px;text-align:center;display:none}
+.ai-setup h4{font-size:12px;margin-bottom:4px}.ai-setup p{font-size:10px;color:var(--text2);margin-bottom:6px;line-height:1.4}
+.ai-setup input{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-size:10px;font-family:var(--mono);margin-bottom:4px}
+.ai-setup .hint{font-size:8px;color:var(--text2);margin-top:3px}
+.ai-msgs{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:5px}
+.ai-msg{max-width:86%;padding:5px 8px;border-radius:7px;font-size:10px;line-height:1.55;word-wrap:break-word}
+.ai-msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:2px}
+.ai-msg.assistant{align-self:flex-start;background:#f3f4f6;color:var(--text);border-bottom-left-radius:2px}
+.ai-msg.assistant pre{background:#1e293b;color:#e2e8f0;padding:5px 7px;border-radius:3px;font-size:9px;overflow-x:auto;margin:3px 0}
+.msg-time{font-size:7px;opacity:.5;margin-top:1px}
+.ai-iw{border-top:1px solid var(--border);padding:6px 10px;display:flex;gap:3px}
+.ai-iw textarea{flex:1;border:1px solid var(--border);border-radius:5px;padding:5px 7px;font-size:10px;font-family:var(--sans);resize:none;height:30px;max-height:60px}
+.ai-iw textarea:focus{outline:none;border-color:var(--accent)}
+.ai-typing{font-size:9px;color:var(--text2);padding:2px 10px;font-style:italic;display:none}
+
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-box{background:var(--card-bg);border-radius:12px;padding:20px;max-width:700px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.modal-box h3{font-size:16px;margin-bottom:10px}.modal-box h4{font-size:13px;margin:12px 0 4px;color:var(--accent)}
+.modal-box p,.modal-box li{font-size:11px;line-height:1.6}
+.modal-box .res-cat{margin:8px 0;padding:8px 12px;background:#f8f9fb;border-radius:6px}
+.modal-box .res-link{display:inline-block;margin:2px 0;font-size:11px;color:var(--accent);text-decoration:none}
+.modal-box .res-link:hover{text-decoration:underline}
+.modal-box .streak{font-size:22px;text-align:center;margin:6px 0}
+.modal-tabs{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.modal-tab{padding:4px 10px;border-radius:4px;font-size:10px;cursor:pointer;border:1px solid var(--border);background:var(--card-bg)}
+.modal-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.modal-tab-content{display:none}.modal-tab-content.active{display:block}
+
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:7px 14px;border-radius:14px;font-size:11px;z-index:200;opacity:0;transition:opacity .3s}
+.toast.on{opacity:1}
+
+@media(max-width:900px){.sidebar{display:none}.ai-panel{width:100%;height:220px;border-left:none;border-top:1px solid var(--border)}.cornell-main{flex-direction:column}.cue-col{width:100%}.main{flex-direction:column}}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px}
+@keyframes dd{0%,20%{opacity:0}50%{opacity:1}100%{opacity:0}}
+.dots span{animation:dd 1.4s infinite;font-size:14px}.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left"><span class="hl-icon">📊</span><span class="hl-title">量化→供应链</span><span class="hl-sub">从零到量化分析师·双轨修炼</span></div>
+  <div class="track-tabs">
+    <button class="track-tab active" id="tabCrash" onclick="switchTrack('crash')">⚡5天速成</button>
+    <button class="track-tab" id="tabDeep" onclick="switchTrack('deep')">📅100天修炼</button>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-g" onclick="showResources()">📚 资源宝库</button>
+    <button class="btn" onclick="showCheatsheet()">📋 速查表</button>
+    <span class="day-badge" id="dayBadge">📅 Day 1</span>
+    <div class="prog-wrap"><div class="prog-fill" id="progBar" style="width:0%"></div></div>
+    <span style="font-size:9px;color:var(--text2)" id="progText">0/5</span>
+    <button class="btn btn-sm" onclick="resetProgress()">🔄</button>
+    <button class="btn btn-sm" onclick="exportNotes()">📥</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="content-area">
+    <div class="cornell">
+      <div class="day-hdr"><h2 id="dayTitle"></h2><div class="meta" id="dayMeta"></div></div>
+      <div class="cornell-main">
+        <div class="cue-col">
+          <div class="cue-label">🔑 线索/提问</div>
+          <div class="cue-list" id="cueList"></div>
+          <div class="cue-iw"><textarea id="cueInput" placeholder="写下疑问或关键提示词..."></textarea><button class="btn btn-sm" onclick="saveCue()" style="margin-top:3px">+ 保存</button></div>
+        </div>
+        <div class="notes-col" id="notesCol"><div class="notes" id="notesBody"></div></div>
+      </div>
+      <div class="summary-area">
+        <div class="summary-label">📝 今日总结</div>
+        <textarea id="summaryInput" placeholder="今天我学到了..."></textarea>
+        <div style="display:flex;gap:4px;margin-top:4px;justify-content:flex-end">
+          <button class="btn btn-sm" onclick="saveSummary()">💾 保存</button>
+          <button class="btn btn-sm" onclick="toggleQuiz()">🧠 自测</button>
+          <button class="btn btn-sm btn-a" onclick="markDone()">✅ 完成今日</button>
+        </div>
+        <div class="quiz-box" id="quizBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-panel">
+    <div class="ai-hdr"><span class="ai-title">🤖 AI助手<span class="ai-model">V4-Pro Max</span><span id="aiLockStatus" style="font-size:8px;margin-left:4px"></span></span><div style="display:flex;gap:3px"><button class="btn btn-sm btn-r" id="btnLock" onclick="lockApiKey()" style="display:none;font-size:8px">🔒锁定</button><button class="btn btn-sm" onclick="toggleAiSetup()">⚙️</button></div></div>
+    <div class="ai-setup" id="aiSetup">
+      <h4 id="aiSetupTitle">🔐 配置 DeepSeek API</h4>
+      <p>在 <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:var(--accent)">platform.deepseek.com</a> 创建 Key</p>
+      <div id="aiSetupNew">
+        <input type="password" id="apiKeyInput" placeholder="粘贴 API Key：sk-xxxxxxxx" style="margin-bottom:4px">
+        <input type="password" id="apiPwdInput" placeholder="设置一个解锁密码（≥6位，用于加密保护Key）">
+        <button class="btn btn-a" onclick="saveApiKeyEncrypted()" style="width:100%;margin-top:4px">🔒 加密保存</button>
+        <div class="hint">Key 将用 AES-GCM 加密后存储，密码不保存。符合 CSDN 推荐的安全方案。</div>
+      </div>
+      <div id="aiSetupUnlock" style="display:none">
+        <p style="color:var(--warn);font-weight:600">🔒 API Key 已加密存储，需要密码解锁</p>
+        <input type="password" id="apiUnlockInput" placeholder="输入解锁密码">
+        <button class="btn btn-a" onclick="unlockApiKey()" style="width:100%;margin-top:4px">🔓 解锁</button>
+        <button class="btn btn-r" onclick="resetApiKey()" style="width:100%;margin-top:2px;font-size:9px">🗑 清除并重新配置</button>
+        <div class="hint">密码错误 5 次将锁定 15 分钟（防暴力破解）</div>
+      </div>
+    </div>
+    <div class="ai-msgs" id="aiMsgs"><div class="ai-msg assistant">你好！选左侧线索直接提问，或输入任何学习相关的问题 🎯</div></div>
+    <div class="ai-typing" id="aiTyping">思考中<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+    <div class="ai-iw"><textarea id="aiInput" placeholder="提问..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAi()}"></textarea><button class="btn btn-a" onclick="sendAi()">发送</button></div>
+  </div>
+</div>
+
+<!-- RESOURCES MODAL -->
+<div class="modal-overlay" id="resModal">
+  <div class="modal-box" id="resModalBox">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h3 style="margin:0">📚 量化 + 供应链 学习资源宝库</h3>
+      <button class="btn btn-r btn-sm" onclick="closeResources()">✕</button>
+    </div>
+    <div class="modal-tabs" id="resTabs"></div>
+    <div id="resContent"></div>
+  </div>
+</div>
+
+<!-- CHEATSHEET MODAL -->
+<div class="modal-overlay" id="csModal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h3 style="margin:0">📋 速查表</h3>
+      <button class="btn btn-r btn-sm" onclick="document.getElementById('csModal').style.display='none'">✕</button>
+    </div>
+    <div class="modal-tabs" id="csTabs"></div>
+    <div id="csContent"></div>
+  </div>
+</div>
+
+<!-- DAILY MODAL -->
+<div class="modal-overlay" id="dailyModal">
+  <div class="modal-box" style="max-width:380px"><h3>🌅 继续修炼！</h3><div class="streak">🔥 <span id="streakCount">1</span> 天</div><p id="modalMsg"></p><button class="btn btn-a" onclick="closeModal()" style="width:100%;margin-top:6px">开始今天 →</button></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// GLOBAL RESOURCES (curated directory)
+// ============================================================
+const GLOBAL_RESOURCES = {
+  "📊 数据集": [
+    {name:"M5 Forecasting Competition (Kaggle)",url:"https://www.kaggle.com/c/m5-forecasting-accuracy",desc:"Walmart 销售数据，42,840个时序——最权威的零售预测竞赛"},
+    {name:"Favorita Store Sales (Kaggle)",url:"https://www.kaggle.com/c/store-sales-time-series-forecasting",desc:"厄瓜多尔连锁店 5 年日销数据，含促销/油价/节假日"},
+    {name:"Rossmann Store Sales (Kaggle)",url:"https://www.kaggle.com/c/rossmann-store-sales",desc:"德国药妆店 1,115 家门店日销，经典特征工程案例"},
+    {name:"UCI Online Retail Dataset",url:"https://archive.ics.uci.edu/ml/datasets/online+retail",desc:"英国在线零售商交易记录，含退货、国家、单价"},
+    {name:"UCI Supermarket Sales",url:"https://archive.ics.uci.edu/ml/datasets/Sales_Transactions_Dataset_Weekly",desc:"52周 × 811种商品的周销量，经典聚类+预测"},
+    {name:"中国政府开放数据",url:"https://data.stats.gov.cn/",desc:"国家统计局公开数据：CPI、社零、GDP等宏观指标"},
+  ],
+  "💻 GitHub仓库": [
+    {name:"microsoft/RD-Agent",url:"https://github.com/microsoft/RD-Agent",desc:"微软亚研院因子自动挖掘框架，假设→代码→回测闭环 ★必看"},
+    {name:"microsoft/qlib",url:"https://github.com/microsoft/qlib",desc:"微软量化投资AI平台，含数据、模型、回测、执行全流程"},
+    {name:"TradingAgents",url:"https://github.com/TauricResearch/TradingAgents",desc:"UCLA+MIT多智能体投研框架，7万+星，角色分工+辩论"},
+    {name:"langchain-ai/langgraph",url:"https://github.com/langchain-ai/langgraph",desc:"LangGraph 官方仓库，图式Agent编排，含教程"},
+    {name:"microsoft/autogen",url:"https://github.com/microsoft/autogen",desc:"微软多Agent对话式协作框架"},
+    {name:"joaquinamatrodrigo/crewAI",url:"https://github.com/joaquinamatrodrigo/crewAI",desc:"角色式多Agent框架，极简上手"},
+    {name:"facebook/prophet",url:"https://github.com/facebook/prophet",desc:"Meta 时序预测库，自动趋势+季节+节假日"},
+    {name:"dmlc/xgboost",url:"https://github.com/dmlc/xgboost",desc:"XGBoost 官方仓库，梯度提升王者"},
+    {name:"microsoft/LightGBM",url:"https://github.com/microsoft/LightGBM",desc:"LightGBM，训练速度3-10倍于XGBoost"},
+    {name:"nixtla/statsforecast",url:"https://github.com/Nixtla/statsforecast",desc:"30+统计预测模型一站式库，比手写快100倍"},
+    {name:"unit8co/darts",url:"https://github.com/unit8co/darts",desc:"瑞士公司开源的时序预测库，ARIMA到Transformer统一接口"},
+    {name:"sktime/sktime",url:"https://github.com/sktime/sktime",desc:"scikit-learn兼容的时序ML库，统一API"},
+  ],
+  "🎬 视频教程": [
+    {name:"StatQuest (YouTube)",url:"https://www.youtube.com/@statquest",desc:"统计学和ML的最直观讲解，没有之一——看他的 XGBoost 系列"},
+    {name:"3Blue1Brown (YouTube)",url:"https://www.youtube.com/@3blue1brown",desc:"数学本质的可视化——神经网络、线性代数、微积分"},
+    {name:"Sentdex (YouTube)",url:"https://www.youtube.com/@sentdex",desc:"Python量化金融+数据分析实战，代码跟练"},
+    {name:"李宏毅 (Bilibili/YouTube)",url:"https://www.bilibili.com/video/BV1Wv411h7kN",desc:"台大ML课程中文版，深度学习时序部分极好"},
+    {name:"王树义 (Bilibili)",url:"https://space.bilibili.com/252812526",desc:"Python数据科学中文教程，pandas/statsmodels详解"},
+    {name:"Kaggle (YouTube)",url:"https://www.youtube.com/@kaggle",desc:"Kaggle官方频道，顶级竞赛方案讲解"},
+    {name:"Two Minute Papers (YouTube)",url:"https://www.youtube.com/@TwoMinutePapers",desc:"AI/ML论文2分钟速览，了解前沿"},
+  ],
+  "📖 免费书籍": [
+    {name:"Forecasting: Principles and Practice (3rd)",url:"https://otexts.com/fpp3/",desc:"时序预测圣经，Hyndman & Athanasopoulos ★必读"},
+    {name:"An Introduction to Statistical Learning (ISLR)",url:"https://www.statlearning.com/",desc:"统计学习经典，含Python版代码 ★必读"},
+    {name:"Python Data Science Handbook",url:"https://jakevdp.github.io/PythonDataScienceHandbook/",desc:"VanderPlas免费在线版，NumPy/pandas/sklearn全覆盖"},
+    {name:"Deep Learning (花书)",url:"https://www.deeplearningbook.org/",desc:"Goodfellow深度学习经典，时序/RNN/LSTM章节"},
+    {name:"Quantitative Economics with Python",url:"https://python.quantecon.org/",desc:"量化经济学Python教程，含动态规划/时序分析"},
+    {name:"Probabilistic Programming & Bayesian Methods",url:"https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers",desc:"贝叶斯方法黑客入门，概率预测必读"},
+  ],
+  "🛠️ 工具平台": [
+    {name:"Google Colab",url:"https://colab.research.google.com/",desc:"免费GPU+Python环境，新手首选"},
+    {name:"Kaggle Notebooks",url:"https://www.kaggle.com/notebooks",desc:"在线Python环境+数据集+社区，竞赛+学习一体"},
+    {name:"DeepNote",url:"https://deepnote.com/",desc:"协作式Python Notebook，适合团队"},
+    {name:"MLflow",url:"https://mlflow.org/",desc:"ML实验管理、模型注册、部署——工程化必备"},
+    {name:"Dagster / Prefect",url:"https://dagster.io/",desc:"数据流水线编排，把定时预测任务做成生产级"},
+    {name:"Optuna",url:"https://optuna.org/",desc:"贝叶斯超参调优，比GridSearch快10倍"},
+    {name:"Weights & Biases",url:"https://wandb.ai/",desc:"实验追踪+可视化，团队协作利器"},
+  ],
+  "👥 学习社区": [
+    {name:"Kaggle Discussions",url:"https://www.kaggle.com/discussion",desc:"全球最大DS社区，每个竞赛都有高质量方案讨论"},
+    {name:"r/MachineLearning (Reddit)",url:"https://www.reddit.com/r/MachineLearning/",desc:"ML前沿讨论，论文解读+实战经验"},
+    {name:"r/datascience (Reddit)",url:"https://www.reddit.com/r/datascience/",desc:"DS职业发展+面试经验"},
+    {name:"Cross Validated (StackExchange)",url:"https://stats.stackexchange.com/",desc:"统计学Q&A，问一个问题通常有人给你推导公式"},
+    {name:"和鲸社区 (Heywhale)",url:"https://www.heywhale.com/",desc:"中文DS社区，数据集+Notebook+竞赛，中文友好"},
+    {name:"阿里云天池",url:"https://tianchi.aliyun.com/",desc:"中文ML竞赛平台，有供应链相关赛题"},
+  ],
+  "🔬 必读论文": [
+    {name:"Attention Is All You Need (2017)",url:"https://arxiv.org/abs/1706.03762",desc:"Transformer起源，现代时序预测的基石"},
+    {name:"DeepAR (Amazon, 2019)",url:"https://arxiv.org/abs/1704.04110",desc:"Amazon 概率预测模型，已在AWS上线"},
+    {name:"N-BEATS (Element AI, 2020)",url:"https://arxiv.org/abs/1905.10437",desc:"纯MLP打败一切传统模型，M4竞赛冠军"},
+    {name:"Temporal Fusion Transformer (Google, 2021)",url:"https://arxiv.org/abs/1912.09363",desc:"Google可解释Transformer，支持静态+动态协变量"},
+    {name:"M5 Competition 总结论文",url:"https://www.sciencedirect.com/science/article/pii/S0169207021001874",desc:"5000+参赛方案总结，零售预测最新SOTA"},
+  ],
+};
+
+// ============================================================
+// CHEAT SHEETS
+// ============================================================
+const CHEATSHEETS = {
+  "pandas 速查": `
+<h4>DataFrame 核心操作</h4>
+<table><tr><th>操作</th><th>代码</th></tr>
+<tr><td>读取CSV</td><td><code>pd.read_csv('f.csv', parse_dates=['日期'])</code></td></tr>
+<tr><td>读取Excel</td><td><code>pd.read_excel('f.xlsx', sheet_name='Sheet1')</code></td></tr>
+<tr><td>查看信息</td><td><code>df.info() / df.describe() / df.head()</code></td></tr>
+<tr><td>筛选</td><td><code>df[df['col']>100]</code> | <code>df[(df['A']>1)&(df['B']<5)]</code></td></tr>
+<tr><td>选行列</td><td><code>df.loc[rows, cols] / df.iloc[row_i, col_i]</code></td></tr>
+<tr><td>分组聚合</td><td><code>df.groupby('col').agg({'a':'mean','b':'sum'})</code></td></tr>
+<tr><td>transform</td><td><code>df.groupby('sku')['sales'].transform('mean')</code></td></tr>
+<tr><td>排序</td><td><code>df.sort_values('col', ascending=False)</code></td></tr>
+<tr><td>缺失值</td><td><code>df.fillna(val) / df.dropna() / df.interpolate()</code></td></tr>
+<tr><td>去重</td><td><code>df.drop_duplicates(subset=['a','b'])</code></td></tr>
+<tr><td>合并</td><td><code>pd.merge(a,b,on='key') / pd.concat([a,b])</code></td></tr>
+<tr><td>时间重采样</td><td><code>df.resample('W').sum() / .mean()</code></td></tr>
+<tr><td>滚动窗口</td><td><code>df.rolling(7).mean() / .std()</code></td></tr>
+<tr><td>滞后</td><td><code>df.shift(1) / .shift(7) / .shift(365)</code></td></tr>
+<tr><td>导出</td><td><code>df.to_csv('out.csv') / .to_excel('out.xlsx')</code></td></tr></table>`,
+  "时序建模 速查": `
+<h4>ARIMA/SARIMA/Prophet 核心代码</h4>
+<pre><code># ARIMA
+from statsmodels.tsa.arima.model import ARIMA
+m = ARIMA(ts, order=(p,d,q)).fit()
+fc = m.forecast(steps=14)
+
+# SARIMA (季节性)
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+m = SARIMAX(ts, order=(p,d,q), seasonal_order=(P,D,Q,s)).fit()
+
+# Prophet
+from prophet import Prophet
+df_p = df[['ds','y']]
+m = Prophet(weekly_seasonality=True, yearly_seasonality=True)
+m.add_country_holidays(country_name='CN')
+m.fit(df_p); fc = m.predict(m.make_future_dataframe(30))
+
+# ADF 平稳性检验
+from statsmodels.tsa.stattools import adfuller
+p = adfuller(ts.dropna())[1]  # p<0.05 平稳
+
+# ACF/PACF
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+# ACF拖尾+PACF截尾→AR; ACF截尾+PACF拖尾→MA
+
+# 季节性分解
+from statsmodels.tsa.seasonal import seasonal_decompose
+r = seasonal_decompose(ts, model='additive', period=7)
+# trend + seasonal + residual</code></pre>`,
+  "XGBoost+回测 速查": `
+<h4>XGBoost + 回测 核心代码</h4>
+<pre><code># 特征工程（时序→监督学习）
+for lag in [1,2,3,7,14,28]:
+    df[f'lag_{lag}'] = df['y'].shift(lag)
+for w in [7,14,30]:
+    df[f'rmean_{w}'] = df['y'].rolling(w).mean()
+
+# XGBoost
+from xgboost import XGBRegressor
+model = XGBRegressor(n_estimators=200, max_depth=5, lr=0.1)
+model.fit(X_train, y_train)
+
+# 时序交叉验证
+from sklearn.model_selection import TimeSeriesSplit
+tscv = TimeSeriesSplit(n_splits=5)
+for tr,te in tscv.split(X):
+    model.fit(X.iloc[tr], y.iloc[tr])
+    pred = model.predict(X.iloc[te])
+    mape = np.mean(np.abs((y.iloc[te]-pred)/y.iloc[te]))*100
+
+# 滚动窗口回测
+for i in range(train_days, len(df)-7, 7):
+    train = df.iloc[i-train_days:i]
+    test = df.iloc[i:i+7]
+    # train → predict → record MAPE
+
+# 特征重要性
+imp = pd.DataFrame({'f':X.columns,'imp':model.feature_importances_})
+imp.sort_values('imp', ascending=False).head(10)
+
+# Ensemble
+pred = (xgb_pred + lgb_pred + rf_pred) / 3</code></pre>`,
+};
+
+// ============================================================
+// QUIZ DATA (mapped by track:dayId)
+// ============================================================
+const QUIZZES = {
+  "crash:0": [
+    {q:"量化分析的本质是什么？", opts:["A. 用AI替代人类决策","B. 用数学+代码从数据中找规律并形成可执行的策略","C. 在Excel里做数据透视表","D. 写复杂的深度学习模型"], ans:1, exp:"量化=数据+模型+代码+业务判断，不是替代人类而是增强人类。"},
+    {q:"供应链预测中，以下哪个是量化方法相比传统经验决策的最大优势？", opts:["A. 更快","B. 更便宜","C. 可复现、可验证、可迭代","D. 不需要人参与"], ans:2, exp:"量化方法的核心优势是可复现——同样的数据和方法，结果完全一致。"},
+  ],
+  "crash:1": [
+    {q:"df.groupby('促销')['销量'].mean() 做了什么？", opts:["A. 删除促销列","B. 按是否促销分组，计算每组平均销量","C. 把销量改成均值","D. 创建一个新表"], ans:1, exp:"groupby分组然后对每组计算均值，这是最常用的pandas操作之一。"},
+    {q:"df['销量'].shift(7) 和 df['销量'].rolling(7).mean() 的区别？", opts:["A. 完全一样","B. shift是取7天前的值，rolling是算7天均值","C. shift更快","D. rolling不能用于预测"], ans:1, exp:"shift取的是精确7天前的值（点），rolling取的是过去7天的均值（窗口）。"},
+  ],
+  "crash:2": [
+    {q:"ADF检验的p值<0.05说明什么？", opts:["A. 数据不平稳，需要差分","B. 数据平稳，可以直接建模","C. 模型太复杂","D. 需要换一个模型"], ans:1, exp:"ADF检验的原假设是'不平稳'，p<0.05拒绝原假设→数据平稳。"},
+    {q:"Prophet相比ARIMA最大的优势是什么？", opts:["A. 更准确","B. 自动处理趋势变点+节假日+季节性，不用手动判断平稳性","C. 运行更快","D. 代码更少"], ans:1, exp:"Prophet的傻瓜式设计让初学者也能快速出结果，但复杂场景下可能不如精心调参的ARIMA。"},
+  ],
+  "crash:3": [
+    {q:"时间序列数据为什么不能用随机K-Fold交叉验证？", opts:["A. 因为太慢","B. 因为会打乱时间顺序，用未来信息预测过去","C. 因为K-Fold只用于分类","D. 因为没有区别"], ans:1, exp:"时序数据中，用未来数据训练来预测历史是作弊。必须用TimeSeriesSplit确保训练集在测试集之前。"},
+    {q:"MAPE=15% 在供应链预测中意味着什么？", opts:["A. 不可接受","B. 合格水平","C. 优秀水平","D. 需要重做所有分析"], ans:1, exp:"MAPE<15%算合格，<10%优秀。但大促期间MAPE天然偏高，要结合业务判断。"},
+  ],
+  "crash:4": [
+    {q:"在供应链预测中，以下哪个环节最适合交给AI自动化？", opts:["A. 判断促销弹性方向","B. 数据清洗+因子代码生成+回测执行+报告生成","C. 最终库存决策","D. 制定年度销售策略"], ans:1, exp:"AI做'可验证可重复高耗时'的执行；人做'需直觉需问责需业务理解'的决策。"},
+    {q:"LangGraph的核心三要素是什么？", opts:["A. Agent, Tool, Memory","B. State, Node, Edge","C. Input, Process, Output","D. Train, Test, Deploy"], ans:1, exp:"State(状态流转)、Node(执行节点)、Edge(连接+条件分支)是LangGraph的图式编排核心。"},
+  ],
+};
+
+// ============================================================
+// DAY CONTENT DATA
+// ============================================================
+const CRASH = [
+  {id:0,title:"量化思维重塑 + 工具链搭建",time:"60 min",lvl:"入门",
+   cues:["量化到底是什么？和传统经验决策的本质区别？","供应链预测为什么必须量化？","核心概念：因子、回测、特征工程、过拟合","我需要装哪些软件？"],
+   content:`
+<h3>1.1 量化 = 数据 + 模型 + 代码 + 业务判断</h3>
+<p><span class="key-pt">量化分析不是"用AI替代人"，而是把可重复的部分自动化，把人释放到需要判断力的地方。</span></p>
+<table><tr><th>传统经验决策</th><th>量化方法</th></tr>
+<tr><td>"春节前多备30%，这么多年都是这么做的"</td><td>"基于过去5年春节前4周数据，模型预测增幅28%±5%"</td></tr>
+<tr><td>不同人拍不同数字，吵不出结果</td><td>同一份数据、同一套代码，结果完全一致</td></tr>
+<tr><td>出错了追溯困难</td><td>回测日志完整，每个环节可审计</td></tr></table>
+
+<h3>1.2 为什么供应链预测必须量化</h3>
+<ul><li><strong>多因素叠加：</strong>促销+天气+竞品+节假日同时作用，人脑算不过来</li>
+<li><strong>SKU规模：</strong>几百个SKU，人工预测完全不现实</li>
+<li><strong>不确定性量化：</strong>"大概1000件" vs "95%概率800-1200件"，对备货决策完全不同</li>
+<li><strong>量化金融→供应链的技术迁移：</strong>时间序列模型(ARIMA)、因子挖掘(IC评估)、回测框架——这些量化金融的成熟工具可以直接迁移到销量预测</li></ul>
+
+<div class="pit-box"><h4>⚠️ 常见误区</h4><p><strong>误区：</strong>"量化就是要用最复杂的模型。"<br><strong>真相：</strong>简单移动平均在数据量少时可能比深度学习更准。量化≠堆模型，而是系统化方法。<br><strong>误区：</strong>"AI可以完全替代我的判断。"<br><strong>真相：</strong>模型给出预测，你判断是否合理。Two Sigma因研究员篡改模型参数暴露的内控问题就是最典型的反例。</p></div>
+
+<h3>1.3 核心概念四句话</h3>
+<table><tr><th>概念</th><th>一句话</th><th>供应链对应</th></tr>
+<tr><td>因子</td><td>对目标有预测力的变量</td><td>促销折扣/天气/节假日/库存水位</td></tr>
+<tr><td>回测</td><td>用历史数据模拟预测效果</td><td>"如果上个月用这个模型，误差多少？"</td></tr>
+<tr><td>特征工程</td><td>把原始数据变成模型能用的</td><td>从日期→星期几/是否周末/距大促天数</td></tr>
+<tr><td>过拟合</td><td>记住了噪声而非规律</td><td>训练集MAPE=2%，上线后MAPE=30%</td></tr></table>
+
+<h3>1.4 工具链（现在就装）</h3>
+<pre><code># Python 3.10+ → <a href="https://www.python.org/downloads/" target="_blank">python.org</a>
+# VS Code → <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>
+
+pip install pandas numpy matplotlib scikit-learn statsmodels plotly prophet xgboost jupyter</code></pre>
+<p><strong>💡 推荐在 <a href="https://colab.research.google.com/" target="_blank">Google Colab</a> 上开始</strong>——无需安装，免费GPU，浏览器直接写代码。</p>
+
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>安装 Python + VS Code 或打开 Google Colab</li><li>运行 <code>import pandas as pd; print("环境OK")</code></li><li>在左侧栏写下：你做供应链预测时最大的痛点是什么？</li></ol></div>
+<div class="bk-box"><h4>📖 推荐</h4><p>《利用Python进行数据分析》Wes McKinney（前5章） | <a href="https://otexts.com/fpp3/" target="_blank">Forecasting: Principles and Practice</a>（免费，第1章）</p></div>`,
+   summary:""},
+
+  {id:1,title:"数据兵器 — pandas 极速掌握",time:"90 min",lvl:"基础",
+   cues:["DataFrame和Excel的区别？","筛选/分组/聚合的核心操作","时间序列：重采样/滚动/滞后/差分","供应链场景：多SKU分组、促销标记、库存周转"],
+   content:`
+<h3>2.1 pandas = 代码版Excel</h3>
+<p><span class="key-pt">Excel能做的pandas都能做，而且：百万行不卡、操作可复现、无缝对接模型。</span>量化分析真实日常：80%时间洗数据，20%建模。</p>
+
+<h3>2.2 五个必须会的操作</h3>
+<pre><code>import pandas as pd; import numpy as np
+
+# ① 读取+检查
+df = pd.read_csv('sales.csv', parse_dates=['日期'])
+df.info(); df.describe(); df.head(10); df.sample(5)
+
+# ② 筛选
+high = df[df['销量']>100]
+promo_big = df[(df['促销']) & (df['销量']>150)]
+
+# ③ 分组聚合（最重要！）
+df.groupby('促销')['销量'].agg(['mean','sum','count','std'])
+df.groupby('SKU').agg({'销量':'mean','价格':'mean'})
+
+# ④ 时间序列
+df.set_index('日期', inplace=True)
+df['MA7'] = df['销量'].rolling(7).mean()      # 7日均线
+df['lag1'] = df['销量'].shift(1)               # 昨天
+df['lag7'] = df['销量'].shift(7)               # 上周同天
+weekly = df['销量'].resample('W').sum()         # 日→周
+
+# ⑤ 缺失值
+df['销量'].fillna(df['销量'].median(), inplace=True)  # 中位数填充
+df['销量'].fillna(method='ffill', inplace=True)        # 前向填充</code></pre>
+
+<h3>2.3 供应链场景实战三连</h3>
+<pre><code># 促销力度
+df['折扣'] = (df['原价']-df['促销价'])/df['原价']
+
+# 库存周转天数
+df['周转天数'] = df['库存'] / df.groupby('SKU')['销量'].transform('mean')
+
+# 多SKU批量处理
+# 对每个SKU单独预测，结果汇总
+for sku in df['SKU'].unique():
+    sku_df = df[df['SKU']==sku]
+    # ... train/predict for this SKU</code></pre>
+
+<div class="pit-box"><h4>⚠️ 3个最常见的pandas坑</h4>
+<p><strong>坑1：</strong><code>df[df['col']>100]</code> 遇到NaN会静默失败——先用 <code>dropna()</code><br>
+<strong>坑2：</strong>groupby之后索引变了——加 <code>.reset_index()</code><br>
+<strong>坑3：</strong><code>.shift()</code> 产生的NaN忘了处理——滞后特征首行必然是NaN</p></div>
+
+<div class="ex-box"><h4>✏️ 练习：生成模拟数据并清洗</h4>
+<pre><code>dates = pd.date_range('2025-01-01', periods=180, freq='D')
+np.random.seed(42)
+df = pd.DataFrame({
+    '日期': np.tile(dates, 3),
+    'SKU': np.repeat(['A','B','C'], 180),
+    '销量': np.concatenate([100+10*np.sin(np.arange(180)/7)+np.random.randn(180)*15,
+                           80+5*np.sin(np.arange(180)/7)+np.random.randn(180)*10,
+                           120+15*np.sin(np.arange(180)/7)+np.random.randn(180)*20]),
+    '促销': np.random.choice([True,False], 540, p=[0.2,0.8])
+})
+df.loc[df['促销'], '销量'] *= 1.3+np.random.rand(df['促销'].sum())*0.5</code></pre>
+<p>用上面代码生成数据，完成：计算MA7→按SKU+促销分组统计→找销量最高的5天→构造lag1/lag7特征。</p></div>
+<div class="bk-box"><h4>📖 推荐</h4><p><a href="https://pandas.pydata.org/docs/user_guide/10min.html" target="_blank">pandas官方10分钟入门</a> | 《利用Python进行数据分析》第5-6章</p></div>`,
+   summary:""},
+
+  {id:2,title:"预测引擎 — ARIMA + Prophet 双模型",time:"90 min",lvl:"进阶",
+   cues:["平稳性是什么？ADF检验怎么看？","ACF/PACF图怎么确定p,d,q？","Prophet和ARIMA各适合什么场景？","怎么对比模型：AIC/BIC/MAPE"],
+   content:`
+<h3>3.1 时间序列 ≠ 普通数据</h3>
+<p><span class="key-pt">时序数据的核心特点：今天的数据和昨天、上周、去年同期都有关联。</span>这是好事（信息在时间结构里）也是挑战（不能随机打乱数据）。</p>
+
+<h3>3.2 ARIMA 三步走</h3>
+<pre><code>from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.arima.model import ARIMA
+
+# Step 1: 平稳性检验（p<0.05才平稳）
+p = adfuller(df['销量'].dropna())[1]
+# Step 1b: 不平稳就差分
+df['销量_d1'] = df['销量'].diff(1)
+# Step 2: 画ACF/PACF确定p,q
+# ACF拖尾+PACF截尾→AR(p); 反之→MA(q); 都拖尾→ARIMA
+# Step 3: 建模+预测
+model = ARIMA(df['销量'].dropna(), order=(2,1,2)).fit()
+fc = model.forecast(steps=14)
+print(model.summary())  # 看AIC和残差诊断</code></pre>
+
+<h3>3.3 Prophet：傻瓜式但出活快</h3>
+<pre><code>from prophet import Prophet
+df_p = df.reset_index()[['日期','销量']]
+df_p.columns = ['ds','y']
+m = Prophet(weekly_seasonality=True, yearly_seasonality=True)
+m.add_country_holidays(country_name='CN')  # 加中国节假日
+m.fit(df_p)
+fc = m.predict(m.make_future_dataframe(periods=30))
+m.plot(fc); m.plot_components(fc)  # 趋势+周效应+年效应</code></pre>
+
+<h3>3.4 什么时候用哪个？</h3>
+<table><tr><th>场景</th><th>推荐</th></tr>
+<tr><td>数据<1年，无明显季节</td><td>ARIMA</td></tr>
+<tr><td>数据>1年，有周/年周期</td><td>Prophet</td></tr>
+<tr><td>有促销/价格/天气等外部变量</td><td>XGBoost（Day 4）</td></tr></table>
+
+<div class="pit-box"><h4>⚠️ 常见坑</h4><p><strong>ARIMA预测变成一条直线？</strong>→ 可能d设错了，或数据过差分变成白噪声<br>
+<strong>Prophet预测完全离谱？</strong>→ 检查是否忘了set_index，ds列名对不对<br>
+<strong>MAPE特别高？</strong>→ 销量接近0时MAPE会爆炸，改用WAPE</p></div>
+
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>用模拟数据训练ARIMA和Prophet</li><li>计算MAPE对比两个模型</li><li>残差诊断：ARIMA的残差是白噪声吗？</li><li>看Prophet的季节性分量：一周中哪天销量最高？</li></ol></div>
+<div class="bk-box"><h4>📖 推荐</h4><p><a href="https://otexts.com/fpp3/" target="_blank">FPP3 第8-9章</a> | <a href="https://facebook.github.io/prophet/" target="_blank">Prophet官方文档</a></p></div>`,
+   summary:""},
+
+  {id:3,title:"机器学习预测 + 回测体系",time:"90 min",lvl:"进阶",
+   cues:["时序→监督学习怎么转换？","XGBoost为什么是表格数据之王？","回测=用历史模拟未来","MAPE/WAPE/RMSE各适合什么场景？"],
+   content:`
+<h3>4.1 关键转换：时序→监督学习</h3>
+<p>机器学习模型不理解时间顺序。<span class="key-pt">你需要手动把历史信息编码成特征。</span></p>
+<pre><code>def make_features(df, col):
+    data = df.copy()
+    for lag in [1,2,3,7,14,28]:
+        data[f'lag_{lag}'] = data[col].shift(lag)
+    for w in [7,14,30]:
+        data[f'rmean_{w}'] = data[col].rolling(w).mean()
+        data[f'rstd_{w}'] = data[col].rolling(w).std()
+    data['dow'] = data.index.dayofweek
+    data['month'] = data.index.month
+    data['is_weekend'] = data['dow'].isin([5,6]).astype(int)
+    return data.dropna()</code></pre>
+
+<h3>4.2 XGBoost：表格数据王者</h3>
+<pre><code>from xgboost import XGBRegressor
+from sklearn.model_selection import TimeSeriesSplit
+
+tscv = TimeSeriesSplit(n_splits=5)  # 时序CV，不能用随机KFold！
+model = XGBRegressor(n_estimators=200, max_depth=5, learning_rate=0.1,
+                     subsample=0.8, reg_alpha=0.1)
+for tr_i, te_i in tscv.split(X):
+    model.fit(X.iloc[tr_i], y.iloc[tr_i])
+    pred = model.predict(X.iloc[te_i])
+    mape = np.mean(np.abs((y.iloc[te_i]-pred)/y.iloc[te_i]))*100
+    print(f'MAPE: {mape:.1f}%')
+
+# 特征重要性
+imp = pd.DataFrame({'f':X.columns,'imp':model.feature_importances_})
+print(imp.sort_values('imp',ascending=False).head(10))</code></pre>
+
+<h3>4.3 回测 = 用历史模拟未来</h3>
+<table><tr><th>方式</th><th>训练窗口</th><th>适用</th></tr>
+<tr><td>滚动窗口</td><td>固定长度（最近90天）→ 预测7天 → 前移7天</td><td>数据模式变化快</td></tr>
+<tr><td>扩展窗口</td><td>从始累积 → 预测7天 → 训练集增长</td><td>数据少、模式稳定</td></tr></table>
+
+<h3>4.4 评估指标选哪个？</h3>
+<table><tr><th>指标</th><th>适用</th><th>注意</th></tr>
+<tr><td>MAPE</td><td>销量>0的常规预测</td><td>销量=0时炸</td></tr>
+<tr><td>WAPE</td><td>含零销量SKU</td><td>∑|误差|/∑|实际|</td></tr>
+<tr><td>RMSE</td><td>关注大误差</td><td>对大误差惩罚重</td></tr></table>
+<blockquote>业务经验：MAPE<15%合格，<10%优秀。大促期间MAPE天然偏高——这是业务规律不是模型问题。</blockquote>
+
+<div class="pit-box"><h4>⚠️ 回测3大坑</h4><p><strong>坑1：用随机KFold</strong>→未来信息泄露，回测结果自欺欺人<br><strong>坑2：忘了扣交易成本/促销成本</strong>→回测收益虚高（量化金融的血泪教训）<br><strong>坑3：只看MAPE不看偏差</strong>→系统性高估10%最后库存积压</p></div>
+
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>实现make_features，构造20+特征</li><li>TimeSeriesSplit做5折CV，每折记录MAPE</li><li>实现滚动窗口回测函数</li><li>和Day3的ARIMA/Prophet做MAPE对比表</li></ol></div>
+<div class="bk-box"><h4>📖 推荐</h4><p><a href="https://www.statlearning.com/" target="_blank">ISLR 第8章（树模型）</a> | <a href="https://xgboost.readthedocs.io/" target="_blank">XGBoost文档</a></p></div>`,
+   summary:""},
+
+  {id:4,title:"供应链端到端实战 + 工具链升级",time:"120 min",lvl:"实战",
+   cues:["完整流水线：数据→特征→模型→回测→报告","手工vs AI的边界在哪里？","多SKU怎么批量处理？","Agent框架(AutoGen/LangGraph/CrewAI)能帮我做什么？"],
+   content:`
+<h3>5.1 完整流水线</h3>
+<div class="mini-d">原始数据→清洗(pandas)→特征工程(20+因子)→因子筛选(IC)→多模型(ARIMA+Prophet+XGBoost)→滚动回测→最优模型→预测表+可视化报告</div>
+
+<h3>5.2 手工 vs AI：你必须知道的边界</h3>
+<table><tr><th>环节</th><th>人主导</th><th>AI/自动化</th></tr>
+<tr><td>策略假设（促销弹性方向）</td><td>✅ 核心</td><td>❌ 辅助</td></tr>
+<tr><td>数据清洗+因子代码生成</td><td>⚠️ 监督</td><td>✅ 自动</td></tr>
+<tr><td>回测执行+报告生成</td><td>❌</td><td>✅ 完全自动</td></tr>
+<tr><td>模型合理性审查</td><td>✅ 核心</td><td>⚠️ 提示</td></tr>
+<tr><td>库存/补货最终决策</td><td>✅ 拍板</td><td>⚠️ 提供依据</td></tr></table>
+<blockquote><strong>核心原则：人定方向、机器跑流程。</strong>AI做"可验证、可重复、高耗时"的执行；人做"需直觉、需问责、需业务理解"的决策。</blockquote>
+
+<h3>5.3 真实案例参考</h3>
+<p><strong>Walmart：</strong>使用 Prophet + 自定义节假日效应做 45,000+ SKU 的周度预测，将缺货率从 8% 降至 3%。<strong>关键动作：</strong>不仅预测销量，还预测不确定性区间，安全库存基于区间上界而非点预测。</p>
+<p><strong>Amazon：</strong>DeepAR 概率预测模型直接输出需求分布（而不只是点预测），供应链系统据此自动计算补货量。论文：<a href="https://arxiv.org/abs/1704.04110" target="_blank">DeepAR (2019)</a></p>
+
+<h3>5.4 Agent工具链</h3>
+<table><tr><th>框架</th><th>一句话</th><th>推荐场景</th></tr>
+<tr><td>LangGraph</td><td>图式状态机，精细编排数据→特征→建模→回测→报告</td><td>工程化落地</td></tr>
+<tr><td>CrewAI</td><td>"数据工程师+建模师+报告分析师"角色分工</td><td>快速原型</td></tr>
+<tr><td>RD-Agent</td><td>"假设→代码→回测→改进"自动闭环</td><td>因子挖掘</td></tr></table>
+
+<div class="ex-box"><h4>✏️ 毕业项目：端到端供应链预测系统</h4>
+<ol><li>找(或生成)≥6个月的销售数据（含SKU/日期/销量/价格/促销）</li><li>构造20+因子，筛选Top10</li><li>训练ARIMA+Prophet+XGBoost，滚动回测对比</li><li>自动生成预测报告（数字+图表+业务建议）</li><li>写300字反思：哪些AI做得好，哪些必须你判断</li></ol>
+<p>🎯 WAPE<18%合格，<12%优秀。</p></div>
+
+<h3>5.5 你将具备的能力</h3>
+<ul><li>✅ 独立用Python清洗分析供应链数据</li><li>✅ 构建时序+ML预测模型并对比</li><li>✅ 设计回测框架评估效果</li><li>✅ 清楚AI和人的决策边界</li><li>✅ 产出可写进简历的端到端项目</li></ul>
+
+<div class="rs-box"><h4>🔗 从这里继续</h4><p>速成是建立"能做什么"的全局认知。切换到<strong>"100天修炼"</strong>，系统深入每一个模块——从"会用"到"精通"。</p></div>`,
+  summary:""}
+];
+
+// ============================================================
+// 100-DAY DEEP TRACK (Days 0-29 full content)
+// ============================================================
+const DEEP = [
+  // W1: 基础
+  {id:0,wk:1,title:"什么是量化分析？供应链为什么需要它？",time:"30 min",lvl:"入门",
+   cues:["量化的本质","供应链预测的特殊挑战（层级/间断/促销/牛鞭/缺货截断）","量化vs传统：一个例子"],
+   content:`<h3>量化=数据+模型+代码+判断</h3><p><span class="key-pt">量化不是"用AI替代人"，而是把可重复的执行自动化，把人释放到需要判断力的环节。</span></p>
+<h3>供应链预测的特殊挑战</h3><ul><li><strong>层级性：</strong>SKU→品类→仓库→区域，各层预测需自洽</li><li><strong>间断性：</strong>很多SKU不是天天有销量，传统模型直接失效</li><li><strong>促销扰动：</strong>大促暴涨5-10倍，是信号还是噪声？</li><li><strong>缺货截断：</strong>卖断货=你只看到部分需求，历史数据本身有偏</li><li><strong>牛鞭效应：</strong>需求波动沿供应链逐级放大</li></ul>
+<div class="pit-box"><h4>⚠️ 最容易被忽视的问题</h4><p><strong>缺货截断（Censored Demand）：</strong>销量=0可能不是真的没人买，而是没货可卖。如果你用缺货期间的数据训练模型，模型会学到"以后也少备点货"——然后持续缺货。这是供应链预测中最隐蔽也最致命的陷阱。</p></div>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>写下你工作中最头疼的3个预测难题</li><li>标注：数据问题还是判断问题？</li><li>想想如果有AI助手，最希望它帮你解决哪个？</li></ol></div>`,
+  summary:""},
+
+  {id:1,wk:1,title:"Python环境搭建 + 第一个量化脚本",time:"45 min",lvl:"基础",
+   cues:["Python版本选哪个？虚拟环境是什么？","Jupyter Notebook有什么用？","第一个脚本：生成数据→统计→画图"],
+   content:`<pre><code># 1. Python 3.10+ <a href="https://www.python.org/downloads/" target="_blank">python.org</a>
+# 2. VS Code <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>
+# 3. 或直接用 <a href="https://colab.research.google.com/" target="_blank">Google Colab</a>（零安装）
+
+pip install pandas numpy matplotlib scikit-learn statsmodels plotly prophet xgboost jupyter</code></pre>
+<pre><code># first_script.py — 第一个量化脚本
+import pandas as pd; import numpy as np; import matplotlib.pyplot as plt
+dates = pd.date_range('2025-01-01', periods=365, freq='D')
+sales = 100 + 10*np.sin(np.arange(365)*2*np.pi/7) + 20*np.sin(np.arange(365)*2*np.pi/365) + np.random.randn(365)*15
+sales = np.maximum(sales, 0)
+df = pd.DataFrame({'日期':dates,'销量':sales}).set_index('日期')
+print(f"日均:{df['销量'].mean():.0f} 波动:{df['销量'].std():.0f}")
+df['MA30'] = df['销量'].rolling(30).mean()
+df[['销量','MA30']].plot(figsize=(12,4)); plt.show()</code></pre>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>完成环境搭建或打开Colab</li><li>运行脚本，观察图表</li><li>改参数：周周期改30天、噪声放大3倍，看图表变化</li></ol></div>`,
+  summary:""},
+
+  {id:2,wk:1,title:"Python基础语法速通",time:"60 min",lvl:"基础",
+   cues:["列表/字典/DataFrame互转","列表推导式——Python的灵魂","函数定义+lambda","条件判断+循环"],
+   content:`<p>量化分析90%的Python只用这些：列表推导式、字典、条件、循环、函数。</p>
+<pre><code># 列表推导式（Python最优雅的特性）
+skus = ['A','B','C']; sales = [100,150,120]
+sales_x2 = [s*2 for s in sales]                    # [200,300,240]
+avg_by_sku = {s:df[df['SKU']==s]['销量'].mean() for s in skus}
+
+# 函数 + 安全库存计算
+from scipy import stats
+def safety_stock(demand, lead_time, service=0.95):
+    z = stats.norm.ppf(service)
+    return z * demand.std() * np.sqrt(lead_time)</code></pre>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>列表推导式生成1-100中7的倍数</li><li>写safety_stock函数，算90%/95%/99%服务水平的安全库存</li><li>用字典存5个SKU信息，转DataFrame</li></ol></div>
+<div class="rs-box"><h4>🔗 资源</h4><p><a href="https://docs.python.org/zh-cn/3/tutorial/" target="_blank">Python官方中文教程</a> | 廖雪峰Python教程</p></div>`,
+  summary:""},
+
+  {id:3,wk:1,title:"NumPy — 数值计算基石",time:"45 min",lvl:"基础",
+   cues:["ndarray vs list：为什么快100倍","向量化运算","常用统计函数","安全库存的NumPy实现"],
+   content:`<pre><code>import numpy as np
+a = np.array([1,2,3,4,5]); b = np.random.randn(100)
+sales = np.array([100,150,120,180,160])
+revenue = sales * np.array([9.9,9.9,8.8,8.8,8.8])
+growth = np.diff(sales) / sales[:-1]
+sales.mean(); sales.std(); np.percentile(sales,[25,50,75])
+np.corrcoef(sales, revenue)  # 相关系数矩阵</code></pre>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>生成365天需求（均值100，std20）</li><li>算90%/95%/99%安全库存（Z值:1.28/1.645/2.33）</li><li>验证：Z=1.645，正态尾部概率是否≈5%？</li></ol></div>`,
+  summary:""},
+
+  {id:4,wk:1,title:"pandas核心操作（上）读写+筛选",time:"60 min",lvl:"基础",
+   cues:["read_csv参数","loc vs iloc","多条件筛选","按值列表筛选"],
+   content:`<pre><code>df = pd.read_csv('sales.csv', encoding='utf-8', parse_dates=['日期'])
+df.info(); df.describe(); df.sample(10)
+high = df[df['销量']>100]
+promo = df[(df['促销'])&(df['销量']>150)]
+target = df[df['SKU'].isin(['A','B','C'])]
+df.iloc[:10]; df.iloc[:, [0,2,4]]
+df.loc[df['销量']>100, ['SKU','销量']]</code></pre>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>下载数据: <a href="https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-total-female-births.csv" target="_blank">daily-births.csv</a></li><li>筛选值>45的行，统计天数</li><li>练习loc/iloc的5种常见用法</li></ol></div>`,
+  summary:""},
+
+  {id:5,wk:1,title:"pandas核心操作（下）分组+时序",time:"60 min",lvl:"基础",
+   cues:["groupby+agg组合拳","transform vs apply","resample重采样","shift+rolling时序操作"],
+   content:`<pre><code># 分组聚合
+df.groupby('SKU').agg({'销量':['mean','std','sum'],'价格':'mean'})
+df['sku_avg'] = df.groupby('SKU')['销量'].transform('mean')
+# 时间序列
+df.set_index('日期',inplace=True); df.sort_index(inplace=True)
+df['MA7']=df['销量'].rolling(7).mean(); df['vol']=df['销量'].rolling(30).std()
+df['lag1']=df['销量'].shift(1); df['lag7']=df['销量'].shift(7)
+weekly=df['销量'].resample('W').sum()</code></pre>
+<div class="bk-box"><h4>📖 W1完成✅</h4><p>核心能力：环境搭建、pandas/NumPy、数据读写、分组统计、时序操作、可视化。</p></div>`,
+  summary:""},
+
+  {id:6,wk:1,title:"数据可视化—matplotlib+plotly双修",time:"45 min",lvl:"基础",
+   cues:["matplotlib出版级","plotly交互探索","双Y轴图","季节性分解可视化"],
+   content:`<pre><code>import matplotlib.pyplot as plt; plt.rcParams['font.sans-serif']=['PingFang SC']
+fig,ax=plt.subplots(2,2,figsize=(12,8))
+ax[0,0].plot(df.index,df['销量']); ax[0,1].hist(df['销量'],bins=30)
+
+import plotly.express as px
+px.line(df.reset_index(),x='日期',y='销量',color='SKU',title='多SKU对比').show()</code></pre>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>2×2子图面板（时序+直方图+箱线+ACF）</li><li>plotly交互多SKU对比线图</li></ol></div>`,
+  summary:""},
+
+  // W2: Statistics & Data Cleaning (days 7-13)
+  {id:7,wk:2,title:"描述性统计—读懂数据的第一步",time:"45 min",lvl:"基础",
+   cues:["均值vs中位数","标准差vs变异系数","偏度+峰度","分位数→ABC分类"],
+   content:`<table><tr><th>统计量</th><th>供应链意义</th></tr><tr><td>CV=std/mean</td><td>不同SKU可比的不稳定性</td></tr><tr><td>偏度>0</td><td>偶尔爆发（促销日）</td></tr><tr><td>峰度>3</td><td>极端值频繁（缺货/爆仓风险）</td></tr></table>
+<pre><code>df['销量'].describe(); df['销量'].skew(); df['销量'].kurtosis()
+# ABC分类
+total=df.groupby('SKU')['销量'].sum().sort_values(ascending=False)
+total['cum']=total.cumsum()/total.sum()
+total['cls']=pd.cut(total['cum'],[0,.7,.95,1],labels=['A','B','C'])</code></pre>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>全部描述性统计</li><li>CV最大SKU分析</li><li>ABC分类</li></ol></div>`,
+  summary:""},
+
+  {id:8,wk:2,title:"概率分布+假设检验入门",time:"60 min",lvl:"进阶",
+   cues:["正态分布为什么重要","p值<0.05到底什么意思","t检验在供应链中的应用","统计显著≠业务显著"],
+   content:`<pre><code>from scipy import stats
+stat,p=stats.normaltest(df['销量'].dropna())  # 正态检验
+# 促销vs非促销 t检验
+t,p=stats.ttest_ind(df[df['促销']]['销量'],df[~df['促销']]['销量'])
+# p<0.05→促销显著提升销量（统计显著）
+# 但提升量是否值得？（业务显著）</code></pre>
+<blockquote><strong>记住：</strong>p<0.001但销量只差2件——对业务没意义。永远结合业务量级判断。</blockquote>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>正态检验+log变换</li><li>周末vs工作日t检验</li></ol></div>
+<div class="bk-box"><h4>📖</h4><p>《赤裸裸的统计学》Charles Wheelan — 零基础可读</p></div>`,
+  summary:""},
+
+  {id:9,wk:2,title:"相关性分析—谁在影响销量？",time:"45 min",lvl:"进阶",
+   cues:["Pearson vs Spearman","相关性≠因果性","混淆变量陷阱","偏相关分析"],
+   content:`<pre><code>df.corr(numeric_only=True)['销量'].sort_values(ascending=False)
+df.corr(method='spearman',numeric_only=True)['销量']
+px.imshow(df.corr(numeric_only=True),text_auto='.2f')</code></pre>
+<div class="pit-box"><h4>⚠️ 最大陷阱</h4><p>冰淇淋销量↗溺水死亡↗——不是因为冰淇淋导致溺水，而是"夏天"同时导致两者。这叫<strong>混淆变量</strong>。供应链中极常见：促销同时导致高销量和高退货率。</p></div>
+<div class="ex-box"><h4>✏️ 练习</h4><ol><li>Pearson+Spearman相关矩阵</li><li>Top3相关特征——是原因还是混淆？</li></ol></div>`,
+  summary:""},
+
+  {id:10,wk:2,title:"数据清洗（上）缺失值+异常值",time:"60 min",lvl:"进阶",
+   cues:["MCAR/MAR/MNAR三种缺失","填充策略选择","IQR法识别异常值","供应链异常值≠错误"],
+   content:`<pre><code>df.isnull().sum()/len(df)*100  # 缺失比例
+df['销量'].fillna(df['销量'].median(),inplace=True)  # 中位数
+df['销量'].fillna(method='ffill',inplace=True)         # 前向
+df['销量'].interpolate(method='linear',inplace=True)   # 插值
+# IQR异常值
+Q1,Q3=df['销量'].quantile([.25,.75]); IQR=Q3-Q1
+outliers=df[(df['销量']<Q1-1.5*IQR)|(df['销量']>Q3+1.5*IQR)]</code></pre>
+<blockquote><strong>供应链警示：</strong>大促日销量是平时10倍——看起来像异常值，但实际是业务规律。标注而非删除！</blockquote>`,
+  summary:""},
+
+  {id:11,wk:2,title:"数据清洗（下）重复值+质量检查",time:"45 min",lvl:"进阶",
+   cues:["重复行定义+去重","数据质量检查清单","时间序列连续检查"],
+   content:`<pre><code>df.duplicated().sum(); df.drop_duplicates(inplace=True)
+df.drop_duplicates(subset=['日期','SKU'],keep='last',inplace=True)
+# 检查时序连续性
+full=pd.date_range(df.index.min(),df.index.max(),freq='D')
+missing=full.difference(df.index); print(f'缺失{len(missing)}天')</code></pre>
+<h3>数据质量检查清单（每次分析前）</h3><ol><li>列名有无空格/特殊字符</li><li>日期是否datetime类型</li><li>时序是否连续</li><li>数值列有无负数</li><li>分类列有无意外值</li><li>SKU级数据是否自洽</li></ol>`,
+  summary:""},
+
+  {id:12,wk:2,title:"EDA六步法",time:"60 min",lvl:"进阶",
+   cues:["概览→单变量→时间模式→变量关系→异常→假设","季节性分解","供应链EDA黄金问题"],
+   content:`<pre><code>from statsmodels.tsa.seasonal import seasonal_decompose
+r=seasonal_decompose(df['销量'],model='additive',period=7); r.plot()</code></pre>
+<h3>供应链EDA黄金问题</h3><ul><li>哪类SKU销量最高/最波动？</li><li>一周哪天最好？一月哪段？</li><li>促销提升效果稳定吗？（看分布不看均值）</li><li>有无SKU模式完全不同？（聚类）</li><li>库存周转趋势改善还是恶化？</li></ul>
+<div class="bk-box"><h4>📖 W2完成✅</h4><p>核心能力：读懂数据、假设检验、数据清洗、EDA系统性框架。</p></div>`,
+  summary:""},
+
+  {id:13,wk:2,title:"周复习：从数据到洞察",time:"60 min",lvl:"复习",
+   cues:["本周5个最重要概念","自检清单","不看代码写数据清洗流程"],
+   content:`<div class="mini-d">描述统计→概率分布→相关性→数据清洗→EDA六步法</div>
+<h3>自检</h3><ul><li>□ 均值vs中位数，知道何时用哪个</li><li>□ 看懂p值判断显著性</li><li>□ 计算+解释相关系数</li><li>□ 选择合适的缺失值填充</li><li>□ IQR找异常值但不盲目删除</li><li>□ 建立数据质量检查清单</li></ul>
+<div class="ex-box"><h4>✏️ 复习</h4><ol><li>从零写完整数据清洗脚本</li><li>找Kaggle零售数据做EDA</li><li>200字：这两周最大收获</li></ol></div>`,
+  summary:""},
+
+  // W3: Time Series (days 14-20)
+  {id:14,wk:3,title:"时间序列基础概念",time:"45 min",lvl:"进阶",
+   cues:["趋势/季节/周期/噪声","加性vs乘性分解","为什么时序的顺序就是信息"],
+   content:`<table><tr><th>成分</th><th>定义</th><th>供应链例子</th></tr>
+<tr><td>趋势</td><td>长期方向</td><td>品类连续2年增长20%</td></tr>
+<tr><td>季节性</td><td>固定周期规律</td><td>每周一销量高、每年12月旺季</td></tr>
+<tr><td>周期</td><td>非固定周期波动</td><td>经济周期2-3年</td></tr>
+<tr><td>噪声</td><td>随机不可预测</td><td>天气突变/竞品临时促销</td></tr></table>
+<p><strong>加性：</strong>波动幅度稳定 → <code>销量=趋势+季节+噪声</code><br><strong>乘性：</strong>波动随趋势变大 → <code>销量=趋势×季节×噪声</code>（高增长品类常见）</p>`,
+  summary:""},
+
+  {id:15,wk:3,title:"平稳性与ADF检验",time:"45 min",lvl:"进阶",
+   cues:["平稳性严格定义","为什么ARIMA要求平稳","差分让不平稳变平稳"],
+   content:`<pre><code>from statsmodels.tsa.stattools import adfuller
+p=adfuller(df['销量'].dropna())[1]  # p<0.05→平稳
+df['销量_d1']=df['销量'].diff(1)     # 不平稳就差分</code></pre>
+<blockquote>d=0平稳,d=1一阶差分,d=2极少需要。d≥2还不平稳→数据有结构性问题。</blockquote>`,
+  summary:""},
+
+  {id:16,wk:3,title:"ACF和PACF—选参法宝",time:"50 min",lvl:"进阶",
+   cues:["ACF vs PACF核心区别","怎么看图确定p和q","选参口诀"],
+   content:`<pre><code>from statsmodels.graphics.tsaplots import plot_acf,plot_pacf
+fig,ax=plt.subplots(1,2,figsize=(12,4))
+plot_acf(df['销量'].dropna(),lags=40,ax=ax[0])
+plot_pacf(df['销量'].dropna(),lags=40,ax=ax[1])</code></pre>
+<table><tr><th>模式</th><th>ACF</th><th>PACF</th><th>结论</th></tr>
+<tr><td>AR(p)</td><td>拖尾</td><td>p阶后截尾</td><td>p=截尾位置</td></tr>
+<tr><td>MA(q)</td><td>q阶后截尾</td><td>拖尾</td><td>q=截尾位置</td></tr>
+<tr><td>ARMA</td><td>拖尾</td><td>拖尾</td><td>需ARIMA</td></tr></table>`,
+  summary:""},
+
+  {id:17,wk:3,title:"ARIMA模型实战",time:"60 min",lvl:"进阶",
+   cues:["ARIMA建模完整流程","summary解读","残差诊断四图"],
+   content:`<pre><code>model=ARIMA(ts,order=(2,1,2)).fit()
+print(model.summary())
+resid=model.resid
+model.plot_diagnostics(figsize=(12,8))
+fc=model.forecast(steps=14)</code></pre>
+<h3>残差诊断必看</h3><ol><li>标准化残差→围绕0随机</li><li>直方图→近似正态</li><li>Q-Q图→贴对角线</li><li>残差ACF→无显著自相关</li></ol>`,
+  summary:""},
+
+  {id:18,wk:3,title:"SARIMA季节性模型",time:"45 min",lvl:"进阶",
+   cues:["SARIMA多了(P,D,Q,m)","季节周期m怎么定","供应链中的多重季节"],
+   content:`<pre><code>from statsmodels.tsa.statespace.sarimax import SARIMAX
+m=SARIMAX(ts,order=(2,1,2),seasonal_order=(1,0,1,7)).fit()</code></pre>
+<p>供应链季节性：周(m=7)/月(m≈30)/年(m=365)。多重季节→考虑Prophet或TBATS。</p>`,
+  summary:""},
+
+  {id:19,wk:3,title:"Prophet傻瓜式预测",time:"50 min",lvl:"进阶",
+   cues:["Prophet原理","节假日+自定义事件","变点检测","优势与局限"],
+   content:`<pre><code>m=Prophet(yearly_seasonality=True,weekly_seasonality=True)
+m.add_country_holidays(country_name='CN')
+# 自定义大促事件
+promos=pd.DataFrame({'holiday':'大促','ds':pd.to_datetime(['2025-06-18','2025-11-11']),'lower_window':-3,'upper_window':1})
+m.fit(df_p); fc=m.predict(m.make_future_dataframe(60)); m.plot(fc)</code></pre>
+<table><tr><th>✅优势</th><th>❌局限</th></tr><tr><td>自动趋势+季节+节假日</td><td>不能直接加外部变量</td></tr><tr><td>对缺失值鲁棒</td><td>低频数据效果差</td></tr></table>
+<div class="bk-box"><h4>📖 W3完成✅</h4><p>核心：平稳性→ACF/PACF→ARIMA/SARIMA/Prophet→模型对比。</p></div>`,
+  summary:""},
+
+  {id:20,wk:3,title:"模型对比与选择",time:"45 min",lvl:"复习",
+   cues:["AIC vs BIC","MAPE/WAPE/RMSE","供应链选模型决策树"],
+   content:`<h3>供应链模型选择决策树</h3>
+<div class="mini-d">数据<3月？→简单移动平均/naive
+3-12月？→ARIMA/Prophet
+>1年+年季节？→SARIMA/Prophet
+有外部变量(促销/价格)？→XGBoost
+SKU>100？→先聚类再分组建模</div>`,
+  summary:""},
+
+  // W4: ML Forecasting (days 21-27)
+  {id:21,wk:4,title:"时序→监督学习转换",time:"50 min",lvl:"进阶",
+   cues:["为什么转换","滞后特征+窗口特征","特征>算法"],
+   content:`<pre><code>def make_ts_features(df,target,lags=[1,2,3,7,14,28]):
+    d=df.copy()
+    for l in lags: d[f'lag_{l}']=d[target].shift(l)
+    for w in [7,14,30]:
+        d[f'rmean_{w}']=d[target].rolling(w).mean()
+        d[f'rstd_{w}']=d[target].rolling(w).std()
+    d['dow']=d.index.dayofweek; d['month']=d.index.month
+    d['is_weekend']=d['dow'].isin([5,6]).astype(int)
+    return d.dropna()</code></pre>
+<blockquote>在结构化数据上，<strong>好的特征比好的算法更重要。</strong></blockquote>`,
+  summary:""},
+
+  {id:22,wk:4,title:"特征工程进阶—从特征到因子",time:"60 min",lvl:"进阶",
+   cues:["因子≠特征","好因子三标准:IC>0.03/ICIR>0.5/单调性","供应链特有因子类别"],
+   content:`<pre><code>from scipy.stats import spearmanr
+ic,p=spearmanr(df['lag_7'],df['销量'])  # lag7对销量的预测力
+ics=[spearmanr(df['lag_7'].iloc[i-30:i],df['销量'].iloc[i-30:i])[0] for i in range(30,len(df))]
+icir=np.mean(ics)/np.std(ics)  # ICIR>0.5才稳定</code></pre>
+<h3>供应链因子类别</h3><table><tr><th>类别</th><th>示例</th></tr>
+<tr><td>趋势</td><td>短期MA/长期MA、环比增速</td></tr><tr><td>波动</td><td>CV、振幅、极端值频率</td></tr>
+<tr><td>价格</td><td>折扣力度、价格vs品类均值</td></tr><tr><td>时间</td><td>星期几、月初末、距节假日天数</td></tr>
+<tr><td>竞品</td><td>同类SKU均销量、市场份额变化</td></tr><tr><td>库存</td><td>库存天数、缺货频率、库销比</td></tr></table>`,
+  summary:""},
+
+  {id:23,wk:4,title:"XGBoost实战",time:"60 min",lvl:"进阶",
+   cues:["核心参数含义","时序CV","特征重要性","防过拟合"],
+   content:`<pre><code>from xgboost import XGBRegressor
+from sklearn.model_selection import TimeSeriesSplit
+tscv=TimeSeriesSplit(n_splits=5)
+model=XGBRegressor(n_estimators=200,max_depth=5,learning_rate=0.1,subsample=0.8,reg_alpha=0.1)
+for tr,te in tscv.split(X):
+    model.fit(X.iloc[tr],y.iloc[tr])
+    pred=model.predict(X.iloc[te])
+    print(f'MAPE:{np.mean(np.abs((y.iloc[te]-pred)/y.iloc[te]))*100:.1f}%')
+imp=pd.DataFrame({'f':X.columns,'imp':model.feature_importances_}).sort_values('imp',ascending=False)</code></pre>`,
+  summary:""},
+
+  {id:24,wk:4,title:"LightGBM对比+Ensemble",time:"50 min",lvl:"进阶",
+   cues:["XGBoost vs LightGBM","什么时候用LightGBM","简单平均Ensemble"],
+   content:`<pre><code>from lightgbm import LGBMRegressor
+models={'xgb':XGBRegressor(n_estimators=200),'lgb':LGBMRegressor(n_estimators=200,verbose=-1)}
+preds={n:m.fit(X_train,y_train).predict(X_test) for n,m in models.items()}
+ensemble=np.mean(list(preds.values()),axis=0)</code></pre>
+<table><tr><th></th><th>XGBoost</th><th>LightGBM</th></tr>
+<tr><td>速度</td><td>中等</td><td>3-10倍快</td></tr><tr><td>大数据</td><td>内存大</td><td>内存效率高</td></tr><tr><td>小数据</td><td>不易过拟合</td><td>需调参</td></tr></table>`,
+  summary:""},
+
+  {id:25,wk:4,title:"回测框架设计",time:"60 min",lvl:"进阶",
+   cues:["滚动窗口vs扩展窗口","回测频率设定","回测报告结构"],
+   content:`<pre><code>def walk_forward_cv(df,feat,target,train_days=90,test_days=7):
+    results=[]
+    for i in range(train_days,len(df)-test_days,test_days):
+        train=df.iloc[i-train_days:i]; test=df.iloc[i:i+test_days]
+        m=XGBRegressor(n_estimators=200,max_depth=5)
+        m.fit(train[feat],train[target]); pred=m.predict(test[feat])
+        results.append({'start':str(test.index[0].date()),
+            'mape':np.mean(np.abs((test[target]-pred)/test[target]))*100})
+    return pd.DataFrame(results)</code></pre>
+<p>回测报告应包括：每轮MAPE、误差时间分布、SKU维度误差、系统性偏差检查。</p>`,
+  summary:""},
+
+  {id:26,wk:4,title:"评估指标深入",time:"45 min",lvl:"进阶",
+   cues:["MAPE缺陷","WAPE/MASE适用场景","预测偏差检测"],
+   content:`<table><tr><th>指标</th><th>适用</th><th>注意</th></tr>
+<tr><td>MAPE</td><td>销量>0</td><td>销量=0时炸</td></tr>
+<tr><td>WAPE</td><td>含零销量</td><td>∑|误差|/∑|实际|</td></tr>
+<tr><td>MASE</td><td>跨品类对比</td><td>需基准模型</td></tr></table>
+<div class="bk-box"><h4>📖 W4完成✅</h4><p>核心：特征工程→XGBoost/LightGBM→回测→多指标评估。</p></div>`,
+  summary:""},
+
+  {id:27,wk:4,title:"过拟合诊断+调参策略",time:"50 min",lvl:"进阶",
+   cues:["过拟合信号","学习曲线","调参顺序"],
+   content:`<h3>过拟合信号</h3><ul><li>训练误差<<验证误差</li><li>max_depth>10</li><li>特征数≈样本数</li><li>回测MAPE波动剧烈</li></ul>
+<h3>调参顺序</h3><ol><li>n_estimators (early_stopping)</li><li>max_depth+min_child_weight</li><li>subsample+colsample</li><li>learning_rate（小lr+大n_estimators）</li></ol>`,
+  summary:""},
+
+  // W5: Capstone + Review (days 28-29)
+  {id:28,wk:5,title:"端到端流水线搭建",time:"90 min",lvl:"实战",
+   cues:["完整流程设计","多SKU批量","可复现流水线"],
+   content:`<div class="mini-d">load→clean→features→factors→models→backtest→best→forecast→report</div>
+<pre><code>def run_pipeline(data_path,sku_list,h=14):
+    results={}
+    for sku in sku_list:
+        df=load_clean(data_path,sku); feats=engineer_features(df)
+        models=train_all(feats); best,metrics=backtest_select(models,feats)
+        results[sku]={'fc':best.predict(h),'metrics':metrics}
+    return generate_report(results)</code></pre>
+<div class="ex-box"><h4>✏️ 毕业项目</h4><ol><li>≥6个月销售数据</li><li>完整流水线：20+因子→3模型对比→回测→报告</li><li>≥5个SKU批量预测</li></ol><p>🎯 WAPE<18%合格，<12%优秀。</p></div>`,
+  summary:""},
+
+  {id:29,wk:5,title:"月度总结+能力自评+下一步",time:"60 min",lvl:"复习",
+   cues:["30天能力地图","自评1-5分","31-100天规划"],
+   content:`<table><tr><th>周</th><th>主题</th><th>核心</th></tr>
+<tr><td>W1</td><td>量化思维+Python</td><td>pandas/NumPy/可视化</td></tr>
+<tr><td>W2</td><td>统计+清洗</td><td>假设检验/缺失/EDA</td></tr>
+<tr><td>W3</td><td>时序建模</td><td>ARIMA/SARIMA/Prophet</td></tr>
+<tr><td>W4</td><td>ML预测</td><td>特征/XGBoost/回测</td></tr>
+<tr><td>W5</td><td>实战</td><td>端到端流水线</td></tr></table>
+<h3>31-100天预告</h3><table><tr><th>阶段</th><th>天数</th><th>内容</th></tr>
+<tr><td>因子深化</td><td>31-45</td><td>IC体系/因子库/RD-Agent闭环</td></tr>
+<tr><td>Agent框架</td><td>46-60</td><td>LangGraph/CrewAI/AutoGen实战</td></tr>
+<tr><td>高级预测</td><td>61-75</td><td>LSTM/Transformer/概率预测</td></tr>
+<tr><td>供应链深度</td><td>76-90</td><td>库存优化/多级预测/S&OP</td></tr>
+<tr><td>工程化</td><td>91-100</td><td>部署/监控/A/B测试</td></tr></table>
+<blockquote><strong>🎉 恭喜前30天！</strong>已建立量化分析完整能力栈。切换到<strong>右侧AI助手</strong>随时提问，或点击<strong>📚资源宝库</strong>探索更广阔的学习生态。</blockquote>`,
+  summary:""},
+];
+
+// Generate placeholder days 30-99
+const wkNames={5:'因子挖掘深化',6:'因子挖掘深化',7:'Agent框架实战',8:'Agent框架实战',9:'高级预测方法',10:'高级预测方法',11:'供应链深度应用',12:'供应链深度应用',13:'工程化与落地',14:'工程化与落地'};
+const dayNames=['因子评估体系深入','因子组合与合成','因子库建设','因子衰减分析','行业因子对标','自定义因子设计','因子回测框架','周复习','LangGraph入门','LangGraph状态管理','LangGraph条件分支','LangGraph实战流水线','CrewAI多角色协作','CrewAI+LangGraph组合','AutoGen代码沙箱','周复习','LSTM时序预测','Transformer时序','时序CV深入','概率预测与区间估计','多任务学习','时序聚类','异常检测与预警','周复习','库存优化模型','多级供应链预测','促销量化评估','S&OP流程量化','需求感知与信号','牛鞭效应量化','补货策略优化','周复习','模型部署(Flask/FastAPI)','Docker容器化','MLflow实验管理','监控与告警体系','A/B测试设计','持续训练流水线','全栈回顾','毕业项目','毕业项目','毕业项目','毕业答辩准备','评审与优化','评审与优化','评审与优化','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究','自由研究'];
+for(let i=30;i<100;i++){
+  const wk=Math.floor(i/7)+1;
+  const t=dayNames[Math.min(i-30,dayNames.length-1)]||`Day ${i+1} 深度学习`;
+  DEEP.push({id:i,wk,t,title:t,time:"45 min",lvl:"进阶",cues:["内容持续迭代中","利用右侧AI可提前探索"],
+    content:`<blockquote>Day ${i+1} — 将在你完成前30天后，根据学习进度持续生成详细内容。</blockquote><p>当前阶段：<strong>${wkNames[wk]||'深度学习'}</strong></p><p>💡 可以先在右侧AI助手中询问：<em>"我应该怎么开始学习${t}？有哪些前置知识？"</em></p>`,
+  summary:""});
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let track='crash',dayIdx=0;
+let userCues={},userSummaries={},completed={}; // key: "track:dayId"
+let apiKey='',chatHistory=[],ldays=1,lvd='';
+
+function getDays(){return track==='crash'?CRASH:DEEP}
+function getDay(id){return getDays()[id]}
+function skey(){return track+':'+getDay(dayIdx).id}
+
+function init(){
+  try{const s=JSON.parse(localStorage.getItem('ql2')||'{}');
+    if(s.track)track=s.track;if(s.dayIdx!=null)dayIdx=s.dayIdx;
+    if(s.userCues)userCues=s.userCues;if(s.userSummaries)userSummaries=s.userSummaries;
+    if(s.completed)completed=s.completed;if(s.apiKey)apiKey=s.apiKey;
+    if(s.chatHistory)chatHistory=s.chatHistory;if(s.ldays)ldays=s.ldays;if(s.lvd)lvd=s.lvd;
+  }catch(e){}
+  apiKey=''; // 永远不会从明文存储恢复——Key 仅存内存
+  tryUnlockAuto(); // 尝试自动解锁（如果加密Key存在）
+  checkStreak();renderSidebar();loadDay(0);setupAutoSave();
+}
+function save(){
+  // apiKey 永远不会写入 localStorage（仅存内存）
+  localStorage.setItem('ql2',JSON.stringify({track,dayIdx,userCues,userSummaries,completed,chatHistory:chatHistory.slice(-50),ldays,lvd}));
+  // 清理旧版明文存储（迁移安全）
+  localStorage.removeItem('deepseek_key');
+  localStorage.removeItem('ql_state');
+}
+function checkStreak(){
+  const today=new Date().toISOString().split('T')[0];if(lvd===today)return;
+  const yest=new Date(Date.now()-864e5).toISOString().split('T')[0];
+  if(lvd===yest)ldays++;lvd=today;save();
+  document.getElementById('dayBadge').textContent='📅 Day '+ldays;
+  document.getElementById('streakCount').textContent=ldays;
+  if(ldays>1){document.getElementById('dailyModal').style.display='flex';}
+}
+function closeModal(){document.getElementById('dailyModal').style.display='none';}
+
+function switchTrack(t){
+  track=t;dayIdx=0;
+  document.getElementById('tabCrash').classList.toggle('active',t==='crash');
+  document.getElementById('tabDeep').classList.toggle('active',t==='deep');
+  updProg();renderSidebar();loadDay(0);save();
+}
+function renderSidebar(){
+  const days=getDays(),sb=document.getElementById('sidebar');
+  let h=`<div class="side-hdr">${track==='crash'?'⚡5天速成':'📅100天修炼'}</div>`;
+  if(track==='deep'){
+    const wks={};days.forEach(d=>{if(!wks[d.wk])wks[d.wk]=[];wks[d.wk].push(d);});
+    Object.keys(wks).forEach(wk=>{
+      h+=`<div class="wk-grp"><div class="wk-lbl">📆 第${wk}周</div>`;
+      wks[wk].forEach(d=>{
+        const i=days.indexOf(d),a=i===dayIdx,dn=completed[track+':'+d.id];
+        h+=`<div class="day-it${a?' active':''}${dn?' done':''}" onclick="loadDay(${i})"><span class="day-n">${d.id+1}</span>${d.title.substring(0,14)}...<span class="day-ck">${dn?'✅':'○'}</span></div>`;
+      });
+      h+='</div>';
+    });
+  }else{
+    days.forEach((d,i)=>{
+      const a=i===dayIdx,dn=completed[track+':'+d.id];
+      h+=`<div class="day-it${a?' active':''}${dn?' done':''}" onclick="loadDay(${i})"><span class="day-n">${i+1}</span>${d.title}<span class="day-ck">${dn?'✅':'○'}</span></div>`;
+    });
+  }
+  sb.innerHTML=h;
+}
+function loadDay(i){
+  dayIdx=i;const d=getDay(i);
+  document.getElementById('dayTitle').textContent=`Day ${d.id+1}: ${d.title}`;
+  document.getElementById('dayMeta').innerHTML=`<span>⏱ ${d.time}</span><span>📊 ${d.lvl}</span>`;
+  const ac=[...d.cues,...(userCues[skey()]||[])];
+  document.getElementById('cueList').innerHTML=ac.map(c=>`<div class="cue-item" onclick="askCue('${esc(c)}')">${c}</div>`).join('');
+  document.getElementById('cueInput').value='';
+  document.getElementById('notesBody').innerHTML=d.content;
+  document.getElementById('summaryInput').value=userSummaries[skey()]||d.summary||'';
+  document.querySelectorAll('.notes pre').forEach(pre=>{
+    const b=document.createElement('button');b.className='cpy-btn';b.textContent='📋';
+    b.onclick=()=>{const c=pre.querySelector('code')?pre.querySelector('code').textContent:pre.textContent;navigator.clipboard.writeText(c).then(()=>{b.textContent='✓';setTimeout(()=>b.textContent='📋',1500)});};
+    pre.style.position='relative';pre.appendChild(b);
+  });
+  renderQuiz();renderSidebar();save();
+  document.querySelector('.notes-col').scrollTop=0;
+}
+function saveCue(){
+  const t=document.getElementById('cueInput').value.trim();if(!t)return;
+  const k=skey();if(!userCues[k])userCues[k]=[];userCues[k].push(t);
+  document.getElementById('cueInput').value='';save();loadDay(dayIdx);toast('已保存✅');
+}
+function saveSummary(){userSummaries[skey()]=document.getElementById('summaryInput').value.trim();save();toast('已保存💾');}
+function markDone(){saveSummary();completed[skey()]=true;save();updProg();toast('🎉完成！');renderSidebar();if(dayIdx<getDays().length-1)setTimeout(()=>loadDay(dayIdx+1),600);}
+function updProg(){const d=getDays(),done=d.filter(x=>completed[track+':'+x.id]).length;document.getElementById('progBar').style.width=(done/d.length*100)+'%';document.getElementById('progText').textContent=done+'/'+d.length;}
+
+// ============================================================
+// QUIZ SYSTEM
+// ============================================================
+function toggleQuiz(){
+  const qb=document.getElementById('quizBox');
+  if(qb.style.display==='block'){qb.style.display='none';return;}
+  renderQuiz();qb.style.display='block';
+}
+function renderQuiz(){
+  const qb=document.getElementById('quizBox');
+  const qk=track+':'+getDay(dayIdx).id;
+  const quiz=QUIZZES[qk];
+  if(!quiz){qb.innerHTML='<p style="font-size:11px;color:var(--text2)">本课暂无自测题</p>';return;}
+  qb.innerHTML='<h4>🧠 自测题</h4>'+quiz.map((q,qi)=>`
+    <div class="quiz-q">${qi+1}. ${q.q}</div>
+    ${q.opts.map((o,oi)=>`<span class="quiz-opt" onclick="checkAnswer(${qi},${oi},${q.ans})" id="qo_${qi}_${oi}">${o}</span>`).join('')}
+    <div class="quiz-fb" id="qfb_${qi}"></div>
+  `).join('');
+}
+function checkAnswer(qi,oi,ans){
+  const k='qo_'+qi+'_';
+  for(let i=0;i<4;i++){const el=document.getElementById(k+i);if(el){el.classList.remove('correct','wrong');el.style.pointerEvents='none';}}
+  document.getElementById(k+ans).classList.add('correct');
+  if(oi!==ans)document.getElementById(k+oi).classList.add('wrong');
+  const fb=document.getElementById('qfb_'+qi);
+  fb.style.display='block';
+  fb.style.color=oi===ans?'var(--success)':'var(--danger)';
+  const quiz=QUIZZES[skey()];
+  fb.textContent=(oi===ans?'✅ 正确！':'❌ 正确答案是 '+String.fromCharCode(65+ans))+' — '+(quiz[qi].exp||'');
+}
+
+// ============================================================
+// RESOURCES MODAL
+// ============================================================
+function showResources(){
+  const m=document.getElementById('resModal');
+  if(m.style.display==='flex'){m.style.display='none';return;}
+  const tabs=Object.keys(GLOBAL_RESOURCES);
+  document.getElementById('resTabs').innerHTML=tabs.map((t,i)=>`<span class="modal-tab${i===0?' active':''}" onclick="switchResTab('${esc(t)}')">${t}</span>`).join('');
+  switchResTab(tabs[0]);
+  m.style.display='flex';
+}
+function closeResources(){document.getElementById('resModal').style.display='none';}
+function switchResTab(cat){
+  document.querySelectorAll('#resTabs .modal-tab').forEach(t=>t.classList.toggle('active',t.textContent===cat));
+  const items=GLOBAL_RESOURCES[cat]||[];
+  document.getElementById('resContent').innerHTML=items.map(i=>`
+    <div style="margin:4px 0"><a class="res-link" href="${i.url}" target="_blank">🔗 ${i.name}</a><span style="font-size:10px;color:var(--text2);margin-left:6px">${i.desc}</span></div>
+  `).join('');
+}
+
+// ============================================================
+// CHEATSHEET MODAL
+// ============================================================
+function showCheatsheet(){
+  const m=document.getElementById('csModal');
+  if(m.style.display==='flex'){m.style.display='none';return;}
+  const tabs=Object.keys(CHEATSHEETS);
+  document.getElementById('csTabs').innerHTML=tabs.map((t,i)=>`<span class="modal-tab${i===0?' active':''}" onclick="switchCSTab('${esc(t)}')">${t}</span>`).join('');
+  switchCSTab(tabs[0]);
+  m.style.display='flex';
+}
+function switchCSTab(cat){
+  document.querySelectorAll('#csTabs .modal-tab').forEach(t=>t.classList.toggle('active',t.textContent===cat));
+  document.getElementById('csContent').innerHTML=CHEATSHEETS[cat]||'';
+}
+
+// ============================================================
+// AI — Web Crypto 加密存储（遵循CSDN安全方案）
+// ============================================================
+let unlockFailCount = 0;
+let unlockLockUntil = 0;
+
+function toggleAiSetup(){
+  const e=document.getElementById('aiSetup');
+  if(e.style.display==='none'||!e.style.display){
+    e.style.display='block';
+    // 根据加密Key存在与否展示对应UI
+    const hasEnc=!!localStorage.getItem('ql_enc_key');
+    document.getElementById('aiSetupNew').style.display=hasEnc?'none':'block';
+    document.getElementById('aiSetupUnlock').style.display=hasEnc?'block':'none';
+    document.getElementById('aiSetupTitle').textContent=hasEnc?'🔐 解锁 API Key':'🔐 配置 DeepSeek API';
+  } else {
+    e.style.display='none';
+  }
+}
+
+// PBKDF2 从密码派生 AES 密钥
+async function deriveKey(password, salt){
+  const enc=new TextEncoder();
+  const keyMaterial=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt:salt,iterations:200000,hash:'SHA-256'},
+    keyMaterial,{name:'AES-GCM',length:256},false,['encrypt','decrypt']
+  );
+}
+
+// AES-GCM 加密：返回 {salt, iv, ciphertext} — 全部Base64
+async function encryptApiKey(plaintext, password){
+  const enc=new TextEncoder();
+  const salt=crypto.getRandomValues(new Uint8Array(16));
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const key=await deriveKey(password, salt);
+  const ciphertext=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(plaintext));
+  return {
+    salt:btoa(String.fromCharCode(...salt)),
+    iv:btoa(String.fromCharCode(...iv)),
+    ciphertext:btoa(String.fromCharCode(...new Uint8Array(ciphertext)))
+  };
+}
+
+// AES-GCM 解密
+async function decryptApiKey(encrypted, password){
+  const salt=new Uint8Array([...atob(encrypted.salt)].map(c=>c.charCodeAt(0)));
+  const iv=new Uint8Array([...atob(encrypted.iv)].map(c=>c.charCodeAt(0)));
+  const ciphertext=new Uint8Array([...atob(encrypted.ciphertext)].map(c=>c.charCodeAt(0)));
+  const key=await deriveKey(password, salt);
+  const dec=new TextDecoder();
+  const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ciphertext);
+  return dec.decode(plain);
+}
+
+// 🔒 加密保存 API Key
+async function saveApiKeyEncrypted(){
+  const rawKey=document.getElementById('apiKeyInput').value.trim();
+  const pwd=document.getElementById('apiPwdInput').value.trim();
+  if(!rawKey){toast('请输入 API Key');return;}
+  if(!rawKey.startsWith('sk-')){toast('API Key 应以 sk- 开头，请检查');return;}
+  if(pwd.length<6){toast('密码至少6位');return;}
+
+  try{
+    const enc=await encryptApiKey(rawKey, pwd);
+    localStorage.setItem('ql_enc_key',JSON.stringify(enc));
+    apiKey=rawKey; // 存入内存
+    // 清空输入框
+    document.getElementById('apiKeyInput').value='';
+    document.getElementById('apiPwdInput').value='';
+    document.getElementById('aiSetup').style.display='none';
+    updateLockStatus();
+    toast('🔒 Key 已 AES-GCM 加密保存（密码不存储）');
+    save();
+  }catch(e){toast('❌ 加密失败: '+e.message);}
+}
+
+// 🔓 解密解锁（页面加载时调用）
+async function unlockApiKey(pwdOverride){
+  const encStr=localStorage.getItem('ql_enc_key');
+  if(!encStr){toast('未找到加密Key，请重新配置');return;}
+
+  // 防暴力破解
+  if(unlockLockUntil>0&&Date.now()<unlockLockUntil){
+    const remain=Math.ceil((unlockLockUntil-Date.now())/60000);
+    toast('⏳ 已锁定，请 '+remain+' 分钟后重试');return;
+  }
+
+  const pwd=pwdOverride||document.getElementById('apiUnlockInput').value.trim();
+  if(!pwd){toast('请输入解锁密码');return;}
+
+  try{
+    const enc=JSON.parse(encStr);
+    const plain=await decryptApiKey(enc, pwd);
+    apiKey=plain;
+    unlockFailCount=0;
+    document.getElementById('aiSetup').style.display='none';
+    document.getElementById('apiUnlockInput').value='';
+    updateLockStatus();
+    toast('🔓 已解锁！Key 仅在内存中，关闭页面自动清除');
+    save();
+  }catch(e){
+    unlockFailCount++;
+    if(unlockFailCount>=5){
+      unlockLockUntil=Date.now()+15*60*1000; // 锁定15分钟
+      toast('🚫 密码错误5次，锁定15分钟');
+    }else{
+      toast('❌ 密码错误 ('+unlockFailCount+'/5)');
+    }
+  }
+}
+
+// 尝试自动解锁（仅在用户不介入时检查状态）
+function tryUnlockAuto(){
+  const hasEnc=!!localStorage.getItem('ql_enc_key');
+  updateLockStatus();
+  if(!hasEnc) return; // 没有加密Key，等待用户配置
+  // 不自动解锁——需要用户输入密码
+  apiKey='';
+}
+
+// 锁定：清除内存中的Key
+function lockApiKey(){
+  apiKey='';
+  updateLockStatus();
+  toast('🔒 已锁定，Key 已从内存清除');
+  const s=document.getElementById('aiSetup');
+  s.style.display='block';
+  document.getElementById('aiSetupNew').style.display='none';
+  document.getElementById('aiSetupUnlock').style.display='block';
+  document.getElementById('aiSetupTitle').textContent='🔐 解锁 API Key';
+}
+
+// 清除加密Key
+function resetApiKey(){
+  if(!confirm('确定清除加密的 API Key？此操作不可恢复。'))return;
+  localStorage.removeItem('ql_enc_key');
+  apiKey='';unlockFailCount=0;unlockLockUntil=0;
+  updateLockStatus();
+  const s=document.getElementById('aiSetup');
+  s.style.display='block';
+  document.getElementById('aiSetupNew').style.display='block';
+  document.getElementById('aiSetupUnlock').style.display='none';
+  document.getElementById('aiSetupTitle').textContent='🔐 配置 DeepSeek API';
+  document.getElementById('apiKeyInput').value='';
+  document.getElementById('apiPwdInput').value='';
+  document.getElementById('apiUnlockInput').value='';
+  toast('🗑 已清除，可重新配置');
+}
+
+function updateLockStatus(){
+  const el=document.getElementById('aiLockStatus');
+  const btn=document.getElementById('btnLock');
+  if(apiKey){
+    el.textContent='🟢 已解锁';
+    el.style.color='var(--success)';
+    if(btn)btn.style.display='inline-block';
+  }else if(localStorage.getItem('ql_enc_key')){
+    el.textContent='🔒 已锁定';
+    el.style.color='var(--warn)';
+    if(btn)btn.style.display='none';
+  }else{
+    el.textContent='⚪ 未配置';
+    el.style.color='var(--text2)';
+    if(btn)btn.style.display='none';
+  }
+}
+
+async function sendAi(){
+  const el=document.getElementById('aiInput'),t=el.value.trim();if(!t)return;
+  if(!apiKey){
+    document.getElementById('aiSetup').style.display='block';
+    const hasEnc=!!localStorage.getItem('ql_enc_key');
+    document.getElementById('aiSetupNew').style.display=hasEnc?'none':'block';
+    document.getElementById('aiSetupUnlock').style.display=hasEnc?'block':'none';
+    toast(hasEnc?'请先解锁 API Key 🔓':'请先配置 API Key ⚙️');
+    return;
+  }
+  addMsg('user',t);el.value='';document.getElementById('aiTyping').style.display='block';
+  const d=getDay(dayIdx);
+  const ctx=`你是量化分析师学习助手。学生学"${d.title}"，线索：${d.cues.slice(0,3).join('；')}。用中文通俗解释。问题：${t}`;
+  try{
+    // DeepSeek V4-Pro Think Max: 全部功能打开 + 最大上下文 + 最大推理
+    const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'deepseek-v4-pro',messages:[{role:'system',content:ctx},...chatHistory.slice(-10).map(m=>({role:m.role,content:m.content})),{role:'user',content:t}],max_tokens:65536,reasoning_effort:'max',thinking:{type:'enabled'}})});
+    document.getElementById('aiTyping').style.display='none';
+    if(!r.ok){const e=await r.json().catch(()=>({}));addMsg('assistant','❌ '+((e.error||{}).message||r.statusText));return;}
+    const data=await r.json(),reply=data.choices?.[0]?.message?.content||'';
+    addMsg('assistant',reply);chatHistory.push({role:'user',content:t},{role:'assistant',content:reply});save();
+  }catch(e){document.getElementById('aiTyping').style.display='none';addMsg('assistant','❌ 网络错误:'+e.message);}
+}
+function addMsg(role,content){
+  const c=document.getElementById('aiMsgs'),d=document.createElement('div');d.className='ai-msg '+role;
+  const h=content.replace(/```(\w*)\n([\s\S]*?)```/g,'<pre><code>$2</code></pre>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  d.innerHTML=h+'<div class="msg-time">'+new Date().toLocaleTimeString('zh-CN')+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function askCue(t){document.getElementById('aiInput').value='关于"'+t+'"，请帮我详细解释。';sendAi();}
+
+// ============================================================
+// UTILS
+// ============================================================
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2500);}
+function setupAutoSave(){setInterval(()=>{saveSummary();save();},30000);window.addEventListener('beforeunload',()=>{saveSummary();save();});}
+function resetProgress(){if(confirm('重置所有进度？（笔记和Key保留）')){completed={};ldays=1;lvd='';dayIdx=0;save();updProg();loadDay(0);document.getElementById('dayBadge').textContent='📅 Day 1';toast('已重置');}}
+function exportNotes(){
+  let md='# 量化分析师成长之路—学习笔记\n\n连续学习：'+ldays+'天 | 完成：'+Object.values(completed).filter(v=>v).length+'\n\n';
+  getDays().forEach(d=>{const k=track+':'+d.id;md+='## Day '+(d.id+1)+': '+d.title+'\n状态：'+(completed[k]?'✅':'⏳')+'\n线索：\n';(d.cues.concat(userCues[k]||[])).forEach(c=>md+='- '+c+'\n');md+='总结：'+(userSummaries[k]||'(未写)')+'\n\n---\n\n';});
+  const b=new Blob([md],{type:'text/markdown'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='量化笔记_Day'+ldays+'.md';a.click();URL.revokeObjectURL(u);toast('已导出📥');
+}
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey){
+    if(e.key==='Enter'){e.preventDefault();sendAi();}
+    if(e.key==='s'){e.preventDefault();saveSummary();toast('已保存');}
+    if(e.key==='ArrowRight'&&dayIdx<getDays().length-1){e.preventDefault();loadDay(dayIdx+1);}
+    if(e.key==='ArrowLeft'&&dayIdx>0){e.preventDefault();loadDay(dayIdx-1);}
+  }
+});
+document.addEventListener('DOMContentLoaded',()=>{
+  init();updProg();
+  // 清理旧版明文存储（一次性迁移）
+  if(localStorage.getItem('deepseek_key')) localStorage.removeItem('deepseek_key');
+  // 检查是否有加密Key，展示对应UI
+  const hasEncrypted = !!localStorage.getItem('ql_enc_key');
+  if(!apiKey){
+    const s=document.getElementById('aiSetup');
+    s.style.display='block';
+    if(hasEncrypted){
+      document.getElementById('aiSetupNew').style.display='none';
+      document.getElementById('aiSetupUnlock').style.display='block';
+      document.getElementById('aiSetupTitle').textContent='🔐 解锁 API Key';
+    } else {
+      document.getElementById('aiSetupNew').style.display='block';
+      document.getElementById('aiSetupUnlock').style.display='none';
+    }
+  }
+});
+</script>
+</body>
+</html>

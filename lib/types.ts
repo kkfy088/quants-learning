@@ -5,7 +5,7 @@
 
 // ── Content Types ──────────────────────────────
 
-export type TrackKind = "crash" | "deep";
+export type TrackKind = "crash" | "deep" | "book";
 
 export interface DayContent {
   id: string;
@@ -37,6 +37,36 @@ export interface Track {
   label: string;
   subtitle: string;
   modules: Module[];
+}
+
+// ── Book / Textbook Types ──────────────────────
+
+export interface BookChapter {
+  id: string;
+  bookId: string;
+  number: number;          // chapter number, 0 = 前言/总览
+  title: string;
+  pageStart: number;
+  pageEnd: number;
+  duration: number;        // minutes
+  summary: string;         // 一句话主旨
+  keyPoints: string[];     // 核心知识点
+  excerpt?: string;        // 原文金句/摘要
+  scmInsight?: string;     // 供应链场景迁移思考
+  practice?: string;       // 配套练习/思考题
+}
+
+export interface Book {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string;
+  author: string;
+  totalPages: number;
+  cover: string;           // emoji or short label
+  abstract: string;        // 一段话介绍本书
+  whyForScm: string;       // 为什么供应链分析师要读这本
+  chapters: BookChapter[];
 }
 
 // ── Quiz Types ─────────────────────────────────

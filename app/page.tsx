@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { crashDays } from "@/content/crash-course";
 import { deepDays } from "@/content/deep-track";
-import type { DayContent, TrackKind, ChatMessage } from "@/lib/types";
+import { books } from "@/content/books";
+import type { DayContent, TrackKind, ChatMessage, BookChapter } from "@/lib/types";
 import { loadProgress, saveProgress, getCompletedDays, toggleDayComplete, updateStreak, type EncryptedBlob, getEncryptedKey } from "@/lib/storage";
 import { encryptApiKey, decryptApiKey, sendMessage } from "@/lib/deepseek";
 import { resources, cheatsheets, quizzes } from "@/content/static";
@@ -11,6 +12,9 @@ import { resources, cheatsheets, quizzes } from "@/content/static";
 export default function Home() {
   const [track, setTrack] = useState<TrackKind>("crash");
   const [dayIdx, setDayIdx] = useState(0);
+  // Book track state
+  const [bookIdx, setBookIdx] = useState(0);
+  const [chapterIdx, setChapterIdx] = useState(0);
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [userCues, setUserCues] = useState<Record<string, string[]>>({});
   const [userSummaries, setUserSummaries] = useState<Record<string, string>>({});
@@ -31,6 +35,9 @@ export default function Home() {
   const days = track === "crash" ? crashDays : deepDays;
   const day = days[dayIdx];
   const dayKey = `${track}:${day?.id}`;
+  const currentBook = track === "book" ? books[bookIdx] : null;
+  const currentChapter: BookChapter | null = currentBook ? currentBook.chapters[chapterIdx] : null;
+  const chapterKey = currentChapter ? `${currentBook!.id}:${currentChapter.id}` : "";
 
   // Load state
   useEffect(() => {
@@ -113,7 +120,9 @@ export default function Home() {
       const reply = await sendMessage({
         apiKey,
         message: msg,
-        context: `当前课程：${day.title}。学习线索：${day.cues.slice(0, 3).join("；")}`,
+        context: track === "book" && currentBook && currentChapter
+          ? `当前正在精读《${currentBook.title}》第${currentChapter.number}章「${currentChapter.title}」（p${currentChapter.pageStart}-${currentChapter.pageEnd}）。本章核心知识点：${currentChapter.keyPoints.slice(0, 3).join("；")}。请基于该教材内容回答学生的问题，并尽可能给出供应链场景的迁移建议。`
+          : `当前课程：${day.title}。学习线索：${day.cues.slice(0, 3).join("；")}`,
         history: chatHistory,
       });
       const asst: ChatMessage = { role: "assistant", content: reply, timestamp: Date.now() };
@@ -160,10 +169,13 @@ export default function Home() {
           <button className={`track-tab ${track === "deep" ? "active" : ""}`} onClick={() => { setTrack("deep"); setDayIdx(0); }}>
             📅100天修炼
           </button>
+          <button className={`track-tab ${track === "book" ? "active" : ""}`} onClick={() => { setTrack("book"); setBookIdx(0); setChapterIdx(0); }}>
+            📖教材精读
+          </button>
         </div>
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <span className="day-badge">{track === "crash" ? "速成" : "深入"} Day {day.day}</span>
-          <div className="prog-wrap"><div className="prog-fill" style={{ width: `${((dayIdx + 1) / days.length) * 100}%` }} /></div>
+          <span className="day-badge">{track === "crash" ? "速成" : track === "deep" ? "深入" : "教材"} {track === "book" ? `Ch.${currentChapter?.number ?? 0}` : `Day ${day.day}`}</span>
+          <div className="prog-wrap"><div className="prog-fill" style={{ width: track === "book" ? `${((chapterIdx + 1) / (currentBook?.chapters.length || 1)) * 100}%` : `${((dayIdx + 1) / days.length) * 100}%` }} /></div>
           <button className="btn" onClick={() => setShowResources(true)}>📚资源</button>
           <button className="btn" onClick={() => setShowCheatsheets(true)}>📋速查</button>
         </div>
@@ -173,101 +185,170 @@ export default function Home() {
       <div className="main-layout">
         {/* Sidebar */}
         <aside className="sidebar">
-          <div className="side-hdr">
-            {track === "crash" ? "5天速成" : "100天修炼"}
-          </div>
-          {Array.from(weeks.entries()).map(([wk, ds]) => (
-            <div key={wk} className="wk-grp">
-              {track === "deep" && <div className="wk-lbl">W{wk}</div>}
-              {ds.map((d) => {
-                const dk = `${track}:${d.id}`;
-                const isDone = completed.has(dk);
-                const isActive = d.id === day.id;
+          {track === "book" ? (
+            <>
+              {/* Book selector */}
+              <div className="side-hdr">教材精读</div>
+              <div style={{ padding: "6px 8px", borderBottom: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: 4 }}>
+                {books.map((b, i) => (
+                  <button
+                    key={b.id}
+                    onClick={() => { setBookIdx(i); setChapterIdx(0); }}
+                    className={`book-pick ${i === bookIdx ? "active" : ""}`}
+                  >
+                    <span style={{ fontSize: 14 }}>{b.cover}</span>
+                    <span style={{ flex: 1, textAlign: "left" }}>
+                      <div style={{ fontWeight: 600, fontSize: 10 }}>{b.title}</div>
+                      <div style={{ fontSize: 8, color: "var(--text2)" }}>{b.author}</div>
+                    </span>
+                    <span style={{ fontSize: 8, color: "var(--text2)" }}>{b.chapters.length}章</span>
+                  </button>
+                ))}
+              </div>
+              {/* Chapter list */}
+              <div className="side-hdr" style={{ borderTop: "none" }}>
+                {currentBook?.cover} {currentBook?.title?.slice(0, 12)}
+              </div>
+              {currentBook?.chapters.map((c, i) => {
+                const ck = `${currentBook.id}:${c.id}`;
+                const isDone = completed.has(ck);
+                const isActive = i === chapterIdx;
                 return (
                   <div
-                    key={d.id}
+                    key={c.id}
                     className={`day-it ${isActive ? "active" : ""} ${isDone ? "done" : ""}`}
-                    onClick={() => setDayIdx(d.day - 1)}
+                    onClick={() => setChapterIdx(i)}
                   >
-                    <span className="day-n">{d.day}</span>
+                    <span className="day-n">{c.number}</span>
                     <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {d.title}
+                      {c.title}
                     </span>
                     <span className="day-ck">{isDone ? "✅" : ""}</span>
                   </div>
                 );
               })}
-            </div>
-          ))}
+            </>
+          ) : (
+            <>
+              <div className="side-hdr">
+                {track === "crash" ? "5天速成" : "100天修炼"}
+              </div>
+              {Array.from(weeks.entries()).map(([wk, ds]) => (
+                <div key={wk} className="wk-grp">
+                  {track === "deep" && <div className="wk-lbl">W{wk}</div>}
+                  {ds.map((d) => {
+                    const dk = `${track}:${d.id}`;
+                    const isDone = completed.has(dk);
+                    const isActive = d.id === day.id;
+                    return (
+                      <div
+                        key={d.id}
+                        className={`day-it ${isActive ? "active" : ""} ${isDone ? "done" : ""}`}
+                        onClick={() => setDayIdx(d.day - 1)}
+                      >
+                        <span className="day-n">{d.day}</span>
+                        <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {d.title}
+                        </span>
+                        <span className="day-ck">{isDone ? "✅" : ""}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </>
+          )}
         </aside>
 
         {/* Content Area */}
         <div className="content-area">
-          <div className="cornell">
-            <div className="day-hdr">
-              <h2>{day.day}. {day.title}</h2>
-              <div className="meta">
-                <span>⏱ {day.duration} min</span>
-                <span>📅 W{day.week}</span>
-              </div>
-            </div>
+          {track === "book" && currentBook && currentChapter ? (
+            <BookChapterView
+              book={currentBook}
+              chapter={currentChapter}
+              chapterKey={chapterKey}
+              isCompleted={completed.has(chapterKey)}
+              onToggle={() => {
+                const next = toggleDayComplete(chapterKey);
+                setCompleted(new Set(next));
+              }}
+              userSummary={userSummaries[chapterKey] ?? ""}
+              onSummaryChange={(v) => setUserSummaries((s) => ({ ...s, [chapterKey]: v }))}
+              onPrev={chapterIdx > 0 ? () => setChapterIdx(chapterIdx - 1) : undefined}
+              onNext={chapterIdx < currentBook.chapters.length - 1 ? () => setChapterIdx(chapterIdx + 1) : undefined}
+              onCueClick={handleCueClick}
+              idx={chapterIdx}
+              total={currentBook.chapters.length}
+            />
+          ) : (
+            <>
+              <div className="cornell">
+                <div className="day-hdr">
+                  <h2>{day.day}. {day.title}</h2>
+                  <div className="meta">
+                    <span>⏱ {day.duration} min</span>
+                    <span>📅 W{day.week}</span>
+                  </div>
+                </div>
 
-            <div className="cornell-main">
-              {/* Cue Column */}
-              <div className="cue-col">
-                <div className="cue-label">🔑 关键线索</div>
-                <div className="cue-list">
-                  {day.cues.map((cue, i) => (
-                    <div key={i} className="cue-item" onClick={() => handleCueClick(cue)}>{cue}</div>
-                  ))}
+                <div className="cornell-main">
+                  {/* Cue Column */}
+                  <div className="cue-col">
+                    <div className="cue-label">🔑 关键线索</div>
+                    <div className="cue-list">
+                      {day.cues.map((cue, i) => (
+                        <div key={i} className="cue-item" onClick={() => handleCueClick(cue)}>{cue}</div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Notes Column */}
+                  <div className="notes-col">
+                    <div className="notes" dangerouslySetInnerHTML={{ __html: day.content }} />
+
+                    {/* Quiz */}
+                    {quizzes.filter((q) => q.dayId === day.id).length > 0 && (
+                      <div className="quiz-box" style={{ display: "block" }}>
+                        <h4>🧠 自测</h4>
+                        {quizzes.filter((q) => q.dayId === day.id).map((q) => (
+                          <QuizWidget key={q.id} quiz={q} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Summary */}
+                <div className="summary-area">
+                  <div className="summary-label">📝 用自己的话总结</div>
+                  <textarea
+                    value={userSummaries[dayKey] ?? ""}
+                    onChange={(e) => setUserSummaries((s) => ({ ...s, [dayKey]: e.target.value }))}
+                    placeholder="今天学到的最重要的3个点..."
+                  />
                 </div>
               </div>
 
-              {/* Notes Column */}
-              <div className="notes-col">
-                <div className="notes" dangerouslySetInnerHTML={{ __html: day.content }} />
-
-                {/* Quiz */}
-                {quizzes.filter((q) => q.dayId === day.id).length > 0 && (
-                  <div className="quiz-box" style={{ display: "block" }}>
-                    <h4>🧠 自测</h4>
-                    {quizzes.filter((q) => q.dayId === day.id).map((q) => (
-                      <QuizWidget key={q.id} quiz={q} />
-                    ))}
-                  </div>
-                )}
+              <div className="bottom-bar">
+                <div className="bottom-left">
+                  <button className="btn" onClick={() => setDayIdx(Math.max(0, dayIdx - 1))} disabled={dayIdx === 0}>
+                    ← 上一课
+                  </button>
+                  <span style={{ fontSize: 11, color: "var(--text2)" }}>
+                    {dayIdx + 1} / {days.length}
+                  </span>
+                  <button className="btn" onClick={() => setDayIdx(Math.min(days.length - 1, dayIdx + 1))} disabled={dayIdx === days.length - 1}>
+                    下一课 →
+                  </button>
+                </div>
+                <div className="bottom-right">
+                  <button className={`btn ${completed.has(dayKey) ? "btn-g" : "btn-a"}`} onClick={handleToggleComplete}>
+                    {completed.has(dayKey) ? "✅ 已完成" : "✅ 完成今日"}
+                  </button>
+                </div>
               </div>
-            </div>
-
-            {/* Summary */}
-            <div className="summary-area">
-              <div className="summary-label">📝 用自己的话总结</div>
-              <textarea
-                value={userSummaries[dayKey] ?? ""}
-                onChange={(e) => setUserSummaries((s) => ({ ...s, [dayKey]: e.target.value }))}
-                placeholder="今天学到的最重要的3个点..."
-              />
-            </div>
-          </div>
-
-          <div className="bottom-bar">
-            <div className="bottom-left">
-              <button className="btn" onClick={() => setDayIdx(Math.max(0, dayIdx - 1))} disabled={dayIdx === 0}>
-                ← 上一课
-              </button>
-              <span style={{ fontSize: 11, color: "var(--text2)" }}>
-                {dayIdx + 1} / {days.length}
-              </span>
-              <button className="btn" onClick={() => setDayIdx(Math.min(days.length - 1, dayIdx + 1))} disabled={dayIdx === days.length - 1}>
-                下一课 →
-              </button>
-            </div>
-            <div className="bottom-right">
-              <button className={`btn ${completed.has(dayKey) ? "btn-g" : "btn-a"}`} onClick={handleToggleComplete}>
-                {completed.has(dayKey) ? "✅ 已完成" : "✅ 完成今日"}
-              </button>
-            </div>
-          </div>
+            </>
+          )}
         </div>
 
         {/* AI Panel */}
@@ -512,7 +593,148 @@ export default function Home() {
 
         .quiz-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 12px 16px; margin: 12px 0; }
         .quiz-box h4 { color: var(--accent); margin: 0 0 6px; }
+
+        /* ── Book track styles ── */
+        .book-pick { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); cursor: pointer; font-family: var(--sans); transition: all .15s; }
+        .book-pick:hover { background: #f8f9fb; }
+        .book-pick.active { border-color: var(--accent); background: var(--accent-lt); }
+        .bk-hero { padding: 14px 18px 10px; border-bottom: 2px solid var(--border); background: linear-gradient(180deg, #fafbff 0%, var(--card-bg) 100%); }
+        .bk-hero h2 { font-size: 16px; font-weight: 700; }
+        .bk-hero .bk-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+        .bk-hero .bk-meta { font-size: 10px; color: var(--text2); margin-top: 4px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .bk-quote { background: #fefce8; border-left: 3px solid var(--warn); padding: 8px 12px; margin: 10px 0; font-size: 11px; line-height: 1.7; color: var(--text); font-style: italic; border-radius: 0 var(--radius) var(--radius) 0; }
+        .bk-section { margin: 12px 0; }
+        .bk-section h4 { font-size: 12px; font-weight: 700; color: var(--purple); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+        .bk-kp { display: flex; gap: 6px; padding: 4px 0; font-size: 11px; line-height: 1.6; border-bottom: 1px dashed #f0f0f0; }
+        .bk-kp-num { width: 18px; height: 18px; background: var(--accent-lt); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+        .bk-scm { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius); padding: 8px 12px; margin: 10px 0; font-size: 11px; line-height: 1.7; }
+        .bk-scm h4 { color: var(--success); }
+        .bk-practice { background: #fef3f2; border: 1px solid #fecaca; border-radius: var(--radius); padding: 8px 12px; margin: 10px 0; font-size: 11px; line-height: 1.7; }
+        .bk-practice h4 { color: var(--danger); }
       `}</style>
+    </>
+  );
+}
+
+function BookChapterView({
+  book, chapter, chapterKey, isCompleted, onToggle,
+  userSummary, onSummaryChange, onPrev, onNext, onCueClick, idx, total,
+}: {
+  book: import("@/lib/types").Book;
+  chapter: BookChapter;
+  chapterKey: string;
+  isCompleted: boolean;
+  onToggle: () => void;
+  userSummary: string;
+  onSummaryChange: (v: string) => void;
+  onPrev?: () => void;
+  onNext?: () => void;
+  onCueClick: (cue: string) => void;
+  idx: number;
+  total: number;
+}) {
+  return (
+    <>
+      <div className="cornell" style={{ overflowY: "auto" }}>
+        {/* Hero: book + chapter info */}
+        <div className="bk-hero">
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <span style={{ fontSize: 22 }}>{book.cover}</span>
+            <div>
+              <div style={{ fontSize: 10, color: "var(--text2)" }}>{book.title} · {book.author}</div>
+              <h2>{chapter.title}</h2>
+            </div>
+          </div>
+          <div className="bk-sub">{chapter.summary}</div>
+          <div className="bk-meta">
+            <span>📖 p{chapter.pageStart}-{chapter.pageEnd}</span>
+            <span>⏱ {chapter.duration} min</span>
+            <span>📊 第 {idx + 1} / {total} 章</span>
+          </div>
+        </div>
+
+        <div className="cornell-main">
+          {/* Cue column = key points as cues */}
+          <div className="cue-col">
+            <div className="cue-label">🔑 本章要点</div>
+            <div className="cue-list">
+              {chapter.keyPoints.map((kp, i) => (
+                <div key={i} className="cue-item" onClick={() => onCueClick(kp)}>{kp}</div>
+              ))}
+            </div>
+          </div>
+
+          {/* Notes column */}
+          <div className="notes-col">
+            {/* Key points expanded */}
+            <div className="bk-section">
+              <h4>📌 核心知识点</h4>
+              {chapter.keyPoints.map((kp, i) => (
+                <div key={i} className="bk-kp">
+                  <span className="bk-kp-num">{i + 1}</span>
+                  <span>{kp}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Excerpt */}
+            {chapter.excerpt && (
+              <div className="bk-section">
+                <h4>💬 原文金句</h4>
+                <div className="bk-quote">"{chapter.excerpt}"</div>
+                <div style={{ fontSize: 9, color: "var(--text2)", textAlign: "right" }}>
+                  —— 《{book.title}》p{chapter.pageStart}+
+                </div>
+              </div>
+            )}
+
+            {/* SCM insight */}
+            {chapter.scmInsight && (
+              <div className="bk-scm">
+                <h4>🏭 供应链迁移思考</h4>
+                <div>{chapter.scmInsight}</div>
+              </div>
+            )}
+
+            {/* Practice */}
+            {chapter.practice && (
+              <div className="bk-practice">
+                <h4>✏️ 配套练习</h4>
+                <div>{chapter.practice}</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Summary */}
+        <div className="summary-area">
+          <div className="summary-label">📝 读完本章，用自己的话总结</div>
+          <textarea
+            value={userSummary}
+            onChange={(e) => onSummaryChange(e.target.value)}
+            placeholder="本章最重要的 3 个概念，以及它们如何应用到我的工作..."
+          />
+        </div>
+      </div>
+
+      <div className="bottom-bar">
+        <div className="bottom-left">
+          <button className="btn" onClick={onPrev} disabled={!onPrev}>
+            ← 上一章
+          </button>
+          <span style={{ fontSize: 11, color: "var(--text2)" }}>
+            第 {idx + 1} / {total} 章
+          </span>
+          <button className="btn" onClick={onNext} disabled={!onNext}>
+            下一章 →
+          </button>
+        </div>
+        <div className="bottom-right">
+          <button className={`btn ${isCompleted ? "btn-g" : "btn-a"}`} onClick={onToggle}>
+            {isCompleted ? "✅ 已读" : "✅ 标记已读"}
+          </button>
+        </div>
+      </div>
     </>
   );
 }

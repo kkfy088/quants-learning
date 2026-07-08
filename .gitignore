@@ -1,6 +1,7 @@
 .workbuddy/
 deploy/
 out/
+books/
 
 .next/
 node_modules/

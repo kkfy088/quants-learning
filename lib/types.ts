@@ -7,6 +7,11 @@
 
 export type TrackKind = "crash" | "deep" | "book" | "power90";
 
+export interface DayResource {
+  label: string;
+  url: string;
+}
+
 export interface DayContent {
   id: string;
   day: number;
@@ -22,6 +27,8 @@ export interface DayContent {
   objectives: string[];
   /** Estimated time in minutes */
   duration: number;
+  /** External resources (optional) */
+  resources?: DayResource[];
 }
 
 export interface Module {

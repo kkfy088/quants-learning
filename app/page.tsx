@@ -5,7 +5,7 @@ import { crashDays } from "@/content/crash-course";
 import { deepDays } from "@/content/deep-track";
 import { power90Days } from "@/content/track-power90";
 import { books } from "@/content/books";
-import type { DayContent, TrackKind, ChatMessage, BookChapter } from "@/lib/types";
+import type { DayContent, TrackKind, ChatMessage, BookChapter, QuestionNote, QuestionStatus } from "@/lib/types";
 import { loadProgress, saveProgress, getCompletedDays, toggleDayComplete, updateStreak, type EncryptedBlob, getEncryptedKey } from "@/lib/storage";
 import { encryptApiKey, decryptApiKey, sendMessage } from "@/lib/deepseek";
 import { resources, cheatsheets, quizzes } from "@/content/static";
@@ -32,6 +32,12 @@ export default function Home() {
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [lockErrors, setLockErrors] = useState(0);
   const [lockUntil, setLockUntil] = useState(0);
+  // ── 问题笔记本 state ──
+  const [questionNotes, setQuestionNotes] = useState<QuestionNote[]>([]);
+  const [showNotebook, setShowNotebook] = useState(false);
+  const [notebookFilter, setNotebookFilter] = useState<"all" | QuestionStatus | string>("all");
+  const [notebookSearch, setNotebookSearch] = useState("");
+  const [expandedNoteId, setExpandedNoteId] = useState<string | null>(null);
 
   const days = track === "crash" ? crashDays : track === "power90" ? power90Days : deepDays;
   const day = days[dayIdx];
@@ -47,6 +53,7 @@ export default function Home() {
     setUserCues(p.userCues ?? {});
     setUserSummaries(p.userSummaries ?? {});
     setChatHistory(p.chatHistory ?? []);
+    setQuestionNotes(p.questionNotes ?? []);
     setStreak(updateStreak());
   }, []);
 
@@ -63,8 +70,9 @@ export default function Home() {
       userCues,
       userSummaries,
       chatHistory: chatHistory.slice(-50),
+      questionNotes: questionNotes.slice(-500),
     });
-  }, [completed, userCues, userSummaries, chatHistory]);
+  }, [completed, userCues, userSummaries, chatHistory, questionNotes]);
 
   const handleToggleComplete = useCallback(() => {
     const next = toggleDayComplete(dayKey);
@@ -117,6 +125,15 @@ export default function Home() {
     setChatLoading(true);
     const userMsg: ChatMessage = { role: "user", content: msg, timestamp: Date.now() };
     setChatHistory((h) => [...h, userMsg]);
+    // 记录当前章节引用——用于问题归档
+    const currentSourceRef =
+      track === "book" && currentBook && currentChapter
+        ? `book:${currentBook.id}:${currentChapter.id}`
+        : `${track}:${day?.id ?? ""}`;
+    const currentSourceTitle =
+      track === "book" && currentBook && currentChapter
+        ? `${currentBook.title} · 第${currentChapter.number}章 ${currentChapter.title}`
+        : day ? `${track === "crash" ? "速成" : track === "deep" ? "修炼" : "电力"} Day ${day.day} · ${day.title}` : "未知章节";
     try {
       const reply = await sendMessage({
         apiKey,
@@ -128,6 +145,22 @@ export default function Home() {
       });
       const asst: ChatMessage = { role: "assistant", content: reply, timestamp: Date.now() };
       setChatHistory((h) => [...h, asst]);
+      // ★ 自动归档到问题笔记本
+      const noteId = `qn-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const newNote: QuestionNote = {
+        id: noteId,
+        question: msg,
+        answer: reply,
+        track,
+        sourceRef: currentSourceRef,
+        sourceTitle: currentSourceTitle,
+        category: "general",  // 后续可基于关键词分类
+        timestamp: Date.now(),
+        status: "open",
+        tags: [],
+        reviewCount: 0,
+      };
+      setQuestionNotes((n) => [newNote, ...n]);
     } catch (e) {
       const err: ChatMessage = { role: "assistant", content: `❌ ${(e as Error).message}`, timestamp: Date.now() };
       setChatHistory((h) => [...h, err]);
@@ -142,6 +175,69 @@ export default function Home() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSendChat();
   };
+
+  // ── Question Notebook operations ──
+  const updateNoteStatus = (id: string, status: QuestionStatus) => {
+    setQuestionNotes((notes) =>
+      notes.map((n) => (n.id === id ? { ...n, status, lastReviewed: Date.now() } : n))
+    );
+  };
+  const deleteNote = (id: string) => {
+    setQuestionNotes((notes) => notes.filter((n) => n.id !== id));
+  };
+  const expandNote = (id: string) => {
+    setExpandedNoteId((cur) => (cur === id ? null : id));
+    // 翻看次数 +1
+    setQuestionNotes((notes) =>
+      notes.map((n) => (n.id === id ? { ...n, reviewCount: n.reviewCount + 1, lastReviewed: Date.now() } : n))
+    );
+  };
+  const jumpToChapter = (note: QuestionNote) => {
+    // 从笔记本跳回对应章节
+    const [t, ...rest] = note.sourceRef.split(":");
+    if (t === "book") {
+      const [bookId, chId] = rest;
+      const bi = books.findIndex((b) => b.id === bookId);
+      if (bi >= 0) {
+        setTrack("book");
+        setBookIdx(bi);
+        const ci = books[bi].chapters.findIndex((c) => c.id === chId);
+        if (ci >= 0) setChapterIdx(ci);
+      }
+    } else {
+      const newTrack = t as TrackKind;
+      const dayId = rest[0];
+      setTrack(newTrack);
+      const list = newTrack === "crash" ? crashDays : newTrack === "power90" ? power90Days : deepDays;
+      const di = list.findIndex((d) => d.id === dayId);
+      if (di >= 0) setDayIdx(di);
+    }
+    setShowNotebook(false);
+  };
+
+  // 过滤后的问题列表
+  const filteredNotes = questionNotes.filter((n) => {
+    if (notebookFilter !== "all") {
+      if (notebookFilter === "open" || notebookFilter === "reviewing" || notebookFilter === "resolved") {
+        if (n.status !== notebookFilter) return false;
+      } else if (n.track !== notebookFilter) return false;
+    }
+    if (notebookSearch.trim()) {
+      const q = notebookSearch.toLowerCase();
+      if (!n.question.toLowerCase().includes(q) && !n.answer.toLowerCase().includes(q) && !n.sourceTitle.toLowerCase().includes(q)) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // 按章节聚合（用于"按章节翻看"视图）
+  const notesByChapter = new Map<string, QuestionNote[]>();
+  filteredNotes.forEach((n) => {
+    const key = n.sourceRef;
+    if (!notesByChapter.has(key)) notesByChapter.set(key, []);
+    notesByChapter.get(key)!.push(n);
+  });
 
   // ── Sidebar weeks ──
   const weeks = new Map<number, DayContent[]>();
@@ -182,6 +278,9 @@ export default function Home() {
           <div className="prog-wrap"><div className="prog-fill" style={{ width: track === "book" ? `${((chapterIdx + 1) / (currentBook?.chapters.length || 1)) * 100}%` : `${((dayIdx + 1) / days.length) * 100}%` }} /></div>
           <button className="btn" onClick={() => setShowResources(true)}>📚资源</button>
           <button className="btn" onClick={() => setShowCheatsheets(true)}>📋速查</button>
+          <button className="btn" onClick={() => setShowNotebook(true)}>
+            📓笔记本{questionNotes.length > 0 && <span style={{ marginLeft: 4, fontSize: 9, background: "var(--accent)", color: "#fff", borderRadius: 8, padding: "1px 5px" }}>{questionNotes.length}</span>}
+          </button>
         </div>
       </header>
 
@@ -516,6 +615,117 @@ export default function Home() {
         </div>
       )}
 
+      {/* ── Question Notebook Modal ── */}
+      {showNotebook && (
+        <div className="modal-overlay" onClick={() => setShowNotebook(false)}>
+          <div className="modal nb-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-hdr" style={{ justifyContent: "space-between" }}>
+              <span>📓 问题笔记本 <span style={{ fontSize: 10, color: "var(--text2)" }}>({questionNotes.length} 条 · 自动归档每次提问)</span></span>
+              <button className="btn btn-sm" onClick={() => setShowNotebook(false)}>✕</button>
+            </div>
+
+            {/* 过滤栏 */}
+            <div style={{ display: "flex", gap: 6, padding: "6px 12px", borderBottom: "1px solid var(--border)", flexWrap: "wrap", alignItems: "center" }}>
+              <input
+                type="text"
+                placeholder="🔍 搜索问题或回答..."
+                value={notebookSearch}
+                onChange={(e) => setNotebookSearch(e.target.value)}
+                style={{ flex: 1, minWidth: 150, padding: "4px 8px", fontSize: 11, border: "1px solid var(--border)", borderRadius: 4 }}
+              />
+              <select
+                value={notebookFilter}
+                onChange={(e) => setNotebookFilter(e.target.value)}
+                style={{ padding: "4px 8px", fontSize: 11, border: "1px solid var(--border)", borderRadius: 4 }}
+              >
+                <option value="all">全部 ({questionNotes.length})</option>
+                <option value="open">🔴 待复习 ({questionNotes.filter(n => n.status === "open").length})</option>
+                <option value="reviewing">🟡 复习中 ({questionNotes.filter(n => n.status === "reviewing").length})</option>
+                <option value="resolved">🟢 已解决 ({questionNotes.filter(n => n.status === "resolved").length})</option>
+                <option value="crash">⚡ 速成</option>
+                <option value="deep">📅 修炼</option>
+                <option value="power90">⚡ 电力</option>
+                <option value="book">📖 教材</option>
+              </select>
+            </div>
+
+            {/* 列表 */}
+            <div className="modal-body" style={{ maxHeight: "65vh", overflowY: "auto" }}>
+              {filteredNotes.length === 0 ? (
+                <div style={{ textAlign: "center", padding: 40, color: "var(--text2)" }}>
+                  <div style={{ fontSize: 32, marginBottom: 8 }}>📓</div>
+                  <div style={{ fontSize: 12 }}>
+                    {questionNotes.length === 0
+                      ? "还没有任何问题笔记。在右侧 AI 助手提问，会自动归档到这里。"
+                      : "没有符合筛选条件的问题"}
+                  </div>
+                </div>
+              ) : (
+                // 按章节聚合显示
+                Array.from(notesByChapter.entries()).map(([srcRef, notes]) => (
+                  <div key={srcRef} style={{ marginBottom: 12 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", marginBottom: 4, padding: "2px 6px", background: "var(--accent-lt)", borderRadius: 3 }}>
+                      📂 {notes[0].sourceTitle} <span style={{ color: "var(--text2)", fontWeight: 400 }}>({notes.length})</span>
+                    </div>
+                    {notes.map((n) => (
+                      <div key={n.id} style={{ border: "1px solid var(--border)", borderRadius: 4, marginBottom: 4, overflow: "hidden" }}>
+                        {/* 问题头部（点击展开） */}
+                        <div
+                          onClick={() => expandNote(n.id)}
+                          style={{ padding: "6px 10px", cursor: "pointer", background: expandedNoteId === n.id ? "#f0f9ff" : "#fff", display: "flex", gap: 8, alignItems: "center" }}
+                        >
+                          <span style={{ fontSize: 10 }}>
+                            {n.status === "open" ? "🔴" : n.status === "reviewing" ? "🟡" : "🟢"}
+                          </span>
+                          <span style={{ flex: 1, fontSize: 11, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {n.question}
+                          </span>
+                          <span style={{ fontSize: 9, color: "var(--text2)" }}>
+                            {new Date(n.timestamp).toLocaleDateString("zh-CN", { month: "numeric", day: "numeric" })}
+                            {n.reviewCount > 0 && ` · 👁${n.reviewCount}`}
+                          </span>
+                          <span style={{ fontSize: 10 }}>{expandedNoteId === n.id ? "▲" : "▼"}</span>
+                        </div>
+                        {/* 展开后的详情 */}
+                        {expandedNoteId === n.id && (
+                          <div style={{ padding: "8px 12px", borderTop: "1px solid var(--border)", background: "#fafbfc" }}>
+                            <div style={{ fontSize: 10, color: "var(--text2)", marginBottom: 4 }}>💬 AI 回答：</div>
+                            <div style={{ fontSize: 11, lineHeight: 1.6, whiteSpace: "pre-wrap", maxHeight: 200, overflowY: "auto" }}>
+                              {n.answer}
+                            </div>
+                            <div style={{ display: "flex", gap: 4, marginTop: 8, flexWrap: "wrap" }}>
+                              <button className="btn btn-sm" onClick={() => jumpToChapter(n)}>📚 跳到原章节</button>
+                              {n.status !== "reviewing" && (
+                                <button className="btn btn-sm" onClick={() => updateNoteStatus(n.id, "reviewing")}>🟡 标记复习中</button>
+                              )}
+                              {n.status !== "resolved" && (
+                                <button className="btn btn-sm btn-g" onClick={() => updateNoteStatus(n.id, "resolved")}>🟢 标记已解决</button>
+                              )}
+                              {n.status !== "open" && (
+                                <button className="btn btn-sm" onClick={() => updateNoteStatus(n.id, "open")}>🔴 重置为待复习</button>
+                              )}
+                              <button className="btn btn-sm btn-r" onClick={() => { if (confirm("删除这条笔记？")) deleteNote(n.id); }}>🗑 删除</button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* 底部统计 */}
+            {questionNotes.length > 0 && (
+              <div style={{ borderTop: "1px solid var(--border)", padding: "6px 12px", fontSize: 10, color: "var(--text2)", display: "flex", justifyContent: "space-between" }}>
+                <span>📚 覆盖 {notesByChapter.size} 个章节 · 累计翻看 {questionNotes.reduce((s, n) => s + n.reviewCount, 0)} 次</span>
+                <span>高频提问是知识盲点，建议反复翻看 🔴 状态的问题</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
         .header-left { display: flex; align-items: center; gap: 6px; }
         .hl-icon { font-size: 16px; }
@@ -592,6 +802,8 @@ export default function Home() {
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
         .modal-content { background: var(--card-bg); border-radius: 10px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        .modal { background: var(--card-bg); border-radius: 10px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.12); display: flex; flex-direction: column; }
+        .nb-modal { max-width: 720px; max-height: 85vh; }
         .modal-hdr { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 13px; }
         .modal-body { padding: 12px 14px; }
 

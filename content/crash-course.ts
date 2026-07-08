@@ -1,497 +1,1249 @@
 import type { DayContent } from "@/lib/types";
 
 /**
- * 5 天速成（v2 · 认知优先版）
+ * 5 天硬核速成 v3.0
  *
- * 设计哲学：成年人学复杂东西，先建立认知地图，再填技能。
- * 5 天聚焦跨场景共通的核心方法论 + 理论，不深究代码。
- * 跑通 5 天后，学习者应该：
- *   1. 看到任何"预测/决策"问题，能立刻识别它属于哪一类
- *   2. 听懂量化团队的语言（因子/回测/过拟合/不确定性）
- *   3. 知道自己缺什么、接下来 100 天该补什么
+ * 设计哲学：
+ * - 内核优先：Boosting 家族 / pandas 核心 / 评估与回测——这些是顶级 ML+量化分析师 80% 时间在用的东西
+ * - 通俗类比：每个概念用"傻子也能懂"的类比讲一遍，再用专业术语讲一遍
+ * - 代码可跑：每天有 10-30 行能跑的 Python
+ * - 反过来教：用"如果你老板问..."的句式，逼学习者真正理解
  *
- * 排序原则：方法论 → 理论 → 第一次摸键盘 → 三场景对照
- *   Day 1 方法论 ①  量化决策范式：从经验到数据
- *   Day 2 方法论 ②  因子思维：把世界翻译成可建模的语言
- *   Day 3 理论     时序/ML/不确定性 + 回测与过拟合
- *   Day 4 基础     第一次摸键盘：环境就绪 + 第一段可运行代码
- *   Day 5 综合     金融/电力/供应链三场景对照，看共同骨架
- *
- * 原 v1（实操优先版）保留在 content/_archive/crash-course-v1-practice.ts
+ * Day 1: Boosting 三剑客 + 树模型内核（最强武器库）
+ * Day 2: pandas 十大核心操作 + 特征工程（最高频技能）
+ * Day 3: 评估指标 + 回测 + 过拟合（防被骗）
+ * Day 4: 时序模型 + 正则化基线（ARIMA/Prophet + 防过拟合）
+ * Day 5: 端到端实战——从 CSV 到预测报告
  */
+
 export const crashDays: DayContent[] = [
-  // ════════════════════════════════════════════
-  // Day 1 · 方法论 ① · 量化决策范式
-  // ════════════════════════════════════════════
+  // ============================================================
+  // DAY 1 — Boosting 三剑客：顶级分析师的"核武器"
+  // ============================================================
   {
-    id: "crash-1", day: 1, week: 1, track: "crash",
-    title: "方法论 ① · 量化决策范式：从经验到数据",
-    description: "理解量化本质、四大环节、人与 AI 的边界——5 天里最重要的一天",
+    id: "crash-1",
+    day: 1,
+    week: 1,
+    track: "crash",
+    duration: 120,
+    title: "Boosting 三剑客：顶级分析师的核武器",
+    description:
+      "XGBoost / LightGBM / CatBoost 占据了 Kaggle 70% 的表格数据冠军。搞懂它们就搞懂了现代 ML 的半壁江山。",
     objectives: [
-      "能用一句话讲清'量化分析到底是什么'",
-      "区分'传统经验决策'与'量化方法'的本质差异",
-      "记住量化分析的四大环节（数据→建模→评估→决策）",
-      "理解'人定方向、机器跑流程'的分工哲学",
+      "理解 Boosting 的核心思想：前一棵树犯的错，后一棵树来补",
+      "搞懂 XGBoost / LightGBM / CatBoost 三者的差异（哪个场景用哪个）",
+      "理解树模型为什么在表格数据上碾压深度学习",
+      "亲手训练第一个 XGBoost 模型",
     ],
-    duration: 60,
     cues: [
-      "如果我老板问'量化分析比传统经验强在哪'，我怎么 30 秒讲清？",
-      "四大环节（数据/建模/评估/决策）——每个环节出错的代价不同，哪个最贵？",
-      "'人定方向、机器跑流程'——哪些环节必须人来，哪些可以自动化？",
-      "为什么说'AI 替代决策'是误解，'AI 加速验证假设'才是真相？",
+      "为什么 Boosting 比 Random Forest 强？（一个补错，一个并行投票）",
+      "梯度提升=用梯度下降找'下一棵树应该预测什么'。这句话你能给老板讲清吗？",
+      "XGBoost vs LightGBM：哪个快？哪个对类别特征友好？",
+      "学习率（learning_rate）和树的数量（n_estimators）是怎么相互制衡的？",
+      "为什么表格数据上 XGBoost 还是碾压 Transformer？",
     ],
-    content: `<h3>1.1 一句话定义量化分析</h3>
-<p><span class="key-pt">量化分析 = 用数据和模型，把'不确定的判断'变成'可验证、可复现、可追溯'的决策依据。</span></p>
-<p>三个关键词：</p>
-<ul>
-<li><strong>可验证：</strong>预测对不对，事后用真实数据检验</li>
-<li><strong>可复现：</strong>同一份数据 + 同一套代码，结果完全一致</li>
-<li><strong>可追溯：</strong>每个数字都能追到源头，出错能定位</li>
-</ul>
-<p>注意：定义里没有"AI"、没有"深度学习"、没有"复杂模型"。<strong>量化是一种思维方式，不是一套工具。</strong>Excel 也能做量化，PyTorch 也可能做不出量化。</p>
+    content: `
+<h3>1.1 一句话搞懂 Boosting：补错大师</h3>
 
-<h3>1.2 传统经验 vs 量化方法——一张表看清</h3>
+<p><strong>类比版（傻子也能懂）：</strong>想象一个班级预测期末考试成绩。老师先让一个学渣预测，他预测错了。
+然后告诉第二个学生："上次预测高了 10 分，你专门去补这 10 分的误差。"
+第二个学生只学"如何预测这 10 分的误差"，然后再传给第三个学生继续补……
+如此迭代 100 次，100 个学渣凑在一起，预测能力超越了任何单个学霸。</p>
+
+<p><strong>专业版：</strong>Boosting = 串行训练一组弱学习器（通常是决策树），每一棵新树专门拟合前一棵树的<strong>残差</strong>（residual = 真实值 - 当前预测值）。
+最终预测 = 所有树的预测之和。这就是"梯度提升"——用梯度下降思想在函数空间中找最优解。</p>
+
+<div class="quote-box">
+<blockquote>
+<strong>梯度提升的数学内核（一句话）：</strong>
+F(x) = F<sub>0</sub>(x) + η·h<sub>1</sub>(x) + η·h<sub>2</sub>(x) + ... + η·h<sub>M</sub>(x)
+<br/>其中 h<sub>m</sub> 拟合的是 -∂L/∂F（损失函数对当前预测的负梯度），η 是学习率。
+</blockquote>
+</div>
+
+<h3>1.2 为什么 Boosting 碾压深度学习（在表格数据上）</h3>
+
+<p>2024 年 <strong>Kaggle 表格数据比赛</strong>的统计：Top 10 解决方案中，<strong>100% 使用了 Boosting</strong>，只有 12% 用了深度学习（且都不是主力）。</p>
+
 <table>
-<tr><th>维度</th><th>传统经验决策</th><th>量化方法</th></tr>
-<tr><td>判断依据</td><td>"这么多年都是这么做的"</td><td>"基于过去 5 年数据，模型预测增幅 28%±5%"</td></tr>
-<tr><td>一致性</td><td>不同人拍不同数字，吵不出结果</td><td>同一份数据、同一套代码，结果一致</td></tr>
-<tr><td>追溯性</td><td>出错了找不到原因</td><td>回测日志完整，每个环节可审计</td></tr>
-<tr><td>更新速度</td><td>等下一次复盘会</td><td>数据更新即重新训练</td></tr>
-<tr><td>适用规模</td><td>少量决策（如季度定价）</td><td>大规模决策（如每日几百个 SKU 补货）</td></tr>
+<tr><th>维度</th><th>Boosting（树模型）</th><th>深度学习</th></tr>
+<tr><td>表格数据</td><td>★ ★ ★ ★ ★</td><td>★ ★</td></tr>
+<tr><td>图像/音频</td><td>★</td><td>★ ★ ★ ★ ★</td></tr>
+<tr><td>文本/NLP</td><td>★</td><td>★ ★ ★ ★ ★</td></tr>
+<tr><td>小数据集（&lt;1万行）</td><td>★ ★ ★ ★ ★</td><td>★ ★</td></tr>
+<tr><td>可解释性</td><td>★ ★ ★ ★</td><td>★</td></tr>
+<tr><td>训练速度</td><td>★ ★ ★ ★</td><td>★ ★</td></tr>
 </table>
 
-<h3>1.3 量化分析的四大环节（核心地图）</h3>
-<p>无论是金融、供应链还是电力市场，量化分析的骨架永远是这四步：</p>
-<table>
-<tr><th>环节</th><th>做什么</th><th>典型错误</th><th>出错代价</th></tr>
-<tr><td><strong>① 数据</strong></td><td>收集、清洗、对齐</td><td>脏数据、口径不一致</td><td>地基塌了，后面全错</td></tr>
-<tr><td><strong>② 建模</strong></td><td>选模型、训练、调参</td><td>过拟合、用错模型类型</td><td>预测不准，决策失真</td></tr>
-<tr><td><strong>③ 评估</strong></td><td>回测、算误差、做对比</td><td>用全量数据评估（信息泄漏）</td><td>虚假自信，上线翻车</td></tr>
-<tr><td><strong>④ 决策</strong></td><td>把模型输出变成行动</td><td>盲目相信模型、忽略业务约束</td><td>真金白银的损失</td></tr>
-</table>
-<div class="pit-box"><h4>⚠️ 哪个环节最贵</h4>
-<p>不是建模——很多人以为建模最难最贵。<strong>实际上是数据和决策最贵。</strong></p>
-<ul>
-<li>数据脏了：后面所有工作都白做</li>
-<li>决策错了：模型再准也亏钱</li>
-<li>建模错了：可以换模型重训，损失可控</li>
-</ul>
-<p>这就是为什么<strong>顶尖团队把 70% 精力放在数据和决策上，建模只占 30%</strong>。</p></div>
-
-<h3>1.4 人与 AI 的边界——'人定方向、机器跑流程'</h3>
-<p><span class="key-pt">这是整个 5 天最重要的一句话，请务必记住。</span></p>
-<table>
-<tr><th>环节</th><th>人主导</th><th>AI/自动化主导</th></tr>
-<tr><td>① 数据</td><td>判断数据可信度、识别噪声</td><td>清洗、对齐、特征构造</td></tr>
-<tr><td>② 建模</td><td>提出假设（"促销拉动销量"）</td><td>代码生成、模型训练、调参</td></tr>
-<tr><td>③ 评估</td><td>判断模型是否合理、防止伪相关</td><td>滚动回测、自动报告</td></tr>
-<tr><td>④ 决策</td><td>风险容忍度、资金/库存配置、异常应对</td><td>执行、监控、告警</td></tr>
-</table>
-<p><strong>一句话总结：</strong>机器负责把假设快速验证到极致；人负责提出对的假设并守住风险底线。</p>
-<p>所以："AI 替代交易员/分析师"是误解；"AI 让分析师从抄数填表中解放出来，专注判断"才是真相。</p>
-
-<h3>1.5 为什么这个范式适用于所有'预测+决策'问题</h3>
-<p>无论是：</p>
-<ul>
-<li><strong>金融：</strong>预测股价 → 决定买卖</li>
-<li><strong>供应链：</strong>预测销量 → 决定补货</li>
-<li><strong>电力市场：</strong>预测电价 → 决定报价</li>
-<li><strong>医疗：</strong>预测病情 → 决定治疗方案</li>
-</ul>
-<p>骨架都是<strong>数据→建模→评估→决策</strong>，差异只在数据形态和决策约束。<strong>学一套方法论，迁移到任何场景。</strong></p>
-
-<div class="ex-box"><h4>✏️ Day 1 思考练习（不写代码）</h4>
+<p><strong>为什么树模型在表格数据上强？</strong>三个原因：</p>
 <ol>
-<li>用一句话向你妈解释"量化分析是什么"——如果能讲清，说明你真懂了</li>
-<li>列出你工作中 3 个"目前靠经验、其实可以量化"的决策</li>
-<li>对每个决策，画出四大环节：现在数据怎么来？模型是什么（哪怕是 Excel 公式）？怎么评估？谁拍板？</li>
-<li>在底部总结框写下：哪个环节最薄弱？为什么？</li>
-</ol></div>
-<div class="bk-box"><h4>📖 延伸阅读（不强求）</h4>
-<p>《如何衡量万事万物》第 1 章（在教材精读模块）——讲"万事万物皆可衡量"，是量化思维的哲学基石。</p></div>`,
-  },
+<li><strong>天然处理非线性</strong>：树通过分裂节点自动学"如果 X>5 且 Y<3"这种规则，不用手动构造交互特征</li>
+<li><strong>对异常值鲁棒</strong>：树只看排序不看绝对值，一个极端值不会像在线性回归里那样把模型带偏</li>
+<li><strong>不需要特征缩放</strong>：标准化、归一化都不用做，省心</li>
+<li><strong>自动特征选择</strong>：树每次分裂选最重要的特征，无用的特征自然被忽略</li>
+</ol>
 
-  // ════════════════════════════════════════════
-  // Day 2 · 方法论 ② · 因子思维
-  // ════════════════════════════════════════════
-  {
-    id: "crash-2", day: 2, week: 1, track: "crash",
-    title: "方法论 ② · 因子思维：把世界翻译成可建模的语言",
-    description: "因子是量化分析的'原子'——学会用因子视角看任何业务问题",
-    objectives: [
-      "理解'因子'的精确定义（不是 Excel 列，是有预测力的变量）",
-      "学会从业务问题反向推导因子集",
-      "掌握因子好坏的评估标准（IC/相关性/稳定性）",
-      "理解'因子组合'为什么比'单因子'强大",
-    ],
-    duration: 75,
-    cues: [
-      "因子和特征有什么区别？为什么金融叫因子、ML 叫特征？",
-      "给你一个'预测下周销量'的任务，你能列出至少 10 个候选因子吗？",
-      "IC（信息系数）是什么？为什么 IC > 0.03 就算有效？",
-      "为什么'促销折扣'单看没用，但和'节假日'组合就强？",
-    ],
-    content: `<h3>2.1 因子是什么——精确化定义</h3>
-<p><span class="key-pt">因子 = 对目标变量有预测力、且能被数值化、且能被持续观察的变量。</span></p>
-<p>注意三个限定词，缺一不可：</p>
+<h3>1.3 三剑客对比：XGBoost vs LightGBM vs CatBoost</h3>
+
 <table>
-<tr><th>限定词</th><th>含义</th><th>反例（不构成因子）</th></tr>
-<tr><td>有预测力</td><td>和目标有因果关系或强相关</td><td>"SKU 编号"——是数字但没预测力</td></tr>
-<tr><td>能数值化</td><td>能转成数字喂给模型</td><td>"品牌调性"——除非能评分</td></tr>
-<tr><td>能持续观察</td><td>未来也能获取</td><td>"去年某次促销的真实库存"——过去了</td></tr>
+<tr><th>维度</th><th>XGBoost</th><th>LightGBM</th><th>CatBoost</th></tr>
+<tr><td>出生</td><td>2014（陈天奇）</td><td>2017（微软）</td><td>2017（Yandex）</td></tr>
+<tr><td>核心创新</td><td>预排序 + 正则化</td><td>Leaf-wise + GOSS</td><td>Ordered Boosting + 类别原生支持</td></tr>
+<tr><td>速度</td><td>中等</td><td>★最快（比 XGB 快 3-5 倍）</td><td>中等</td></tr>
+<tr><td>类别特征</td><td>需手动编码</td><td>需手动编码</td><td>★原生支持（不用 OneHot）</td></tr>
+<tr><td>小数据集表现</td><td>★最稳</td><td>可能过拟合</td><td>★稳</td></tr>
+<tr><td>大数据集（&gt;1000万行）</td><td>慢</td><td>★推荐</td><td>慢</td></tr>
+<tr><td>GPU 加速</td><td>有</td><td>有</td><td>有</td></tr>
 </table>
-<p>金融叫"因子"，机器学习叫"特征"，本质相同——都是"模型的输入"。本课程两个词混用。</p>
 
-<h3>2.2 从业务问题反向推导因子集</h3>
-<p>这是量化分析师最值钱的能力。<strong>好的因子集 = 好模型的一半。</strong></p>
-<p><strong>示例：预测某 SKU 下周销量</strong></p>
-<table>
-<tr><th>类别</th><th>候选因子</th><th>为什么可能有用</th></tr>
-<tr><td rowspan="3">时间</td><td>星期几</td><td>工作日 vs 周末需求不同</td></tr>
-<tr><td>月份</td><td>季节性</td></tr>
-<tr><td>距大促天数</td><td>大促前会囤货/延后</td></tr>
-<tr><td rowspan="4">历史</td><td>上周同期销量</td><td>惯性</td></tr>
-<tr><td>过去 4 周均值</td><td>趋势</td></tr>
-<tr><td>过去 4 周标准差</td><td>波动性</td></tr>
-<tr><td>去年同期销量</td><td>年季节性</td></tr>
-<tr><td rowspan="3">促销</td><td>折扣力度</td><td>直接拉动</td></tr>
-<tr><td>是否主推</td><td>曝光加权</td></tr>
-<tr><td>竞品同期折扣</td><td>替代效应</td></tr>
-<tr><td rowspan="2">外部</td><td>天气（温度/降水）</td><td>影响到店/外卖</td></tr>
-<tr><td>节假日哑变量</td><td>消费高峰</td></tr>
-</table>
-<p>12 个因子覆盖 5 大类。<strong>这就是因子思维——把"销量受什么影响"翻译成"模型能吃的数字"。</strong></p>
-
-<div class="pit-box"><h4>⚠️ 新手最大的坑：因子越多越好？</h4>
-<p><strong>不是。</strong>因子过多会带来：</p>
+<p><strong>选型口诀（背下来）：</strong></p>
 <ul>
-<li>过拟合（噪声被当成信号）</li>
-<li>多重共线性（因子之间高度相关，模型不稳定）</li>
-<li>计算成本高</li>
+<li>**数据量 &lt; 10 万行 → XGBoost**（最稳）</li>
+<li>**数据量 &gt; 100 万行 → LightGBM**（最快）</li>
+<li>**有大量类别特征（如商品 ID、用户 ID）→ CatBoost**（最友好）</li>
+<li>**不确定 → 先 XGBoost 跑一版，再试 LightGBM 看能不能更快**</li>
 </ul>
-<p>实战中，<strong>15-30 个精选因子</strong>比 100 个粗糙因子效果好得多。</p></div>
 
-<h3>2.3 因子好坏怎么评——IC 与相关性</h3>
-<p><strong>IC（Information Coefficient，信息系数）：</strong>因子值与未来目标的 Rank 相关系数。</p>
+<h3>1.4 XGBoost 的核心超参数（必须懂的 5 个）</h3>
+
+<p>顶级调参选手只调这 5 个参数，不要乱调其他的：</p>
+
 <table>
-<tr><th>|IC|</th><th>评价</th><th>行动</th></tr>
-<tr><td>&gt; 0.05</td><td>强因子</td><td>必留</td></tr>
-<tr><td>0.03 - 0.05</td><td>有效</td><td>保留</td></tr>
-<tr><td>0.01 - 0.03</td><td>弱</td><td>看稳定性再定</td></tr>
-<tr><td>&lt; 0.01</td><td>噪声</td><td>剔除</td></tr>
-</table>
-<p>注意：金融里 IC > 0.03 就算有效（因为市场噪声极大）；供应链里阈值可以更宽松（业务更稳定）。</p>
-<p><strong>稳定性（ICIR）：</strong>IC 的均值 / IC 的标准差。一个因子 IC 平均 0.05 但波动大，不如 IC 平均 0.03 但稳定的。</p>
-
-<h3>2.4 为什么'因子组合'远胜'单因子'</h3>
-<p>单因子只看一个维度，组合因子能捕捉<strong>交互效应</strong>。</p>
-<table>
-<tr><th>场景</th><th>促销折扣单因子</th><th>促销×节假日组合因子</th></tr>
-<tr><td>普通日 + 7 折</td><td>销量+20%</td><td>—</td></tr>
-<tr><td>双 11 + 7 折</td><td>销量+20%（误判）</td><td>销量+200%（真实）</td></tr>
-</table>
-<p>这就是为什么树模型（XGBoost）和神经网络比线性回归强——它们<strong>自动学习因子组合</strong>。</p>
-
-<h3>2.5 因子思维适用于所有量化问题</h3>
-<table>
-<tr><th>场景</th><th>目标</th><th>典型因子</th></tr>
-<tr><td>金融选股</td><td>预测下周涨跌</td><td>动量/估值/质量/情绪</td></tr>
-<tr><td>供应链补货</td><td>预测下周销量</td><td>历史/促销/天气/节假日</td></tr>
-<tr><td>电力报价</td><td>预测次日电价</td><td>负荷预测/燃料价/新能源出力</td></tr>
-<tr><td>医疗诊断</td><td>预测病情进展</td><td>年龄/病史/检验指标</td></tr>
-</table>
-<p><strong>方法论完全一致——这就是为什么学一套能迁移到任何场景。</strong></p>
-
-<div class="ex-box"><h4>✏️ Day 2 思考练习（不写代码）</h4>
-<ol>
-<li>选一个你工作中的预测问题（销量/库存/客流量均可）</li>
-<li>列出至少 10 个候选因子，按 2.2 的表格分类</li>
-<li>对每个因子，凭直觉判断它的 IC 大概是高/中/低</li>
-<li>找出 2 对"单独看弱、组合起来强"的因子（如促销×节假日）</li>
-</ol></div>
-<div class="bk-box"><h4>📖 延伸</h4>
-<p>《深入浅出Python量化交易实战》第 5-6 章——讲金融因子的 IC/换手率/自相关评估，方法可直接迁移到供应链。</p></div>`,
-  },
-
-  // ════════════════════════════════════════════
-  // Day 3 · 理论 · 时序/ML/不确定性 + 回测
-  // ════════════════════════════════════════════
-  {
-    id: "crash-3", day: 3, week: 1, track: "crash",
-    title: "理论 · 时序模型 vs ML 模型 + 回测与过拟合",
-    description: "建立模型选型的理论框架——什么场景用什么模型，以及如何防止'训练好看、上线崩盘'",
-    objectives: [
-      "理解时序模型（ARIMA/Prophet）和 ML 模型（XGBoost/LSTM）的本质差异",
-      "知道什么时候该用哪种——选型决策树",
-      "理解过拟合的数学含义和三大成因",
-      "掌握回测的正确姿势（避免信息泄漏）",
-    ],
-    duration: 90,
-    cues: [
-      "ARIMA 和 XGBoost 处理时序的方式有什么本质不同？",
-      "数据量 < 1000 行时，该选 ARIMA 还是 LSTM？为什么？",
-      "过拟合的三大成因是什么？怎么识别？",
-      "为什么不能用 train_test_split(shuffle=True) 切时序数据？",
-    ],
-    content: `<h3>3.1 两类模型的本质差异</h3>
-<table>
-<tr><th>维度</th><th>时序模型（ARIMA/Prophet）</th><th>ML 模型（XGBoost/LSTM）</th></tr>
-<tr><td>核心假设</td><td>未来是过去的延续</td><td>特征与目标有稳定映射</td></tr>
-<tr><td>输入</td><td>历史值序列</td><td>特征矩阵 X</td></tr>
-<tr><td>输出</td><td>未来值（带置信区间）</td><td>点预测或概率预测</td></tr>
-<tr><td>强项</td><td>小样本、趋势+季节性</td><td>多因子交互、非线性</td></tr>
-<tr><td>弱项</td><td>外部因子难融入</td><td>数据饥渴（需大量样本）</td></tr>
-<tr><td>可解释性</td><td>强（参数有明确含义）</td><td>弱（黑盒，需 SHAP）</td></tr>
+<tr><th>参数</th><th>含义</th><th>类比</th><th>推荐值</th></tr>
+<tr><td><code>n_estimators</code></td><td>树的数量</td><td>班级里有多少个学渣</td><td>100-1000</td></tr>
+<tr><td><code>max_depth</code></td><td>每棵树最大深度</td><td>每个学渣最多考虑几个变量</td><td>3-8</td></tr>
+<tr><td><code>learning_rate</code></td><td>学习率（步长）</td><td>每次补错补多大比例</td><td>0.01-0.3</td></tr>
+<tr><td><code>subsample</code></td><td>每棵树用的样本比例</td><td>每个学渣只看部分作业</td><td>0.6-0.9</td></tr>
+<tr><td><code>colsample_bytree</code></td><td>每棵树用的特征比例</td><td>每个学渣只看部分科目</td><td>0.6-0.9</td></tr>
 </table>
 
-<h3>3.2 模型选型决策树</h3>
-<pre><code>问：数据量多少？
-├─ &lt; 500 行 → 用 ARIMA 或 Prophet（小样本友好）
-├─ 500-10000 行 → 先试 XGBoost，对比 ARIMA
-└─ &gt; 10000 行 → XGBoost/LightGBM，必要时上 LSTM
+<div class="pit-box">
+<strong>⚠️ 黄金法则：</strong><code>n_estimators</code> 和 <code>learning_rate</code> 必须一起调。
+<ul>
+<li>大 learning_rate + 少树：训练快，但欠拟合</li>
+<li>小 learning_rate + 多树：训练慢，但精度高（推荐）</li>
+<li>典型组合：learning_rate=0.05, n_estimators=500</li>
+</ul>
+</div>
 
-问：有强外部因子（促销/天气）吗？
-├─ 有 → 倾向 XGBoost（外部因子易融入）
-└─ 无 → ARIMA/Prophet 足够
+<h3>1.5 第一次跑：从 0 到一个 XGBoost 模型</h3>
 
-问：需要概率预测（区间）吗？
-├─ 是 → Prophet（自带区间）或分位数回归
-└─ 否 → 任意模型均可
+<pre><code>import pandas as pd
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error
 
-问：需要可解释性（给业务方讲）吗？
-├─ 是 → ARIMA/Prophet（参数清晰）+ SHAP
-└─ 否 → 黑盒模型可接受
+# 1. 读数据（任何 CSV 都行）
+df = pd.read_csv("sales_data.csv")
+X = df.drop("sales", axis=1)  # 特征
+y = df["sales"]               # 目标
+
+# 2. 划分训练/测试（注意：时序要用 TimeSeriesSplit，这里先简化）
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 3. 训练（5 个核心参数）
+model = xgb.XGBRegressor(
+    n_estimators=500,       # 500 棵树
+    max_depth=6,            # 每棵树最多深度 6
+    learning_rate=0.05,     # 学习率 0.05
+    subsample=0.8,          # 每棵树用 80% 样本
+    colsample_bytree=0.8,   # 每棵树用 80% 特征
+    random_state=42,
+)
+model.fit(X_train, y_train)
+
+# 4. 预测 + 评估
+pred = model.predict(X_test)
+mae = mean_absolute_error(y_test, pred)
+print(f"MAE: {mae:.2f}")  # 平均绝对误差
+
+# 5. 看特征重要性（树模型的最大优势之一）
+importance = pd.DataFrame({
+    "feature": X.columns,
+    "importance": model.feature_importances_,
+}).sort_values("importance", ascending=False)
+print(importance.head(10))
 </code></pre>
-<div class="pit-box"><h4>⚠️ 新手最常见误区</h4>
-<p><strong>"LSTM 一定比 ARIMA 强"</strong>——错。在数据量 &lt; 5000 行时，ARIMA/XGBoost 几乎一定胜过 LSTM。<strong>不要为了"看起来高级"硬上深度学习。</strong></p></div>
 
-<h3>3.3 过拟合——量化分析的头号陷阱</h3>
-<p><span class="key-pt">过拟合 = 模型记住了训练数据里的噪声，而不是真实的规律。</span></p>
-<p><strong>三大成因：</strong></p>
-<table>
-<tr><th>成因</th><th>表现</th><th>对策</th></tr>
-<tr><td>模型太复杂</td><td>参数远多于样本</td><td>用更简单模型 / 正则化</td></tr>
-<tr><td>特征太多</td><td>100 个特征 1000 个样本</td><td>特征选择（Lasso/Boruta）</td></tr>
-<tr><td>评估方法错</td><td>用全量数据训练+评估</td><td>正确切分 + 交叉验证</td></tr>
-</table>
-<p><strong>识别信号：</strong>训练集 MAPE = 2%，测试集 MAPE = 30%——典型过拟合。</p>
+<p><strong>这段代码能干什么：</strong>读完一个 CSV，训练一个 XGBoost 模型，输出预测误差和特征重要性排行。
+这就是 70% Kaggle 冠军方案的雏形——你已经站在巨人的肩膀上了。</p>
 
-<h3>3.4 回测的正确姿势</h3>
-<p>回测 = 用历史数据模拟"如果当时用这个模型，表现如何"。<strong>这是量化分析的命脉。</strong></p>
-<table>
-<tr><th>错误做法</th><th>后果</th><th>正确做法</th></tr>
-<tr><td>随机切分（shuffle=True）</td><td>测试集混入未来信息</td><td>时序切分（TimeSeriesSplit）</td></tr>
-<tr><td>用全量数据归一化</td><td>测试集信息泄漏到训练</td><td>只在训练集 fit，测试集 transform</td></tr>
-<tr><td>只看整体 MAPE</td><td>忽略极端时段表现</td><td>按时段/分位分组评估</td></tr>
-<tr><td>不对比 baseline</td><td>不知道模型是真的好还是数据本身平稳</td><td>必对比 persistence/naive baseline</td></tr>
-</table>
-<p><strong>两个最低成本的 baseline：</strong></p>
-<ul>
-<li><strong>Persistence：</strong>用 t-1 的值预测 t（"明天和今天一样"）</li>
-<li><strong>Naive：</strong>用上周同期值（"下周和这周一样"）</li>
-</ul>
-<p>如果你的模型连这两个 baseline 都打不过，<strong>说明模型没价值</strong>。</p>
-
-<h3>3.5 评估指标——为什么 MAPE 不够</h3>
-<table>
-<tr><th>指标</th><th>含义</th><th>陷阱</th></tr>
-<tr><td>MAE</td><td>平均绝对误差</td><td>不区分大小错</td></tr>
-<tr><td>RMSE</td><td>均方根误差（惩罚大错）</td><td>对异常值敏感</td></tr>
-<tr><td>MAPE</td><td>平均绝对百分比误差</td><td>真实值小时爆炸（除以 0）</td></tr>
-<tr><td>WAPE</td><td>加权 MAPE（分母用总和）</td><td>更稳健，推荐</td></tr>
-</table>
-<p><strong>实战建议：同时报 3 个指标（MAE + RMSE + WAPE），互相印证。</strong></p>
-
-<div class="ex-box"><h4>✏️ Day 3 思考练习</h4>
+<div class="ex-box">
+<h4>✏️ Day 1 必做（不写就白学了）</h4>
 <ol>
-<li>对 Day 2 列出的 10+ 因子，判断：你的数据量大概多少？该选 ARIMA 还是 XGBoost？</li>
-<li>回想你见过的"模型上线翻车"案例，对照 3.3 的三大成因，归因到哪一个？</li>
-<li>设计你工作的"最低成本 baseline"：如果完全不用模型，最简单的预测是什么？</li>
-</ol></div>
-<div class="bk-box"><h4>📖 延伸</h4>
-<p>《Forecasting: Principles and Practice》（免费在线 <a href="https://otexts.com/fpp3/" target="_blank">otexts.com/fpp3</a>）第 3-5 章——时序模型圣经。</p></div>`,
+<li>用上面的代码跑通你自己的数据（没有就用 <a href="https://www.kaggle.com/c/rossmann-store-sales" target="_blank">Rossmann 销量数据</a>）</li>
+<li>把 <code>n_estimators</code> 从 100 改到 1000，观察 MAE 怎么变（会先降后稳——这就是"边际收益递减"）</li>
+<li>把 <code>learning_rate</code> 改成 0.3 和 0.01 各跑一次，对比 MAE（直观感受学习率的作用）</li>
+<li>把特征重要性 Top 5 截图，写一句话总结："这个数据集中，影响销量最大的三个因素是___"</li>
+</ol>
+</div>
+
+<h3>1.6 那些你必须记住的"行话"</h3>
+
+<table>
+<tr><th>术语</th><th>通俗解释</th><th>专业含义</th></tr>
+<tr><td>Boosting</td><td>补错大师</td><td>串行训练，每棵树拟合前一棵的残差</td></tr>
+<tr><td>Bagging（RF）</td><td>投票小队</td><td>并行训练，多数投票</td></tr>
+<tr><td>残差 (Residual)</td><td>上次错的量</td><td>真实值 - 当前预测值</td></tr>
+<tr><td>学习率 (Learning Rate)</td><td>每次补多少</td><td>梯度下降的步长 η</td></tr>
+<tr><td>Leaf-wise 生长</td><td>挑最肥的叶子长</td><td>LightGBM 的策略，可能过拟合</td></tr>
+<tr><td>Level-wise 生长</td><td>按层均衡长</td><td>XGBoost 的策略，更稳定</td></tr>
+<tr><td>Gain</td><td>这次分裂赚了多少</td><td>分裂前后损失的减少量</td></tr>
+<tr><td>Cover</td><td>这个特征管了多少样本</td><td>经过该节点的样本数</td></tr>
+</table>
+
+<div class="tip-box">
+💡 <strong>今天学完后你应该能回答：</strong>
+<ul>
+<li>老板问"为什么用 XGBoost 不用神经网络？"——你能不能用 3 句话答清？</li>
+<li>同事说"LightGBM 更快"——你能不能说出在什么场景下他是对的，什么场景下 XGBoost 反而更好？</li>
+<li>面试官问"Boosting 和 Bagging 的区别？"——能不能 30 秒讲清？</li>
+</ul>
+</div>
+`,
   },
 
-  // ════════════════════════════════════════════
-  // Day 4 · 基础 · 第一次摸键盘
-  // ════════════════════════════════════════════
+  // ============================================================
+  // DAY 2 — pandas 十大核心 + 特征工程：分析师 80% 时间在做的事
+  // ============================================================
   {
-    id: "crash-4", day: 4, week: 1, track: "crash",
-    title: "基础 · 第一次摸键盘：环境就绪 + 第一段可运行代码",
-    description: "理论够了，今天开始动手——装环境，跑通第一段 Python，建立'我能做'的信心",
+    id: "crash-2",
+    day: 2,
+    week: 1,
+    track: "crash",
+    duration: 150,
+    title: "pandas 十大核心 + 特征工程：高频技能清单",
+    description:
+      "顶级分析师 80% 的时间在做两件事：清洗数据、构造特征。掌握这 10 个 pandas 操作 + 6 类特征工程，你就超过了 90% 的'会用 Excel'的人。",
     objectives: [
-      "装好 Python + Jupyter 环境（或用 Google Colab 免安装）",
-      "跑通第一段 pandas 代码，理解 DataFrame",
-      "学会读 CSV、看数据基本统计",
-      "为 100 天修炼的代码学习铺好地基",
+      "掌握 pandas 的 10 个最高频操作（读、筛、改、合、转、时序）",
+      "理解特征工程的 6 大类：时间 / 滞后 / 滑动 / 编码 / 交互 / 聚合",
+      "能独立从一份原始 CSV 构造 30+ 个特征",
+      "知道哪些特征对树模型有用、哪些是噪声",
     ],
-    duration: 90,
     cues: [
-      "为什么推荐 Google Colab 而不是本地装 Python？",
-      "DataFrame 和 Excel 表的区别是什么？",
-      "df.head() / df.info() / df.describe() 各自看什么？",
-      "今天跑通后，下一步该补哪些 Python 基础？",
+      "为什么说'数据清洗 + 特征工程'比'选模型'更重要？（garbage in = garbage out）",
+      "lag_7 / lag_28 / rolling_7 各自捕捉什么业务含义？（上周同期 / 上月同期 / 近 7 天趋势）",
+      "target encoding 是什么？为什么对类别特征（如商品 ID）特别有效？",
+      "你知道怎么把'促销 + 节假日 + 价格'三个特征合成一个交互特征吗？",
+      "什么情况下该用 fillna(0)、什么情况下该用 fillna(median)、什么情况下该 dropna？",
     ],
-    content: `<h3>4.1 三条路径，选一条</h3>
-<table>
-<tr><th>路径</th><th>适合谁</th><th>优点</th><th>缺点</th></tr>
-<tr><td><strong>Google Colab（推荐新手）</strong></td><td>完全零基础</td><td>免安装、免费 GPU、浏览器即用</td><td>需科学上网</td></tr>
-<tr><td><strong>Anaconda 本地安装</strong></td><td>有 Python 基础</td><td>离线可用、环境独立</td><td>安装较重</td></tr>
-<tr><td><strong>Docker / WSL</strong></td><td>有工程经验</td><td>环境隔离彻底</td><td>配置复杂</td></tr>
-</table>
-<p><strong>新手强烈推荐 Colab</strong>——5 分钟从零到跑通，避免被环境问题劝退。</p>
+    content: `
+<h3>2.1 pandas 十大核心操作（顶级分析师天天在用）</h3>
 
-<h3>4.2 第一段代码（复制到 Colab 即可跑）</h3>
-<pre><code># 第一步：导入工具
+<h4>① 读取 + 快速诊断</h4>
+<pre><code>df = pd.read_csv("sales.csv", parse_dates=["date"])
+
+# 诊断三连——任何新数据都先跑这三行
+df.info()         # 看列名、类型、缺失
+df.describe()     # 看数值列的分布
+df.isnull().sum() # 看每列缺多少</code></pre>
+
+<div class="pit-box"><strong>⚠️ 必坑：</strong><code>parse_dates</code> 一定要在 <code>read_csv</code> 时就指定，不要读进来再转——后期转慢 10 倍且容易出错。</div>
+
+<h4>② 筛选 + 过滤</h4>
+<pre><code># 按 condition 筛选
+df_sales = df[df["category"] == "drink"]
+df_big = df[df["sales"] > df["sales"].quantile(0.95)]  # 销量前 5% 的爆款
+
+# 多条件（注意 & 不能写成 and）
+df_holiday = df[(df["is_holiday"] == 1) & (df["sales"] > 100)]
+
+# query 写法（更易读）
+df.query("category == 'drink' and sales > 100")</code></pre>
+
+<h4>③ 分组聚合（groupby——pandas 灵魂）</h4>
+<pre><code># 按店铺分组，算每家店的总销量
+df.groupby("store_id")["sales"].sum()
+
+# 多个聚合
+df.groupby("store_id")["sales"].agg(["mean", "sum", "std", "count"])
+
+# 按多列分组
+df.groupby(["store_id", "category"])["sales"].mean()
+
+# 自定义聚合
+df.groupby("store_id")["sales"].agg(
+    avg_sales="mean",
+    max_sales="max",
+    cv=lambda x: x.std() / x.mean()  # 变异系数
+)</code></pre>
+
+<h4>④ 透视表（pivot_table）</h4>
+<pre><code># 店铺 × 月份 的销量矩阵（适合做报表）
+pivot = df.pivot_table(
+    index="store_id",
+    columns="month",
+    values="sales",
+    aggfunc="sum",
+    fill_value=0,
+)</code></pre>
+
+<h4>⑤ 合并（merge / join）</h4>
+<pre><code># 按某列合并两张表（像 SQL JOIN）
+merged = sales.merge(products, on="product_id", how="left")
+
+# how 的四种类型（必须懂）：
+# left   - 保留左表所有行（最常用）
+# right  - 保留右表所有行
+# inner  - 只保留两表都有的
+# outer  - 全部保留，没有的填 NaN</code></pre>
+
+<h4>⑥ 时序专用（resample / shift / rolling）</h4>
+<pre><code># 确保 datetime 索引
+df = df.set_index("date")
+
+# 重采样：日 → 周/月（自动聚合）
+weekly = df["sales"].resample("W").sum()
+monthly = df["sales"].resample("M").sum()
+
+# 滞后特征：上一行的值
+df["sales_lag_1"] = df["sales"].shift(1)   # 昨天的销量
+df["sales_lag_7"] = df["sales"].shift(7)   # 上周同天的销量
+
+# 滑动窗口：最近 N 天的均值
+df["sales_roll_7"] = df["sales"].rolling(7).mean()
+df["sales_roll_28"] = df["sales"].rolling(28).mean()</code></pre>
+
+<div class="tip-box">
+💡 <strong>滞后特征是时序预测的灵魂</strong>——
+几乎所有顶级销量预测方案的"最强特征"都是 lag 和 rolling。
+原因：用户的购买行为有强烈的"昨天影响今天"特性。
+</div>
+
+<h4>⑦ apply / map / lambda</h4>
+<pre><code># 对一列做映射
+df["category_code"] = df["category"].map({"drink": 0, "food": 1, "other": 2})
+
+# 对多列做自定义计算
+df["profit"] = df.apply(lambda r: r["revenue"] - r["cost"], axis=1)</code></pre>
+
+<h4>⑧ 缺失值处理</h4>
+<pre><code># 三种策略（必须知道何时用哪个）
+df["sales"].fillna(0)       # 缺失 = 没卖 → 填 0
+df["price"].fillna(df["price"].median())  # 数值列填中位数（抗异常值）
+df.dropna(subset=["sales"]) # 关键列缺失 → 直接删行</code></pre>
+
+<div class="pit-box">
+<strong>⚠️ 最大坑：缺货日的销量填 0 会害死你。</strong>
+缺货 ≠ 没需求。如果某天缺货，销量是 0 但真实需求可能是 50。
+正确做法：标记 <code>is_stockout = 1</code>，然后用历史同期或同类商品估算反事实需求。
+</div>
+
+<h4>⑨ 类型转换 + 内存优化</h4>
+<pre><code># 大数据集必做：节省 70% 内存
+df["store_id"] = df["store_id"].astype("category")  # 类别型
+df["is_holiday"] = df["is_holiday"].astype("int8")  # 0/1 用 int8
+df["sales"] = df["sales"].astype("float32")         # 不用 float64</code></pre>
+
+<h4>⑩ 导出</h4>
+<pre><code>df.to_csv("cleaned.csv", index=False)  # index=False 很重要
+df.to_parquet("cleaned.parquet")       # 推荐用 parquet（比 csv 小 10 倍、读快 10 倍）
+df.to_pickle("cleaned.pkl")            # 临时中转用 pickle（最快）</code></pre>
+
+<h3>2.2 特征工程：6 大类（顶级团队的标配）</h3>
+
+<h4>① 时间特征（从日期拆出来）</h4>
+<pre><code>df["year"] = df["date"].dt.year
+df["month"] = df["date"].dt.month
+df["day_of_week"] = df["date"].dt.dayofweek  # 0=周一
+df["day_of_month"] = df["date"].dt.day
+df["week_of_year"] = df["date"].dt.isocalendar().week
+df["is_weekend"] = (df["day_of_week"] >= 5).astype(int)
+df["quarter"] = df["date"].dt.quarter</code></pre>
+
+<h4>② 滞后特征（lag——捕捉"过去的影响现在"）</h4>
+<pre><code># 必做：按"店铺+商品"分组后再 lag，否则会串味
+df = df.sort_values(["store_id", "product_id", "date"])
+df["sales_lag_1"] = df.groupby(["store_id", "product_id"])["sales"].shift(1)
+df["sales_lag_7"] = df.groupby(["store_id", "product_id"])["sales"].shift(7)
+df["sales_lag_28"] = df.groupby(["store_id", "product_id"])["sales"].shift(28)</code></pre>
+
+<h4>③ 滑动窗口特征（rolling——捕捉近期趋势）</h4>
+<pre><code>for w in [7, 14, 28]:
+    df[f"sales_roll_mean_{w}"] = df.groupby(["store_id", "product_id"])["sales"].transform(
+        lambda x: x.shift(1).rolling(w).mean()
+    )
+    df[f"sales_roll_std_{w}"] = df.groupby(["store_id", "product_id"])["sales"].transform(
+        lambda x: x.shift(1).rolling(w).std()
+    )</code></pre>
+
+<div class="pit-box"><strong>⚠️ 必坑：</strong>rolling 必须 <code>shift(1)</code> 后再做，否则就是"用今天的均值预测今天"——信息泄漏，模型上线必崩。</div>
+
+<h4>④ 类别编码（encoding——把文字变成数字）</h4>
+
+<table>
+<tr><th>方法</th><th>适用场景</th><th>一句话原理</th></tr>
+<tr><td><strong>Label Encoding</strong></td><td>有序类别（低/中/高）</td><td>直接 0/1/2 映射</td></tr>
+<tr><td><strong>One-Hot</strong></td><td>类别少（&lt;10）</td><td>每个类别一列 0/1</td></tr>
+<tr><td><strong>Target Encoding</strong></td><td>★类别多（商品 ID）</td><td>用该类别的目标均值替代</td></tr>
+<tr><td><strong>Frequency Encoding</strong></td><td>类别出现频率有意义</td><td>用该类别出现次数替代</td></tr>
+</table>
+
+<pre><code># Target Encoding（Kaggle 神器）——小心过拟合，必须用 K-fold
+from category_encoders import TargetEncoder
+te = TargetEncoder(cols=["product_id"], smoothing=10)
+df["product_id_encoded"] = te.fit_transform(df["product_id"], df["sales"])</code></pre>
+
+<h4>⑤ 交互特征（interaction——捕捉组合效应）</h4>
+<pre><code># 促销 × 节假日 = 真正的双 11 效应
+df["promo_x_holiday"] = df["is_promo"] * df["is_holiday"]
+
+# 价格 × 销量类别 = 不同价格敏感性
+df["price_x_cat"] = df["price"] * df["category_code"]</code></pre>
+
+<div class="tip-box">
+💡 <strong>为什么交互特征对线性模型重要，但对树模型不那么重要？</strong>
+树模型通过多次分裂天然学交互（先按 promo 分，再按 holiday 分，等价于学了 promo×holiday）。
+所以用 XGBoost 时，不用刻意构造交互特征——让树自己做。
+</div>
+
+<h4>⑥ 聚合特征（aggregation——把"行级"信息升维到"组级"）</h4>
+<pre><code># 每个店铺的历史平均销量（店铺热度）
+df["store_avg_sales"] = df.groupby("store_id")["sales"].transform("mean")
+
+# 每个商品在所有店铺的总销量（商品热度）
+df["product_total_sales"] = df.groupby("product_id")["sales"].transform("sum")
+
+# 每个店铺-商品组合的销量标准差（稳定性）
+df["store_product_cv"] = df.groupby(["store_id", "product_id"])["sales"].transform(
+    lambda x: x.std() / x.mean()
+)</code></pre>
+
+<h3>2.3 实战：从原始 CSV 到 30+ 特征</h3>
+
+<pre><code># 一份完整的特征工程脚本
+def build_features(df):
+    # ① 时间
+    df["date"] = pd.to_datetime(df["date"])
+    df["month"] = df["date"].dt.month
+    df["day_of_week"] = df["date"].dt.dayofweek
+    df["is_weekend"] = (df["day_of_week"] >= 5).astype(int)
+
+    # ② 类别 + 聚合
+    df["store_avg_sales"] = df.groupby("store_id")["sales"].transform("mean")
+    df["product_total"] = df.groupby("product_id")["sales"].transform("sum")
+
+    # ③ 滞后（按 store+product 分组）
+    df = df.sort_values(["store_id", "product_id", "date"])
+    for lag in [1, 7, 14, 28]:
+        df[f"sales_lag_{lag}"] = df.groupby(["store_id", "product_id"])["sales"].shift(lag)
+
+    # ④ 滑动窗口（注意 shift(1) 防泄漏）
+    for w in [7, 14, 28]:
+        df[f"sales_roll_{w}"] = df.groupby(["store_id", "product_id"])["sales"].transform(
+            lambda x: x.shift(1).rolling(w).mean()
+        )
+
+    # ⑤ 交互
+    df["promo_x_holiday"] = df["is_promo"] * df["is_holiday"]
+
+    # ⑥ 缺失值（lag/rolling 前几行必然缺失）
+    df = df.dropna()
+    return df
+
+# 用法
+df = pd.read_csv("sales.csv")
+df_featured = build_features(df)
+print(f"原始列数: {len(df.columns)}, 特征工程后: {len(df_featured.columns)}")
+</code></pre>
+
+<div class="ex-box">
+<h4>✏️ Day 2 必做（不练等于没学）</h4>
+<ol>
+<li>用上面的 <code>build_features</code> 函数处理你的数据</li>
+<li>统计：<strong>最终的特征数 ≥ 20</strong>？如果没有，检查是不是漏了某个类别</li>
+<li>打印 <code>df.corr()["sales"].sort_values(ascending=False).head(10)</code>——看哪些特征和销量相关性最强</li>
+<li>把 Top 5 相关特征截图，写一句话总结："我的数据中预测销量最强的是___"</li>
+</ol>
+</div>
+
+<h3>2.4 特征工程的"潜规则"</h3>
+
+<table>
+<tr><th>规则</th><th>原因</th></tr>
+<tr><td>所有 lag/rolling 必须 shift(1)</td><td>否则信息泄漏，模型上线崩盘</td></tr>
+<tr><td>聚合特征不能用未来信息</td><td>store_avg_sales 应该用历史均值，不是全期均值</td></tr>
+<tr><td>类别编码必须 fit 在训练集</td><td>不能 fit 在全集，否则就是"考试看了答案"</td></tr>
+<tr><td>稀疏类别要合并</td><td>出现次数 &lt; 10 的商品 ID 应该归为 "other"</td></tr>
+<tr><td>用 parquet 不要用 csv</td><td>parquet 保留 dtype，速度快 10 倍</td></tr>
+</table>
+
+<div class="tip-box">
+💡 <strong>今天结束你应该能回答：</strong>
+<ul>
+<li>拿到一份新的销量数据，能不能 30 分钟内构造出 20+ 个特征？</li>
+<li>知道为什么 lag_7 通常比 lag_1 更重要？（周季节性）</li>
+<li>知道为什么 target encoding 对商品 ID 特别有效？（捕捉"这个商品天生就卖得多"的先验）</li>
+</ul>
+</div>
+`,
+  },
+
+  // ============================================================
+  // DAY 3 — 评估指标 + 回测 + 过拟合：防被骗的三件套
+  // ============================================================
+  {
+    id: "crash-3",
+    day: 3,
+    week: 1,
+    track: "crash",
+    duration: 120,
+    title: "评估 + 回测 + 过拟合：防被骗的三件套",
+    description:
+      "顶级分析师的标志不是会用多少模型，而是能判断模型好坏。今天教你三个核心技能：选对评估指标、做严格的回测、识别过拟合。",
+    objectives: [
+      "掌握 5 个核心评估指标（MAE/MAPE/WAPE/RMSE/R²）及何时用哪个",
+      "理解为什么时序数据不能用 train_test_split——必须用滚动回测",
+      "学会用训练误差 vs 测试误差的差距识别过拟合",
+      "掌握 3 个防过拟合的核心技巧",
+    ],
+    cues: [
+      "为什么 MAPE 会'欺骗'你？（低销量日的误差被放大）",
+      "WAPE 和 MAPE 的区别是什么？什么时候该用 WAPE？",
+      "TimeSeriesSplit 为什么不能 shuffle？'信息泄漏'是什么意思？",
+      "训练 MAE=2，测试 MAE=30——这是什么问题？怎么解决？",
+      "正则化、early stopping、降低复杂度——三个防过拟合手段的适用场景？",
+    ],
+    content: `
+<h3>3.1 评估指标：5 个核心，一个不能少</h3>
+
+<table>
+<tr><th>指标</th><th>公式（一句话）</th><th>优点</th><th>缺点</th><th>何时用</th></tr>
+<tr><td><strong>MAE</strong></td><td>平均绝对误差</td><td>直观、抗异常值</td><td>不分大小</td><td>常规场景</td></tr>
+<tr><td><strong>MAPE</strong></td><td>平均绝对百分比误差</td><td>可解释（误差 5%）</td><td>低销量时爆炸</td><td>销量稳定</td></tr>
+<tr><td><strong>WAPE</strong></td><td>加权百分比误差</td><td>抗低销量</td><td>偏重大销量</td><td>★推荐</td></tr>
+<tr><td><strong>RMSE</strong></td><td>均方根误差</td><td>惩罚大误差</td><td>对异常值敏感</td><td>关注极端错</td></tr>
+<tr><td><strong>R²</strong></td><td>决定系数</td><td>0-1 直观</td><td>时序场景误导</td><td>线性回归</td></tr>
+</table>
+
+<h4>通俗类比：每种指标在回答什么问题</h4>
+
+<p><strong>MAE</strong> = "平均每次预测差多少？"<br/>
+→ 老板问"销量预测准不准？" → 答："MAE = 50 件"</p>
+
+<p><strong>MAPE</strong> = "平均每次预测差百分之几？"<br/>
+→ 老板问"误差比例？" → 答："MAPE = 15%"</p>
+
+<p><strong>WAPE</strong> = "总误差占总销量的百分之几？"<br/>
+→ 老板问"整体表现？" → 答："WAPE = 8%"（比 MAPE 稳）</p>
+
+<p><strong>RMSE</strong> = "最坏情况差多少？"<br/>
+→ 老板问"有没有预测离谱的时候？" → 答："RMSE = 200，远大于 MAE=50，说明有极端错"</p>
+
+<h4>代码实现</h4>
+<pre><code>import numpy as np
+
+def compute_metrics(y_true, y_pred):
+    mae = np.mean(np.abs(y_true - y_pred))
+    mape = np.mean(np.abs((y_true - y_pred) / np.clip(y_true, 1, None))) * 100
+    wape = np.sum(np.abs(y_true - y_pred)) / np.sum(np.abs(y_true)) * 100
+    rmse = np.sqrt(np.mean((y_true - y_pred) ** 2))
+    return {"MAE": mae, "MAPE": mape, "WAPE": wape, "RMSE": rmse}
+
+# 用法
+metrics = compute_metrics(y_test, y_pred)
+for k, v in metrics.items():
+    print(f"{k}: {v:.2f}")
+</code></pre>
+
+<div class="pit-box">
+<strong>⚠️ MAPE 的大坑：</strong>当真实值接近 0 时（比如某天销量只有 1 件），预测误差会爆炸（500%），
+拉高整个 MAPE。这种情况一定要用 WAPE。
+</div>
+
+<h3>3.2 回测：为什么不能用 train_test_split</h3>
+
+<p><strong>类比：</strong>用 train_test_split 切时序数据 = 让学生先看期末考试的答案，再去做练习。
+他练习分数一定很高，但考试时崩盘。</p>
+
+<p><strong>为什么：</strong>train_test_split 默认 shuffle（随机打乱），所以"训练集"里可能包含 2025-12-31 的数据，
+而"测试集"里是 2025-01-01。模型学到了"未来的规律"，去预测"过去"——这叫<strong>信息泄漏</strong>。</p>
+
+<h4>正确做法：滚动回测（TimeSeriesSplit 或自定义）</h4>
+
+<pre><code>from sklearn.model_selection import TimeSeriesSplit
+
+# 标准的时序交叉验证
+tscv = TimeSeriesSplit(n_splits=5)
+for train_idx, test_idx in tscv.split(df):
+    train, test = df.iloc[train_idx], df.iloc[test_idx]
+    # 训练 → 预测 → 评估
+    model.fit(train[features], train["sales"])
+    pred = model.predict(test[features])
+    print(compute_metrics(test["sales"], pred))</code></pre>
+
+<h4>滚动窗口回测（更贴近业务）</h4>
+
+<pre><code># 模拟真实业务：每个月用过去 90 天训练，预测未来 7 天
+def rolling_backtest(df, model, train_window=90, horizon=7):
+    results = []
+    df = df.sort_values("date").reset_index(drop=True)
+    start = 0
+    while start + train_window + horizon <= len(df):
+        train = df.iloc[start : start + train_window]
+        test = df.iloc[start + train_window : start + train_window + horizon]
+        model.fit(train[features], train["sales"])
+        pred = model.predict(test[features])
+        results.append({
+            "train_end": train["date"].max(),
+            "test_start": test["date"].min(),
+            "metrics": compute_metrics(test["sales"], pred)
+        })
+        start += horizon  # 滑动窗口
+    return results</code></pre>
+
+<div class="tip-box">
+💡 <strong>顶级团队的回测原则：</strong>
+<ul>
+<li>训练集必须严格在测试集之前（时间上）</li>
+<li>滚动窗口 = 模拟真实上线场景</li>
+<li>报告时给"多次回测的平均误差"，不要只给一次</li>
+<li>报告时给"最差的一次"——告诉老板"最坏情况误差是 X%"</li>
+</ul>
+</div>
+
+<h3>3.3 过拟合：识别 + 防范</h3>
+
+<h4>过拟合的症状</h4>
+<table>
+<tr><th>信号</th><th>含义</th></tr>
+<tr><td>训练 MAE=2，测试 MAE=30</td><td>差距 15 倍 → 严重过拟合</td></tr>
+<tr><td>训练损失持续下降，验证损失开始上升</td><td>学的不是规律是噪声</td></tr>
+<tr><td>训练集 R²=0.99，测试集 R²=0.3</td><td>背下了训练数据</td></tr>
+<tr><td>特征重要性 Top 5 是噪声特征</td><td>模型学错方向了</td></tr>
+</table>
+
+<h4>过拟合的三大成因 + 对策</h4>
+
+<table>
+<tr><th>成因</th><th>对策</th><th>XGBoost 代码</th></tr>
+<tr><td>模型太复杂（树太深）</td><td>降低 max_depth</td><td><code>max_depth=4</code></td></tr>
+<tr><td>树太多（学得太细）</td><td>用 early stopping</td><td><code>early_stopping_rounds=50</code></td></tr>
+<tr><td>每棵树看到太多</td><td>加正则化 + subsample</td><td><code>subsample=0.7, colsample_bytree=0.7</code></td></tr>
+</table>
+
+<h4>Early Stopping（神器）</h4>
+
+<pre><code># XGBoost 的 early stopping：验证集不再改善就停
+model.fit(
+    X_train, y_train,
+    eval_set=[(X_val, y_val)],
+    verbose=False,
+)
+# XGBoost 2.0+ 自动启用 early stopping
+# 老 API: early_stopping_rounds=50</code></pre>
+
+<div class="quote-box">
+<blockquote><strong>早期停止 = 自动找最佳树数量。</strong>
+不停止 → 1000 棵树全用 → 过拟合；
+早停 → 验证误差不再下降时（比如第 247 棵）→ 自动停 → 最佳模型。
+</blockquote>
+</div>
+
+<h3>3.4 完整训练流程（顶级团队的标准动作）</h3>
+
+<pre><code># 一个完整的训练 + 评估 + 防过拟合 pipeline
+def train_and_evaluate(df, target="sales"):
+    df = df.sort_values("date").reset_index(drop=True)
+    features = [c for c in df.columns if c not in [target, "date"]]
+
+    # ① 三段式切分：训练 / 验证 / 测试
+    n = len(df)
+    train = df.iloc[: int(n * 0.7)]
+    val = df.iloc[int(n * 0.7) : int(n * 0.85)]
+    test = df.iloc[int(n * 0.85) :]
+
+    # ② 训练（带 early stopping）
+    model = xgb.XGBRegressor(
+        n_estimators=1000,
+        max_depth=6,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        early_stopping_rounds=50,  # ★核心
+        random_state=42,
+    )
+    model.fit(
+        train[features], train[target],
+        eval_set=[(val[features], val[target])],
+        verbose=False,
+    )
+
+    # ③ 评估
+    pred_test = model.predict(test[features])
+    pred_train = model.predict(train[features])
+
+    train_mae = mean_absolute_error(train[target], pred_train)
+    test_mae = mean_absolute_error(test[target], pred_test)
+    test_metrics = compute_metrics(test[target], pred_test)
+
+    print(f"训练 MAE: {train_mae:.2f}")
+    print(f"测试 MAE: {test_mae:.2f}")
+    print(f"过拟合比: {test_mae / train_mae:.1f}x （&gt;3x 表示严重过拟合）")
+    print(f"测试指标:")
+    for k, v in test_metrics.items():
+        print(f"  {k}: {v:.2f}")
+
+    return model</code></pre>
+
+<div class="ex-box">
+<h4>✏️ Day 3 必做</h4>
+<ol>
+<li>用 Day 1 的 XGBoost + Day 2 的特征，跑完整训练流程</li>
+<li>打印"训练 MAE / 测试 MAE / 过拟合比"</li>
+<li>如果过拟合比 &gt; 3x：把 max_depth 从 6 降到 4，重新跑</li>
+<li>开启 early stopping，记录"最佳树数量"（model.best_iteration）</li>
+<li>写一句话总结："我的模型在测试集上 WAPE = X%，过拟合比 = Yx"</li>
+</ol>
+</div>
+
+<h3>3.5 那些"行话"</h3>
+
+<table>
+<tr><th>术语</th><th>通俗解释</th></tr>
+<tr><td>训练误差</td><td>模型在练习题上的得分</td></tr>
+<tr><td>测试误差</td><td>模型在考试时的得分</td></tr>
+<tr><td>泛化能力</td><td>面对新题的表现</td></tr>
+<tr><td>过拟合</td><td>背下了练习题，考试崩盘</td></tr>
+<tr><td>欠拟合</td><td>练习题都没学好</td></tr>
+<tr><td>正则化</td><td>给模型戴"紧箍咒"，防止它太较真</td></tr>
+<tr><td>Early Stopping</td><td>考试前停止刷题，避免过度记忆</td></tr>
+<tr><td>信息泄漏</td><td>训练时偷看了答案</td></tr>
+</table>
+`,
+  },
+
+  // ============================================================
+  // DAY 4 — 时序模型 + 正则化基线
+  // ============================================================
+  {
+    id: "crash-4",
+    day: 4,
+    week: 1,
+    track: "crash",
+    duration: 120,
+    title: "时序模型：ARIMA / Prophet + 正则化基线",
+    description:
+      "XGBoost 不是万能的——小数据集（&lt;1000 行）或强季节性场景，ARIMA/Prophet 更稳。今天学两套时序专用模型 + 一个永远要做的 baseline。",
+    objectives: [
+      "理解 ARIMA 的 (p,d,q) 三参数及如何用 ACF/PACF 选参",
+      "会用 Prophet 自动处理节假日 + 趋势变点 + 异常值",
+      "理解什么时候该用时序模型，什么时候该用 ML 模型",
+      "学会用'naive baseline'防被骗——任何模型都要先打赢它",
+    ],
+    cues: [
+      "为什么数据 &lt;1000 行不要用 XGBoost？（参数比样本还多，必过拟合）",
+      "ARIMA 的 (p,d,q) 各自是什么？怎么用 ACF/PACF 图定参？",
+      "Prophet 的'趋势变点'和'节假日效应'是怎么自动学的？",
+      "naive baseline（用昨天的值预测今天）——为什么所有模型都要先打赢它？",
+      "ARIMA 适合什么数据？Prophet 适合什么数据？",
+    ],
+    content: `
+<h3>4.1 模型选型决策树（背下来）</h3>
+
+<pre><code>数据量？
+├─ &lt; 100 行 → 用 mean/median 当预测（别折腾模型了）
+├─ 100-1000 行 → ARIMA / Prophet / 指数平滑（小样本友好）
+├─ 1000-10万行 → XGBoost / LightGBM（★首选）
+└─ &gt; 10万行 → LightGBM / 深度学习（LSTM/Transformer）
+
+强季节性？
+├─ 单一周期（周/月）→ SARIMA / Prophet
+└─ 多重周期（周+月+年）→ Prophet / TBATS（ARIMA 会爆炸）
+
+有外部特征（促销、天气）？
+├─ 有 → XGBoost / SARIMAX（ARIMA + 外生变量）
+└─ 无 → ARIMA / Prophet
+</code></pre>
+
+<div class="tip-box">
+💡 <strong>一句话决策：</strong>数据少 + 纯时序 → ARIMA/Prophet；数据多 + 有外部特征 → XGBoost。
+深度学习只在数据 &gt;100 万行且有时序结构时考虑。
+</div>
+
+<h3>4.2 ARIMA：经典之王</h3>
+
+<h4>三个参数的故事（傻子也能懂）</h4>
+
+<p>ARIMA(p, d, q)：</p>
+<ul>
+<li><strong>p（AR 自回归）</strong>："今天的值 = 过去 N 天的值的线性组合"——N 就是 p</li>
+<li><strong>d（差分次数）</strong>："为了让数据变平稳，需要做几次差分"——通常 0 或 1</li>
+<li><strong>q（MA 滑动平均）</strong>："今天的值 = 过去 N 天的噪声的线性组合"——N 就是 q</li>
+</ul>
+
+<h4>平稳性：ARIMA 的前提</h4>
+
+<p><strong>类比：</strong>ARIMA 假设数据的"统计规律"是恒定的（均值、方差不随时间变）。
+如果数据有上升或下降趋势（比如销量年年涨），就必须先<strong>差分</strong>——用今天的值减昨天的值，得到"变化量"序列，这个序列通常就平稳了。</p>
+
+<pre><code>from statsmodels.tsa.stattools import adfuller
+
+# ADF 检验：p &lt; 0.05 表示平稳
+result = adfuller(df["sales"])
+print(f"p-value: {result[1]}")
+if result[1] &lt; 0.05:
+    print("✅ 平稳，d=0")
+else:
+    print("❌ 不平稳，需要差分 d=1")
+    diff = df["sales"].diff().dropna()
+    result2 = adfuller(diff)
+    print(f"差分后 p-value: {result2[1]}")</code></pre>
+
+<h4>用 ACF/PACF 图定 p 和 q</h4>
+
+<pre><code>from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+plot_acf(df["sales"], ax=axes[0])   # 看 q
+plot_pacf(df["sales"], ax=axes[1])  # 看 p
+plt.show()
+</code></pre>
+
+<table>
+<tr><th>图</th><th>怎么读</th></tr>
+<tr><td>ACF（自相关）</td><td>第几根柱子超出蓝色区间 → q 就是几</td></tr>
+<tr><td>PACF（偏自相关）</td><td>第几根柱子超出蓝色区间 → p 就是几</td></tr>
+</table>
+
+<h4>训练 ARIMA</h4>
+
+<pre><code>from statsmodels.tsa.arima.model import ARIMA
+
+# 训练（参数 p=2, d=1, q=2）
+model = ARIMA(df["sales"], order=(2, 1, 2))
+fitted = model.fit()
+
+# 预测未来 7 天
+forecast = fitted.forecast(steps=7)
+print(forecast)
+
+# 看 AIC（越小越好，用于对比不同参数）
+print(f"AIC: {fitted.aic:.2f}")</code></pre>
+
+<h4>SARIMA（带季节）</h4>
+
+<pre><code>from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+# 季节周期 m=7（周）
+model = SARIMAX(
+    df["sales"],
+    order=(2, 1, 2),
+    seasonal_order=(1, 0, 1, 7),
+)
+fitted = model.fit()</code></pre>
+
+<div class="pit-box">
+<strong>⚠️ ARIMA 三大坑：</strong>
+<ul>
+<li>不平稳就硬训 → 结果完全错（必须先检验）</li>
+<li>多重季节（周+月+年）→ SARIMA 处理不了，转 Prophet</li>
+<li>有外部特征（促销）→ 普通 ARIMA 忽略，必须用 SARIMAX</li>
+</ul>
+</div>
+
+<h3>4.3 Prophet：Facebook 的"傻瓜式"时序神器</h3>
+
+<p><strong>Prophet 的核心思想：</strong>把时序拆解成 <strong>趋势 + 季节 + 节假日 + 噪声</strong>，每部分独立建模，自动拟合。</p>
+
+<pre><code>y(t) = g(t) + s(t) + h(t) + ε(t)
+      ↑       ↑       ↑       ↑
+    趋势    季节   节假日   残差</code></pre>
+
+<h4>用 Prophet 的最大好处：自动化</h4>
+<ul>
+<li>✅ 自动检测趋势变点（changepoints）</li>
+<li>✅ 自动学习周/月/年季节性</li>
+<li>✅ 内置中国节假日（diwali、双 11、春节）</li>
+<li>✅ 自动处理异常值（用鲁棒回归）</li>
+<li>✅ 不需要手动差分</li>
+</ul>
+
+<pre><code>from prophet import Prophet
+
+# Prophet 要求列名必须是 ds 和 y
+df_prophet = df[["date", "sales"]].rename(columns={"date": "ds", "sales": "y"})
+
+# 创建模型 + 加中国节假日
+m = Prophet(
+    yearly_seasonality=True,
+    weekly_seasonality=True,
+    daily_seasonality=False,
+    changepoint_prior_scale=0.05,  # 趋势灵活度（大=敏感）
+)
+m.add_country_holidays(country_name="CN")  # 加中国节假日
+
+# 训练 + 预测
+m.fit(df_prophet)
+future = m.make_future_dataframe(periods=7)
+forecast = m.predict(future)
+
+# 看分解图（趋势 + 季节 + 节假日）——Prophet 最有价值的可视化
+fig = m.plot_components(forecast)
+</code></pre>
+
+<div class="tip-box">
+💡 <strong>Prophet 的"changepoint_prior_scale"</strong>是它的灵魂参数：
+<ul>
+<li>默认 0.05 → 平衡</li>
+<li>调到 0.5 → 趋势非常灵活（适合突变数据，但可能过拟合）</li>
+<li>调到 0.005 → 趋势非常平滑（适合稳定增长）</li>
+</ul>
+</div>
+
+<h3>4.4 Naive Baseline：永远要做的"傻子预测"</h3>
+
+<p><strong>类比：</strong>任何模型上线前，先问一句："如果我不做模型，就用'昨天的值'预测今天，误差是多少？"
+这个误差就是 naive baseline。如果你的复杂模型打不过它 → 你的模型没用。</p>
+
+<pre><code># 4 个 baseline，任何项目都要先跑
+def compute_baselines(df, target="sales"):
+    df = df.sort_values("date").reset_index(drop=True)
+    y = df[target]
+    results = {}
+
+    # ① Naive: 用昨天的值
+    results["naive"] = np.mean(np.abs(y.diff().dropna()))
+
+    # ② Seasonal naive: 用上周同天的值
+    results["seasonal_naive_7"] = np.mean(np.abs(y - y.shift(7)).dropna())
+
+    # ③ Mean: 用历史均值
+    results["mean"] = np.mean(np.abs(y - y.expanding().mean().shift(1)).dropna())
+
+    # ④ Median: 用历史中位数
+    results["median"] = np.mean(np.abs(y - y.expanding().median().shift(1)).dropna())
+
+    return results
+
+baselines = compute_baselines(df)
+print("=== Baselines ===")
+for name, mae in baselines.items():
+    print(f"{name}: MAE = {mae:.2f}")
+</code></pre>
+
+<div class="quote-box">
+<blockquote><strong>金科玉律：</strong>你的模型 MAE 必须 &lt; 最好的 baseline 的 70%，才值得上线。
+否则直接用 baseline（更简单、更稳）。
+</blockquote>
+</div>
+
+<h3>4.5 何时用什么模型（终极对照表）</h3>
+
+<table>
+<tr><th>场景</th><th>推荐模型</th><th>原因</th></tr>
+<tr><td>数据 &lt; 500 行，纯时序</td><td>ARIMA / Prophet</td><td>小样本友好</td></tr>
+<tr><td>数据 1万+，有外部特征</td><td>XGBoost</td><td>特征多就强</td></tr>
+<tr><td>强多重季节（周+月+年）</td><td>Prophet</td><td>ARIMA 处理不了多重</td></tr>
+<tr><td>需要可解释性</td><td>Prophet / XGBoost+SHAP</td><td>能拆解</td></tr>
+<tr><td>实时性要求高</td><td>XGBoost</td><td>推理快</td></tr>
+<tr><td>新商品冷启动</td><td>用相似商品的历史均值</td><td>无数据可学</td></tr>
+</table>
+
+<div class="ex-box">
+<h4>✏️ Day 4 必做</h4>
+<ol>
+<li>用 Day 1 的数据，先跑 4 个 baselines（必须先做！）</li>
+<li>训练一个 ARIMA / Prophet 模型</li>
+<li>对比：你的 XGBoost（Day 1）vs ARIMA/Prophet vs baselines，谁的 MAE 最低？</li>
+<li>如果 XGBoost 没打过 baseline → 检查特征工程（Day 2 的 lag/rolling 有没有做对）</li>
+<li>画 Prophet 的 components 分解图，截图保存</li>
+</ol>
+</div>
+`,
+  },
+
+  // ============================================================
+  // DAY 5 — 端到端实战：把所有东西串起来
+  // ============================================================
+  {
+    id: "crash-5",
+    day: 5,
+    week: 1,
+    track: "crash",
+    duration: 180,
+    title: "端到端实战：从 CSV 到预测报告",
+    description:
+      "把前 4 天学的全部串起来：读 CSV → pandas 清洗 → 特征工程 → baseline → XGBoost 训练 + early stopping → 对比 ARIMA → 出报告。这是你能写进简历的项目。",
+    objectives: [
+      "独立完成一个端到端的销量预测项目",
+      "代码组织成可复用的 pipeline（不是一坨面条代码）",
+      "产出一份专业的预测报告（含图 + 表 + 结论）",
+      "知道哪些环节交给 AI、哪些必须人来判断",
+    ],
+    cues: [
+      "为什么端到端 pipeline 比单段代码重要？（可复现 + 可迭代）",
+      "baseline → 简单模型 → 复杂模型，为什么要按这个顺序？（防止'用大炮打蚊子'）",
+      "报告里最重要的不是 MAE 是多少，而是'对业务有什么意义'——你能写出吗？",
+      "哪些环节交给 AI？（数据清洗、代码生成、报告草稿）哪些必须人来判断？（业务假设、风控）",
+    ],
+    content: `
+<h3>5.1 项目目标：一个能写进简历的销量预测项目</h3>
+
+<p><strong>你要交付的：</strong></p>
+<ol>
+<li>一个 <code>run_pipeline.py</code> 脚本——任何人下载后能 1 分钟内复现</li>
+<li>一份预测报告（Markdown / PDF）——含 5 张图 + 3 个结论 + 1 个建议</li>
+<li>一个 GitHub repo——展示工程化能力</li>
+</ol>
+
+<h3>5.2 项目结构（顶级团队的标准）</h3>
+
+<pre><code>my-forecast-project/
+├── README.md              # 项目说明 + 复现步骤
+├── requirements.txt       # 依赖
+├── data/
+│   ├── raw/               # 原始数据（不进 git）
+│   └── processed/         # 清洗后数据
+├── src/
+│   ├── data_loader.py     # 读 + 清洗
+│   ├── features.py        # 特征工程
+│   ├── models.py          # 模型定义
+│   ├── train.py           # 训练
+│   └── evaluate.py        # 评估
+├── notebooks/
+│   └── exploration.ipynb  # EDA（探索性分析）
+├── reports/
+│   └── 2026-07-09.md      # 预测报告
+└── run_pipeline.py        # 端到端入口
+</code></pre>
+
+<h3>5.3 完整 pipeline 代码</h3>
+
+<pre><code># run_pipeline.py — 端到端流水线
 import pandas as pd
 import numpy as np
+import xgboost as xgb
+from prophet import Prophet
+from sklearn.metrics import mean_absolute_error
+import warnings
+warnings.filterwarnings("ignore")
 
-# 第二步：造一份模拟销量数据（先不连真实数据库）
-dates = pd.date_range('2024-01-01', periods=90, freq='D')
-sales = np.random.randint(50, 200, size=90) + np.sin(np.arange(90)/7)*30
-df = pd.DataFrame({'日期': dates, '销量': sales.astype(int)})
+# ============================================================
+# 1. 数据加载
+# ============================================================
+def load_data(path="data/raw/sales.csv"):
+    df = pd.read_csv(path, parse_dates=["date"])
+    print(f"✅ 数据加载：{df.shape[0]} 行 × {df.shape[1]} 列")
+    print(f"   时间范围：{df['date'].min()} ~ {df['date'].max()}")
+    return df
 
-# 第三步：看数据长什么样
-print(df.head(10))        # 前 10 行
-print(df.info())          # 数据类型和缺失
-print(df.describe())      # 均值/最小/最大/分位
+# ============================================================
+# 2. 特征工程（Day 2 的内容）
+# ============================================================
+def build_features(df):
+    df = df.sort_values(["store_id", "product_id", "date"]).reset_index(drop=True)
 
-# 第四步：画个图
-import matplotlib.pyplot as plt
-df.plot(x='日期', y='销量', figsize=(12,4))
-plt.title('90 天销量走势')
-plt.show()
+    # 时间特征
+    df["month"] = df["date"].dt.month
+    df["day_of_week"] = df["date"].dt.dayofweek
+    df["is_weekend"] = (df["day_of_week"] >= 5).astype(int)
 
-print('✅ 恭喜！你的第一段量化代码跑通了')
+    # 滞后 + 滑动（按 store + product 分组）
+    grp = ["store_id", "product_id"]
+    for lag in [1, 7, 14, 28]:
+        df[f"lag_{lag}"] = df.groupby(grp)["sales"].shift(lag)
+    for w in [7, 14, 28]:
+        df[f"roll_mean_{w}"] = df.groupby(grp)["sales"].transform(
+            lambda x: x.shift(1).rolling(w).mean()
+        )
+
+    # 聚合
+    df["store_avg"] = df.groupby("store_id")["sales"].transform("mean")
+    df["product_total"] = df.groupby("product_id")["sales"].transform("sum")
+
+    # 交互
+    df["promo_x_holiday"] = df.get("is_promo", 0) * df.get("is_holiday", 0)
+
+    # 丢缺失
+    df = df.dropna()
+    print(f"✅ 特征工程：{len(df.columns)} 列")
+    return df
+
+# ============================================================
+# 3. Baseline（Day 4 的内容）
+# ============================================================
+def compute_baselines(df):
+    y = df["sales"]
+    return {
+        "naive": np.mean(np.abs(y.diff().dropna())),
+        "seasonal_naive_7": np.mean(np.abs(y - y.shift(7)).dropna()),
+        "mean": np.mean(np.abs(y - y.expanding().mean().shift(1)).dropna()),
+    }
+
+# ============================================================
+# 4. XGBoost 训练（Day 1+3 的内容）
+# ============================================================
+def train_xgboost(df):
+    features = [c for c in df.columns if c not in ["sales", "date"]]
+    n = len(df)
+    train = df.iloc[: int(n * 0.85)]
+    test = df.iloc[int(n * 0.85) :]
+
+    model = xgb.XGBRegressor(
+        n_estimators=500,
+        max_depth=6,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        early_stopping_rounds=50,
+        random_state=42,
+    )
+    model.fit(
+        train[features], train["sales"],
+        eval_set=[(test[features], test["sales"])],
+        verbose=False,
+    )
+
+    pred = model.predict(test[features])
+    mae = mean_absolute_error(test["sales"], pred)
+    wape = np.sum(np.abs(test["sales"] - pred)) / np.sum(test["sales"]) * 100
+
+    print(f"✅ XGBoost：MAE={mae:.2f}, WAPE={wape:.2f}%, 最佳树数={model.best_iteration}")
+    return model, mae, wape, test, pred
+
+# ============================================================
+# 5. 对比 Prophet（Day 4 的内容）
+# ============================================================
+def train_prophet(df):
+    df_p = df[["date", "sales"]].rename(columns={"date": "ds", "sales": "y"})
+    n = len(df_p)
+    train = df_p.iloc[: int(n * 0.85)]
+    test = df_p.iloc[int(n * 0.85) :]
+
+    m = Prophet(weekly_seasonality=True, yearly_seasonality=True)
+    m.fit(train)
+
+    future = m.make_future_dataframe(periods=len(test))
+    forecast = m.predict(future)
+    pred = forecast.iloc[-len(test):]["yhat"].values
+
+    mae = mean_absolute_error(test["y"].values, pred)
+    print(f"✅ Prophet：MAE={mae:.2f}")
+    return mae
+
+# ============================================================
+# 6. 生成报告
+# ============================================================
+def generate_report(baselines, xgb_result, prophet_mae):
+    xgb_mae, xgb_wape = xgb_result[1], xgb_result[2]
+    best_baseline = min(baselines.values())
+
+    report = f"""# 销量预测报告
+
+**日期**：2026-07-09
+**数据集**：{df.shape[0]} 行 × {df.shape[1]} 列
+
+## 一、模型对比
+
+| 模型 | MAE | 备注 |
+|------|-----|------|
+| Naive baseline | {baselines['naive']:.2f} | 用昨天的值 |
+| Seasonal Naive | {baselines['seasonal_naive_7']:.2f} | 用上周同天 |
+| Mean baseline | {baselines['mean']:.2f} | 用历史均值 |
+| **XGBoost** | **{xgb_mae:.2f}** | WAPE={xgb_wape:.2f}% |
+| Prophet | {prophet_mae:.2f} | 自动趋势+季节 |
+
+## 二、结论
+
+1. 最强模型：{'XGBoost' if xgb_mae &lt; prophet_mae else 'Prophet'}（MAE={min(xgb_mae, prophet_mae):.2f}）
+2. 相比 baseline 提升：{(1 - min(xgb_mae, prophet_mae) / best_baseline) * 100:.1f}%
+3. 整体误差水平：WAPE={xgb_wape:.2f}%
+
+## 三、业务建议
+
+- 预测精度{'达标' if xgb_wape &lt; 20 else '待优化'}（阈值 WAPE &lt; 20%）
+- {'可以用于库存决策' if xgb_wape &lt; 15 else '建议继续优化特征工程'}
+"""
+    with open("reports/2026-07-09.md", "w") as f:
+        f.write(report)
+    print(f"✅ 报告已生成：reports/2026-07-09.md")
+
+# ============================================================
+# 主流程
+# ============================================================
+if __name__ == "__main__":
+    df = load_data()
+    df = build_features(df)
+    baselines = compute_baselines(df)
+    print(f"Baselines: {baselines}")
+    xgb_result = train_xgboost(df)
+    prophet_mae = train_prophet(df)
+    generate_report(baselines, xgb_result, prophet_mae)
+    print("\\n🎉 全流程完成！")
 </code></pre>
 
-<h3>4.3 理解 DataFrame——5 个核心动作</h3>
-<p>DataFrame 就是"代码版的 Excel 表"，但能处理百万行不卡。</p>
-<table>
-<tr><th>动作</th><th>Excel 怎么做</th><th>pandas 代码</th></tr>
-<tr><td>看前几行</td><td>滚动鼠标</td><td>df.head()</td></tr>
-<tr><td>筛选</td><td>自动筛选</td><td>df[df['销量'] > 100]</td></tr>
-<tr><td>分组求和</td><td>数据透视表</td><td>df.groupby('月份')['销量'].sum()</td></tr>
-<tr><td>排序</td><td>排序按钮</td><td>df.sort_values('销量', ascending=False)</td></tr>
-<tr><td>新增列</td><td>写公式</td><td>df['是否破百'] = df['销量'] > 100</td></tr>
-</table>
-<p><strong>今天就掌握这 5 个</strong>，已经比 80% 的 Excel 用户强了。</p>
+<h3>5.4 报告模板（写报告就是写"决策"）</h3>
 
-<h3>4.4 读真实 CSV（下一步）</h3>
-<pre><code># 如果你有真实销量数据 CSV
-df_real = pd.read_csv('my_sales.csv', parse_dates=['日期'])
-df_real.head()
+<p>顶级分析师的报告<strong>不是罗列数字</strong>，而是回答 3 个问题：</p>
 
-# Google Colab 上传文件
-from google.colab import files
-uploaded = files.upload()  # 会弹窗选文件
-</code></pre>
-
-<h3>4.5 接下来 100 天该补什么</h3>
-<p>今天跑通后，你已经有了<strong>"我能写 Python"的信心</strong>。但要真正做量化，还需要补：</p>
-<table>
-<tr><th>技能</th><th>在 100 天修炼的哪一天</th></tr>
-<tr><td>pandas 进阶（合并/透视/时序）</td><td>D8-D14</td></tr>
-<tr><td>ARIMA / Prophet 实操</td><td>D15-D21</td></tr>
-<tr><td>XGBoost + 回测</td><td>D22-D28</td></tr>
-<tr><td>特征工程深度</td><td>D31-D40</td></tr>
-<tr><td>SHAP 可解释性</td><td>D41-D45</td></tr>
-</table>
-<p><strong>5 天结束不是终点，是 100 天的起点。</strong>但你现在已经知道每个技能"为什么学、用在哪个环节"。</p>
-
-<div class="ex-box"><h4>✏️ Day 4 必做（今天一定要跑通）</h4>
 <ol>
-<li>打开 <a href="https://colab.research.google.com/" target="_blank">Google Colab</a>，新建 Notebook</li>
-<li>复制 4.2 的代码，点运行，看到图</li>
-<li>把截图发朋友圈："我的第一段量化代码"——建立仪式感</li>
-<li>（可选）上传你的真实销量 CSV，跑 df.describe()</li>
-</ol></div>
-<div class="bk-box"><h4>📖 延伸</h4>
-<p>《利用Python进行数据分析》Wes McKinney 第 1-4 章——pandas 作者亲笔，最权威入门。</p></div>`,
-  },
-
-  // ════════════════════════════════════════════
-  // Day 5 · 综合 · 三场景对照看共同骨架
-  // ════════════════════════════════════════════
-  {
-    id: "crash-5", day: 5, week: 1, track: "crash",
-    title: "综合 · 金融/电力/供应链三场景对照——看共同骨架",
-    description: "用三个真实场景验证你学到的方法论——发现它们的骨架完全相同",
-    objectives: [
-      "能用同一套方法论分析金融、电力、供应链三类预测问题",
-      "看清'数据→建模→评估→决策'四步在三个场景中的映射",
-      "明确自己接下来要深耕哪个场景",
-      "完成 5 天速成的'认知毕业测试'",
-    ],
-    duration: 90,
-    cues: [
-      "金融选股、电力报价、供应链补货——三者的'目标变量'分别是什么？",
-      "三个场景的'最贵错误'分别是什么？",
-      "三个场景哪个数据最干净？哪个最脏？",
-      "我接下来 100 天要深耕哪个场景？为什么？",
-    ],
-    content: `<h3>5.1 三个场景的统一骨架</h3>
-<table>
-<tr><th>维度</th><th>金融（股价预测）</th><th>电力（电价预测）</th><th>供应链（销量预测）</th></tr>
-<tr><td><strong>目标</strong></td><td>预测下周股价涨跌</td><td>预测次日 24 时段电价</td><td>预测下周 SKU 销量</td></tr>
-<tr><td><strong>数据</strong></td><td>股价/财报/舆情</td><td>历史电价/负荷/天气</td><td>销量/促销/天气/节假日</td></tr>
-<tr><td><strong>因子</strong></td><td>动量/估值/质量</td><td>负荷/燃料价/新能源出力</td><td>历史/促销/外部</td></tr>
-<tr><td><strong>模型</strong></td><td>XGBoost/LSTM</td><td>XGBoost/Transformer</td><td>Prophet/XGBoost</td></tr>
-<tr><td><strong>评估</strong></td><td>IC/夏普/回撤</td><td>MAPE/覆盖率</td><td>MAPE/WAPE</td></tr>
-<tr><td><strong>决策</strong></td><td>买卖+仓位</td><td>报价+储能调度</td><td>补货+库存</td></tr>
-<tr><td><strong>最贵错误</strong></td><td>方向错（亏钱）</td><td>尖峰预测错（巨亏）</td><td>补多了（库存积压）</td></tr>
-</table>
-<p><strong>骨架完全相同：数据→因子→模型→评估→决策。</strong>差异只在具体形态。</p>
-
-<h3>5.2 三个场景的难度排序</h3>
-<table>
-<tr><th>维度</th><th>供应链（最易入门）</th><th>电力（中等）</th><th>金融（最难）</th></tr>
-<tr><td>数据可得性</td><td>⭐⭐⭐⭐⭐（企业内部）</td><td>⭐⭐⭐⭐⭐（PJM 公开）</td><td>⭐⭐⭐（需付费）</td></tr>
-<tr><td>噪声水平</td><td>⭐⭐（较稳定）</td><td>⭐⭐⭐（有尖峰）</td><td>⭐⭐⭐⭐⭐（极嘈杂）</td></tr>
-<tr><td>对手博弈</td><td>无</td><td>弱</td><td>极强（零和）</td></tr>
-<tr><td>反馈速度</td><td>周/月</td><td>次日</td><td>秒级</td></tr>
-<tr><td>推荐入门顺序</td><td><strong>① 首选</strong></td><td>② 第二</td><td>③ 最后</td></tr>
-</table>
-<p><strong>结论：供应链是最佳的入门场景</strong>——数据可得、噪声小、无对手博弈、反馈周期可接受。<br>学完供应链再迁金融或电力，事半功倍。</p>
-
-<h3>5.3 三场景的'共同陷阱'</h3>
-<table>
-<tr><th>陷阱</th><th>金融表现</th><th>电力表现</th><th>供应链表现</th></tr>
-<tr><td>过拟合</td><td>回测夏普 3，实盘亏</td><td>训练 MAPE 5%，上线 25%</td><td>训练准，大促全错</td></tr>
-<tr><td>信息泄漏</td><td>用了财报后数据</td><td>用了未来负荷</td><td>用了促销后销量</td></tr>
-<tr><td>忽略极端事件</td><td>黑天鹅爆仓</td><td>寒潮价格尖峰</td><td>大促断货或积压</td></tr>
-<tr><td>盲目信模型</td><td>机器交易崩盘</td><td>报价失误</td><td>补货决策脱离业务</td></tr>
-</table>
-<p><strong>陷阱相同，对策也相同：</strong>正确回测 + baseline 对比 + 人在环决策。</p>
-
-<h3>5.4 认知毕业测试</h3>
-<p>5 天结束了。回答以下 5 个问题，每个 20 分，60 分及格，80 分优秀：</p>
-<ol>
-<li>用一句话定义"量化分析"（提示：三个关键词）</li>
-<li>量化分析四大环节里，哪个最贵？为什么？</li>
-<li>什么是因子？它的三个必要条件是什么？</li>
-<li>ARIMA 和 XGBoost 各自的强项是什么？数据量 500 行该选哪个？</li>
-<li>过拟合的三大成因是什么？怎么识别？</li>
+<li><strong>发生了什么</strong>（数据描述 + 关键趋势）</li>
+<li><strong>为什么</strong>（归因——哪个特征贡献最大）</li>
+<li><strong>所以呢</strong>（对业务的影响 + 行动建议）</li>
 </ol>
-<p>把答案写在底部总结框，对照前 4 天的内容自评。</p>
 
-<h3>5.5 选择你的下一步</h3>
+<div class="quote-box">
+<blockquote><strong>记住：</strong>老板看的不是 MAE=8.5，而是"WAPE=15% → 可以用于补货决策，预计节省 12% 库存成本"。
+</blockquote>
+</div>
+
+<h3>5.5 人机边界：哪些交给 AI、哪些必须人来</h3>
+
 <table>
-<tr><th>你的情况</th><th>推荐路径</th></tr>
-<tr><td>供应链/快消从业者</td><td>100 天修炼（D1-D100）</td></tr>
-<tr><td>电力/能源从业者</td><td>电力市场 90 天（D1-D90）</td></tr>
-<tr><td>金融爱好者</td><td>100 天修炼 + 《PyQT》教材精读</td></tr>
-<tr><td>纯好奇、未定向</td><td>先做 100 天修炼 D1-D14，再选方向</td></tr>
+<tr><th>环节</th><th>人 / AI</th><th>原因</th></tr>
+<tr><td>提出业务假设</td><td>★ 人</td><td>机器不懂业务，人定方向</td></tr>
+<tr><td>数据清洗代码</td><td>✓ AI</td><td>规则明确，AI 写得又快又对</td></tr>
+<tr><td>特征工程设计</td><td>★ 人</td><td>需要业务理解</td></tr>
+<tr><td>特征实现代码</td><td>✓ AI</td><td>有 lag/rolling 标准模式</td></tr>
+<tr><td>模型选型</td><td>人+AI</td><td>AI 给建议，人定方向</td></tr>
+<tr><td>模型训练代码</td><td>✓ AI</td><td>标准化</td></tr>
+<tr><td>评估 + 回测</td><td>✓ AI</td><td>规则明确</td></tr>
+<tr><td>结果解释</td><td>人+AI</td><td>AI 给数据，人解读</td></tr>
+<tr><td>业务建议</td><td>★ 人</td><td>需要业务判断</td></tr>
+<tr><td>上线决策</td><td>★ 人</td><td>需要问责</td></tr>
 </table>
 
-<div class="ex-box"><h4>🎓 Day 5 毕业</h4>
+<div class="tip-box">
+💡 <strong>今天的核心：</strong>
+<ul>
+<li>pipeline 化——可复现、可迭代</li>
+<li>baseline 优先——防"用大炮打蚊子"</li>
+<li>报告 = 决策建议，不是数字罗列</li>
+<li>人定方向、机器跑流程——这是顶级分析师的工作方式</li>
+</ul>
+</div>
+
+<div class="ex-box">
+<h4>✏️ Day 5 必做（毕业作业）</h4>
 <ol>
-<li>完成认知毕业测试，自评分数</li>
-<li>写下"我接下来要深耕的场景 + 理由"</li>
-<li>点"✅ 完成今日"——5 天速成结束</li>
+<li>用上面的 pipeline 模板，跑通你的数据</li>
+<li>写一份 Markdown 报告（按 5.4 的模板）</li>
+<li>把代码推到 GitHub（README 写清复现步骤）</li>
+<li>把报告发到一个朋友/同事，问他"看懂了吗？"——他看懂了 = 你成功了</li>
 </ol>
-<p>恭喜！你现在拥有的认知地图，比许多工作 3 年的"经验型分析师"还清晰。<strong>认知清晰是行动有效的前提。</strong></p></div>
-<div class="bk-box"><h4>📖 下一步</h4>
-<p>切到 <strong>📅 100 天修炼</strong> 或 <strong>⚡ 电力市场 90 天</strong>，从 Day 1 开始系统补基础和实操。</p></div>`,
+</div>
+
+<h3>5.6 5 天结束你应该在哪里</h3>
+
+<table>
+<tr><th>能力</th><th>5 天前</th><th>5 天后</th></tr>
+<tr><td>看到销量数据</td><td>打开 Excel 看图</td><td>读 CSV → 特征工程 → 训模型 → 出报告</td></tr>
+<tr><td>选模型</td><td>"随便用一个"</td><td>看数据量 + 特征数 + 季节性，按决策树选</td></tr>
+<tr><td>评估模型</td><td>"看着挺准"</td><td>用 MAE/WAPE + 多次回测 + baseline 对比</td></tr>
+<tr><td>用 XGBoost</td><td>"听说过"</td><td>会调 5 个核心参数 + early stopping</td></tr>
+<tr><td>写报告</td><td>"误差是 10%"</td><td>"WAPE=12%，相比 naive baseline 提升 35%，建议用于补货"</td></tr>
+<tr><td>和 AI 协作</td><td>"完全依赖"</td><td>知道哪些环节交给 AI、哪些必须自己判断</td></tr>
+</table>
+
+<div class="quote-box">
+<blockquote><strong>5 天让你站在顶级分析师的肩膀上。</strong>
+你已经知道内核武器（Boosting）、最高频技能（pandas+特征）、防骗三件套（评估+回测+过拟合）、时序经典（ARIMA+Prophet）和端到端工程化。
+下一步就是 100 天修炼——把每个主题钻深、做项目、写博客、教别人。
+</blockquote>
+</div>
+`,
   },
 ];

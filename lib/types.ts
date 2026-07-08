@@ -123,6 +123,26 @@ export interface ChatMessage {
   timestamp: number;
 }
 
+// ── Question Notebook Types ────────────────────
+// 每次 AI 提问自动归档到对应章节，形成可翻看的问题笔记本
+
+export type QuestionStatus = "open" | "reviewing" | "resolved";
+
+export interface QuestionNote {
+  id: string;              // 唯一 ID（时间戳+随机）
+  question: string;        // 用户提问
+  answer: string;          // AI 回答
+  track: TrackKind;        // 来自哪个轨
+  sourceRef: string;       // 对应章节引用（如 "crash:crash-1" / "book:bk-measure:ch3"）
+  sourceTitle: string;     // 章节标题（便于在笔记本中显示）
+  category: string;        // 知识点分类（如 "ml_models/tree_models"）
+  timestamp: number;       // 提问时间
+  status: QuestionStatus;  // 状态：待复习 / 复习中 / 已解决
+  tags: string[];          // 用户自定义标签（可选）
+  reviewCount: number;     // 被翻看次数（用于"高频问题"识别）
+  lastReviewed?: number;   // 最后一次翻看时间
+}
+
 // ── User Progress Types ────────────────────────
 
 export interface UserProgress {
@@ -132,4 +152,5 @@ export interface UserProgress {
   streak: number;
   lastVisit: string;
   chatHistory: ChatMessage[];
+  questionNotes: QuestionNote[];        // 问题笔记本
 }

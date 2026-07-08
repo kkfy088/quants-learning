@@ -1,0 +1,156 @@
+{
+  "version": "1.0",
+  "total_kps": 164,
+  "categories": {
+    "methodology": {
+      "label": "核心方法论",
+      "subs": {
+        "paradigm": "量化决策范式",
+        "factor_thinking": "因子思维",
+        "evaluation": "IC/ICIR 评估",
+        "human_ai_boundary": "人与 AI 的边界",
+        "pipeline": "四步法流水线"
+      }
+    },
+    "theory": {
+      "label": "理论",
+      "subs": {
+        "timeseries_fundamentals": "时序基础（平稳性/ACF/PACF）",
+        "model_selection": "模型选型决策",
+        "overfitting": "过拟合与正则化",
+        "backtest": "回测方法论",
+        "metrics": "评估指标（MAPE/WAPE/RMSE）",
+        "statistics": "统计推断",
+        "calibration": "校准估计与不确定性",
+        "evpi": "EVPI 与决策价值",
+        "bayesian": "贝叶斯方法"
+      }
+    },
+    "tools": {
+      "label": "工具与基础",
+      "subs": {
+        "python_env": "Python 环境",
+        "pandas": "pandas 数据处理",
+        "numpy": "NumPy 数值计算",
+        "sklearn": "scikit-learn",
+        "xgboost": "XGBoost",
+        "pytorch": "PyTorch",
+        "pyomo": "Pyomo 优化建模",
+        "gurobi": "Gurobi 求解器",
+        "qlib": "微软 Qlib 量化框架"
+      }
+    },
+    "timeseries_models": {
+      "label": "时序模型",
+      "subs": {
+        "arima": "ARIMA / SARIMA",
+        "prophet": "Prophet",
+        "exp_smoothing": "指数平滑",
+        "decomposition": "时序分解",
+        "stationarity_test": "平稳性检验（ADF/KPSS）"
+      }
+    },
+    "ml_models": {
+      "label": "机器学习模型",
+      "subs": {
+        "feature_engineering": "特征工程",
+        "tree_models": "树模型（XGBoost/LightGBM）",
+        "deep_learning": "深度学习（LSTM/Transformer）",
+        "ensemble": "集成方法（Stacking/Blending）",
+        "explainability": "可解释性（SHAP）",
+        "automl": "AutoML"
+      }
+    },
+    "supply_chain": {
+      "label": "供应链应用",
+      "subs": {
+        "demand_forecast": "需求预测",
+        "inventory": "库存优化",
+        "stockout": "缺货截断处理",
+        "promotions": "促销建模",
+        "feature_set_scm": "供应链因子集"
+      }
+    },
+    "power_market": {
+      "label": "电力市场",
+      "subs": {
+        "market_structure": "市场结构（中长期/日前/实时/辅助）",
+        "clearing": "出清与电价机制",
+        "lmp": "节点电价 LMP",
+        "renewables": "新能源参与市场",
+        "bidding": "报价与竞价策略",
+        "settlement": "偏差结算",
+        "storage": "储能调度",
+        "demand_response": "需求响应 DR",
+        "risk": "风险约束（CVaR）"
+      }
+    },
+    "quant_trading": {
+      "label": "量化交易",
+      "subs": {
+        "factor_mining": "因子挖掘",
+        "strategy_backtest": "策略回测",
+        "portfolio": "投资组合",
+        "risk_control": "风控",
+        "nlp_sentiment": "NLP 与情绪分析"
+      }
+    },
+    "engineering": {
+      "label": "工程化",
+      "subs": {
+        "agent_framework": "Agent 框架（LangGraph/CrewAI/RD-Agent）",
+        "pipeline_dev": "端到端流水线",
+        "deployment": "部署与监控",
+        "experiment_tracking": "实验管理",
+        "api_design": "API 设计"
+      }
+    },
+    "measurement": {
+      "label": "测量与决策科学",
+      "subs": {
+        "calibrated_estimate": "校准估计",
+        "sampling": "小样本抽样",
+        "value_of_info": "信息价值 EVPI",
+        "decision_under_uncertainty": "不确定性下的决策",
+        "mcnamara_fallacy": "麦纳玛拉谬误"
+      }
+    }
+  },
+  "distribution": {
+    "核心方法论 / 量化决策范式": 43,
+    "理论 / 回测方法论": 15,
+    "核心方法论 / 因子思维": 1,
+    "核心方法论 / IC/ICIR 评估": 2,
+    "机器学习模型 / 树模型（XGBoost/LightGBM）": 10,
+    "测量与决策科学 / 小样本抽样": 2,
+    "理论 / 模型选型决策": 3,
+    "理论 / 评估指标（MAPE/WAPE/RMSE）": 9,
+    "工具与基础 / Python 环境": 4,
+    "工具与基础 / pandas 数据处理": 13,
+    "理论 / 过拟合与正则化": 3,
+    "供应链应用 / 缺货截断处理": 2,
+    "供应链应用 / 促销建模": 1,
+    "供应链应用 / 库存优化": 2,
+    "理论 / 时序基础（平稳性/ACF/PACF）": 2,
+    "时序模型 / ARIMA / SARIMA": 3,
+    "电力市场 / 市场结构（中长期/日前/实时/辅助）": 3,
+    "电力市场 / 出清与电价机制": 6,
+    "电力市场 / 节点电价 LMP": 7,
+    "电力市场 / 报价与竞价策略": 7,
+    "电力市场 / 偏差结算": 1,
+    "电力市场 / 新能源参与市场": 1,
+    "机器学习模型 / 深度学习（LSTM/Transformer）": 2,
+    "供应链应用 / 需求预测": 1,
+    "工具与基础 / NumPy 数值计算": 4,
+    "工具与基础 / scikit-learn": 3,
+    "工具与基础 / PyTorch": 3,
+    "工具与基础 / Pyomo 优化建模": 3,
+    "机器学习模型 / AutoML": 1,
+    "机器学习模型 / 可解释性（SHAP）": 1,
+    "核心方法论 / 四步法流水线": 2,
+    "工程化 / 部署与监控": 1,
+    "测量与决策科学 / 麦纳玛拉谬误": 1,
+    "测量与决策科学 / 校准估计": 1,
+    "理论 / 贝叶斯方法": 1
+  }
+}

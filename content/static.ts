@@ -114,77 +114,133 @@ export const cheatsheets: Cheatsheet[] = [
   },
 ];
 
-// ── Quizzes (for 5-day crash course) ──────────────────────
+// ── Quizzes (for 5-day crash course v4.0) ─────────────────
+// Day 1 = 数学统计地基 / Day 2 = 技术栈+方法论 / Day 3 = Boosting+pandas
+// Day 4 = ARIMA+时序 / Day 5 = 工具实战
 
 export const quizzes: QuizQuestion[] = [
+  // ===== Day 1: 数学统计地基 =====
   {
     id: "q1", dayId: "crash-1",
-    question: "量化分析定义中的三个关键词是什么？",
-    options: ["AI、大数据、深度学习", "可验证、可复现、可追溯", "速度快、精度高、自动化", "模型、算法、算力"],
+    question: "销量数据 [10, 12, 11, 8, 9, 800]（双 11 爆发），用哪个指标描述「典型日」最合理？",
+    options: ["均值", "中位数", "最大值", "标准差"],
     answer: 1,
-    explanation: "量化的本质是思维方式，不是工具。三个关键词——可验证（事后能检验）、可复现（同样输入同样输出）、可追溯（每个数字能追到源头）。",
+    explanation: "均值被 800 拉爆到 141.7，严重高估日常。中位数=10.5 稳如老狗。爆款数据右偏，永远用中位数描述「典型」。",
   },
   {
     id: "q2", dayId: "crash-1",
-    question: "量化分析四大环节中，哪个最贵？",
-    options: ["建模（选模型最难）", "数据（脏数据让后面全白做）", "评估（回测复杂）", "决策（拍板压力最大）"],
+    question: "Pearson 相关系数 r = 0，能说明两变量无关吗？",
+    options: ["能，r=0 就是无关", "不能，只说明无线性关系（可能有非线性关系）", "看样本量决定", "看 p 值决定"],
     answer: 1,
-    explanation: "数据脏了，后面所有工作都白做——地基塌了。建模错了可以换模型重训，损失可控。这就是为什么顶尖团队把 70% 精力放在数据上。",
+    explanation: "Pearson 只衡量线性关系。r=0 只说明无线性，可能有强非线性关系（如 U 型）。这就是为什么 XGBoost 能挖出 corr() 看不出的特征——树模型自动学非线性。",
   },
   {
     id: "q3", dayId: "crash-1",
-    question: "人定方向、机器跑流程——以下哪个环节必须人来主导？",
-    options: ["数据清洗", "模型训练", "提出假设（如促销拉动销量）", "算回测指标"],
-    answer: 2,
-    explanation: "机器能跑流程，但这个假设有没有业务意义必须人来判断。AI 可以辅助发散，但核心创意和业务逻辑仍源于人。",
+    question: "XGBoost 中 learning_rate = 0.5 会发生什么？",
+    options: ["梯度下降步长太大，可能跨过最优解发散", "训练很慢", "完全没问题", "会自动调整"],
+    answer: 0,
+    explanation: "Day 1 学的梯度下降：学习率是步长。0.5 太大，模型一步迈过谷底，可能发散。黄金值是 0.05，配合 n_estimators=500。",
   },
   {
-    id: "q4", dayId: "crash-2",
+    id: "q4", dayId: "crash-1",
+    question: "贝叶斯定理用一句话怎么讲？",
+    options: ["概率等于频率", "新证据修正旧认知", "方差越小越好", "相关等于因果"],
+    answer: 1,
+    explanation: "贝叶斯 = 先验认知 + 新证据 = 后验认知。这是所有概率预测（DeepAR、Prophet 置信区间、贝叶斯优化）的灵魂。",
+  },
+  {
+    id: "q5", dayId: "crash-1",
+    question: "看到 loss='mse'，它对应哪个数学概念？",
+    options: ["信息熵", "最小二乘法", "梯度下降", "贝叶斯"],
+    answer: 1,
+    explanation: "MSE = 均方误差 = 预测误差平方和的平均。最小二乘法就是找一组参数让 MSE 最小。线性回归和大部分回归模型的默认损失函数。",
+  },
+  // ===== Day 2: 技术栈 + 方法论 =====
+  {
+    id: "q6", dayId: "crash-2",
+    question: "量化分析定义中的三个关键词是什么？",
+    options: ["AI、大数据、深度学习", "可验证、可复现、可追溯", "速度快、精度高、自动化", "模型、算法、算力"],
+    answer: 1,
+    explanation: "量化的本质是思维方式，不是工具。可验证（事后能检验）、可复现（同样输入同样输出）、可追溯（每个数字能追到源头）。",
+  },
+  {
+    id: "q7", dayId: "crash-2",
+    question: "量化分析四步法骨架中，顶级团队花最多时间在哪一步？",
+    options: ["建模", "数据清洗与探索", "评估", "决策"],
+    answer: 1,
+    explanation: "60% 数据 + 20% 因子 + 10% 建模 + 10% 决策。数据脏了后面全白做。新手最大误区是上来就调模型。",
+  },
+  {
+    id: "q8", dayId: "crash-2",
+    question: "数据量 500 行，预测下周销量，应该选？",
+    options: ["LSTM（深度学习最强）", "XGBoost（树模型之王）", "ARIMA 或 Prophet（小样本友好）", "Transformer（最新架构）"],
+    answer: 2,
+    explanation: "深度学习数据饥渴，500 行严重不足必过拟合。ARIMA/Prophet 对小样本友好。新手最大误区就是为了「高级」硬上深度学习。",
+  },
+  {
+    id: "q9", dayId: "crash-2",
     question: "因子的三个必要条件是？",
     options: ["有预测力、能数值化、能持续观察", "数值大、稳定、相关", "频率高、成本低、易获取", "公开、免费、标准"],
     answer: 0,
     explanation: "缺一不可：有预测力（和目标相关）、能数值化（喂给模型）、能持续观察（未来也能获取）。SKU 编号是数字但没预测力，不构成因子。",
   },
+  // ===== Day 3: pandas + Boosting =====
   {
-    id: "q5", dayId: "crash-2",
-    question: "IC（信息系数）= 0.04，在金融场景中应该怎么处理？",
-    options: ["剔除（噪声）", "保留（属于有效因子）", "必留（强因子）", "无法判断"],
+    id: "q10", dayId: "crash-3",
+    question: "Boosting 和 Bagging（随机森林）的核心区别是？",
+    options: ["Boosting 用树，Bagging 不用", "Boosting 串行补错，Bagging 并行投票", "Boosting 慢，Bagging 快", "没区别"],
     answer: 1,
-    explanation: "金融场景噪声极大，|IC| > 0.03 即算有效。0.04 属于有效但偏弱，保留并观察其稳定性（ICIR）。",
+    explanation: "Boosting = 串行训练，每棵新树拟合前一棵的残差（补错）。Bagging = 并行独立训练，多数投票。Boosting 精度更高（Kaggle 70% 冠军），但过拟合风险也更高。",
   },
   {
-    id: "q6", dayId: "crash-2",
-    question: "为什么促销折扣×节假日组合因子比促销折扣单因子强？",
-    options: ["组合因子代码更复杂显得高级", "捕捉了交互效应（双11+7折 vs 普通+7折效果差10倍）", "单因子不稳定", "模型只认组合因子"],
+    id: "q11", dayId: "crash-3",
+    question: "为什么 rolling 必须先 shift(1)？",
+    options: ["代码规范", "防止信息泄漏（用今天数据预测今天）", "提升速度", "节省内存"],
     answer: 1,
-    explanation: "单因子只看一个维度。普通日 7 折可能拉动 20%，双 11 当天 7 折可能拉动 200%——这就是交互效应。树模型/神经网络自动学这种交互。",
+    explanation: "不 shift(1) 直接 rolling 会把「今天的均值」算进特征——这是用未来预测现在。模型评估时虚假爆好，上线必崩。所有 lag/rolling 都必须 shift(1)。",
   },
   {
-    id: "q7", dayId: "crash-3",
-    question: "数据量 500 行，预测下周销量，应该选？",
-    options: ["LSTM（深度学习最强）", "XGBoost（树模型之王）", "ARIMA 或 Prophet（小样本友好）", "Transformer（最新架构）"],
+    id: "q12", dayId: "crash-3",
+    question: "XGBoost 的 learning_rate 和 n_estimators 应该怎么搭配？",
+    options: ["大学习率+多树（最快）", "小学习率+少树（最稳）", "小学习率+多树（★高精度）", "随便搭配都行"],
     answer: 2,
-    explanation: "深度学习数据饥渴，500 行严重不足，LSTM/Transformer 几乎一定过拟合。ARIMA/Prophet 对小样本友好，是正确选择。新手最大误区就是为了高级硬上深度学习。",
+    explanation: "小步长 + 多次迭代 = 精度高。典型组合 learning_rate=0.05 + n_estimators=500。配合 early_stopping_rounds 自动找最佳树数。",
   },
+  // ===== Day 4: ARIMA + 时序 =====
   {
-    id: "q8", dayId: "crash-3",
-    question: "过拟合的三大成因不包括以下哪个？",
-    options: ["模型太复杂（参数远多于样本）", "特征太多（100 特征 1000 样本）", "评估方法错（用全量数据评估）", "数据量太大"],
-    answer: 3,
-    explanation: "数据量大反而是防过拟合的有利条件。三大成因是：模型太复杂、特征太多、评估方法错。识别信号：训练 MAPE=2%，测试 MAPE=30%。",
-  },
-  {
-    id: "q9", dayId: "crash-3",
+    id: "q13", dayId: "crash-4",
     question: "为什么时序数据不能用 train_test_split(shuffle=true)？",
     options: ["速度慢", "测试集会混入未来信息，造成信息泄漏", "代码报错", "结果不稳定"],
     answer: 1,
     explanation: "随机切分会让测试集包含时间上晚于训练集的数据——模型偷看了未来，评估结果虚假好看，上线必崩。必须用 TimeSeriesSplit，时间严格后移。",
   },
   {
-    id: "q10", dayId: "crash-5",
+    id: "q14", dayId: "crash-4",
+    question: "训练 MAE=2，测试 MAE=30，这是什么问题？怎么解决？",
+    options: ["欠拟合，加更多特征", "过拟合，降低 max_depth + early stopping", "数据太少，收集更多", "模型没问题"],
+    answer: 1,
+    explanation: "训练/测试差距 15 倍 = 严重过拟合（背下了训练数据）。对策：降低 max_depth、加 early_stopping_rounds、加 subsample/colsample 正则化。",
+  },
+  {
+    id: "q15", dayId: "crash-4",
+    question: "ARIMA 的 (p,d,q) 中，d 代表什么？",
+    options: ["自回归阶数", "差分次数（让数据平稳）", "滑动平均阶数", "季节周期"],
+    answer: 1,
+    explanation: "p=AR（自回归）, d=差分次数（让数据平稳）, q=MA（滑动平均）。d 通常 0 或 1，用 ADF 检验决定——p<0.05 用 d=0，否则 d=1。",
+  },
+  // ===== Day 5: 工具实战 =====
+  {
+    id: "q16", dayId: "crash-5",
     question: "金融、电力、供应链三类预测问题，共同骨架是？",
     options: ["都用 LSTM", "都是时序问题", "数据→因子→模型→评估→决策（四步法）", "都需要 GPU"],
     answer: 2,
-    explanation: "无论目标是什么（股价/电价/销量），骨架都是：数据→因子→模型→评估→决策。学一套方法论可迁移到任何场景，差异只在数据形态和决策约束。",
+    explanation: "无论目标是什么（股价/电价/销量），骨架都是：数据→因子→模型→评估→决策。学一套方法论可迁移到任何场景。",
+  },
+  {
+    id: "q17", dayId: "crash-5",
+    question: "顶级分析师的报告最重要的是回答哪个问题？",
+    options: ["MAE 是多少", "用了什么模型", "所以呢（对业务的影响+行动建议）", "训练时间多长"],
+    answer: 2,
+    explanation: "报告三段式：发生了什么（数据描述）→ 为什么（归因）→ 所以呢（业务影响+建议）。老板看的是「WAPE=15% → 节省 12% 库存成本」，不是 MAE 数字。",
   },
 ];

@@ -5,7 +5,7 @@
 
 // ── Content Types ──────────────────────────────
 
-export type TrackKind = "crash" | "deep" | "book";
+export type TrackKind = "crash" | "deep" | "book" | "power90";
 
 export interface DayContent {
   id: string;

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { crashDays } from "@/content/crash-course";
 import { deepDays } from "@/content/deep-track";
+import { power90Days } from "@/content/track-power90";
 import { books } from "@/content/books";
 import type { DayContent, TrackKind, ChatMessage, BookChapter } from "@/lib/types";
 import { loadProgress, saveProgress, getCompletedDays, toggleDayComplete, updateStreak, type EncryptedBlob, getEncryptedKey } from "@/lib/storage";
@@ -32,7 +33,7 @@ export default function Home() {
   const [lockErrors, setLockErrors] = useState(0);
   const [lockUntil, setLockUntil] = useState(0);
 
-  const days = track === "crash" ? crashDays : deepDays;
+  const days = track === "crash" ? crashDays : track === "power90" ? power90Days : deepDays;
   const day = days[dayIdx];
   const dayKey = `${track}:${day?.id}`;
   const currentBook = track === "book" ? books[bookIdx] : null;
@@ -169,12 +170,15 @@ export default function Home() {
           <button className={`track-tab ${track === "deep" ? "active" : ""}`} onClick={() => { setTrack("deep"); setDayIdx(0); }}>
             📅100天修炼
           </button>
+          <button className={`track-tab ${track === "power90" ? "active" : ""}`} onClick={() => { setTrack("power90"); setDayIdx(0); }}>
+            ⚡电力市场90天
+          </button>
           <button className={`track-tab ${track === "book" ? "active" : ""}`} onClick={() => { setTrack("book"); setBookIdx(0); setChapterIdx(0); }}>
             📖教材精读
           </button>
         </div>
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <span className="day-badge">{track === "crash" ? "速成" : track === "deep" ? "深入" : "教材"} {track === "book" ? `Ch.${currentChapter?.number ?? 0}` : `Day ${day.day}`}</span>
+          <span className="day-badge">{track === "crash" ? "速成" : track === "deep" ? "深入" : track === "power90" ? "电力" : "教材"} {track === "book" ? `Ch.${currentChapter?.number ?? 0}` : `Day ${day.day}`}</span>
           <div className="prog-wrap"><div className="prog-fill" style={{ width: track === "book" ? `${((chapterIdx + 1) / (currentBook?.chapters.length || 1)) * 100}%` : `${((dayIdx + 1) / days.length) * 100}%` }} /></div>
           <button className="btn" onClick={() => setShowResources(true)}>📚资源</button>
           <button className="btn" onClick={() => setShowCheatsheets(true)}>📋速查</button>
@@ -231,7 +235,7 @@ export default function Home() {
           ) : (
             <>
               <div className="side-hdr">
-                {track === "crash" ? "5天速成" : "100天修炼"}
+                {track === "crash" ? "5天速成" : track === "deep" ? "100天修炼" : "电力市场90天"}
               </div>
               {Array.from(weeks.entries()).map(([wk, ds]) => (
                 <div key={wk} className="wk-grp">

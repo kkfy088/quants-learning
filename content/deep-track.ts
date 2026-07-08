@@ -1,748 +1,174 @@
 import type { DayContent } from "@/lib/types";
 
 // ════════════════════════════════════════════════════════════
-// 100 天深化轨 · v2.0 三段式结构（5+30+30+35）
-//   Day 1-35   阶段二 · 时序预测 + 因果分析（AI 辅助加速）
-//   Day 36-65  阶段三 · 统计学深入（SARIMA / 状态空间 / 贝叶斯）
-//   Day 66-100 阶段四 · 路径 A · 供应链库存决策（对口工作）
+// 100 天深化轨 · v3.0 业务优先级版（P4→P5→P6→因子→电力大宗）
+//   Day 1-5    承上启下 + 时序快速过 + 因果入门
+//   Day 6-25   ★ P4 因果归因 / 营销评估（20 天，重点）
+//   Day 26-45  ★ P5 库存与补货决策（20 天，重点）
+//   Day 46-65  P6 Agent + 毕业项目（20 天）
+//   Day 66-80  因子挖掘深化（15 天）
+//   Day 81-100 电力 + 大宗商品业务（20 天，扩展视野）
 // 5 天速成（crash-course.ts）独立成轨，此轨 Day 1 接在 5 天之后。
+// 统计学（SARIMA / 贝叶斯 / 协整）穿插在用到时补。
 // ════════════════════════════════════════════════════════════
 
 export const deepDays: DayContent[] = [
   // ───────────────────────────────────────────────────────────
-  // 阶段二 · 时序预测 + 因果分析（Day 1-35）
-  // 5 天速成后直接做项目，30 天内产出 2 个作品
+  // Day 1-5 · 承上启下：5 天速成回顾 + 因果思维建立
   // ───────────────────────────────────────────────────────────
-
-  // ===== Week 1 · Day 1-7 · 承上启下 + 时序数据预处理 =====
   {
     id: "deep-1", day: 1, week: 1, track: "deep",
-    title: "5 天回顾 + 阶段二导论：30 天做两个作品",
-    description: "承上启下，建立阶段二的学习节奏与作品目标",
+    title: "5 天速成回顾 + 100 天路线图",
+    description: "承上启下，建立 100 天的业务优先级学习节奏",
     objectives: [
       "复盘 5 天速成掌握的内容（数学/pandas/Boosting/ARIMA/工具）",
-      "理解阶段二目标：30 天内完成时序预测系统 + 因果归因报告",
-      "建立 AI 辅助学习的工作流（提问-验证-总结）",
+      "理解新路线：P4 因果 → P5 库存 → P6 Agent → 因子 → 电力大宗",
+      "明确统计学是『用到时补』而非单独阶段",
     ],
     duration: 30,
     cues: [
       "5 天速成留下了哪些『会用但不懂为什么』的点？",
-      "时序预测系统 + 因果归因报告分别长什么样？",
-      "AI 辅助学习的三个关键习惯：提问精确化 / 验证代码 / 总结归档",
+      "为什么把 P4 因果放第一？因为它对口你工作中最常被问的问题",
+      "统计学（SARIMA/贝叶斯）会穿插在用到时讲",
     ],
-    content: `<h3>阶段二的两个交付物</h3>
-<p><span class="key-pt">交付物 1（Day 1-19）：时序预测系统</span>——一个能跑 ARIMA / SARIMA / LightGBM 三模型横评，并产出预测+回测报告的脚本。</p>
-<p><span class="key-pt">交付物 2（Day 20-35）：因果归因报告</span>——一个用 DID + CausalImpact + DoubleML 三角验证促销/广告效果的完整分析。</p>
-<h3>5 天速成的『会用但不懂』清单</h3>
-<ul>
-<li>会用 <code>auto_arima</code> 但不懂 p/d/q 怎么选 → Day 13-16 解决</li>
-<li>会用 LightGBM 但不懂过拟合原理 → Day 23-25 解决</li>
-<li>知道『相关≠因果』但不会做因果分析 → Day 27-33 解决</li>
-</ul>
+    content: `<h3>100 天新路线图（业务优先级）</h3>
+<table>
+<tr><th>阶段</th><th>天数</th><th>核心问题</th></tr>
+<tr><td>承上启下</td><td>Day 1-5</td><td>从『会用』到『懂为什么』</td></tr>
+<tr><td>★ P4 因果归因</td><td>Day 6-25</td><td>促销/广告到底拉动多少销量？ROI 是多少？</td></tr>
+<tr><td>★ P5 库存补货</td><td>Day 26-45</td><td>该补多少货？什么时候补？</td></tr>
+<tr><td>P6 Agent + 毕业</td><td>Day 46-65</td><td>让 AI 自动挖因子、跑回测、出报告</td></tr>
+<tr><td>因子挖掘深化</td><td>Day 66-80</td><td>IC / ICIR / RD-Agent 自动化</td></tr>
+<tr><td>电力 + 大宗</td><td>Day 81-100</td><td>扩展视野，跨场景迁移</td></tr>
+</table>
+<h3>为什么 P4 放第一</h3>
+<p>你工作中最常被老板问的问题：<em>"这次促销真的有效吗？ROI 是多少？"</em><br>
+答案不是看销量涨了多少（那是相关），而是用因果推断算出『如果没有促销会怎样』。<br>
+P4 学完，你能回答所有『X 是否导致 Y』的问题。</p>
 <div class="ex-box"><h4>✏️ 今日必做</h4>
 <ol>
-<li>把 5 天速成的笔记导出为 Markdown，整理成『已知 / 半知 / 想深入』三栏</li>
-<li>在 AI 助手中提问：『我要做一个销量预测系统，30 天应该怎么规划？』对比它的回答和本提纲</li>
-<li>新建 GitHub repo <code>my-forecast-system</code>，把后续每天的代码推上去</li>
+<li>把 5 天速成笔记整理成『已知 / 半知 / 想深入』三栏</li>
+<li>列出你工作中最常遇到的 3 个因果归因问题</li>
+<li>新建 GitHub repo <code>my-quant-journey</code></li>
 </ol></div>`,
   },
   {
     id: "deep-2", day: 2, week: 1, track: "deep",
-    title: "时序数据四大组件：趋势/季节/周期/噪声",
-    description: "把一条时序拆成四个可解释的部分",
+    title: "时序快速过：ARIMA / SARIMA / LightGBM 复盘",
+    description: "把 5 天速成的时序知识系统化",
     objectives: [
-      "理解时间序列的加性/乘性分解模型",
-      "会用 statsmodels 的 seasonal_decompose",
-      "学会读分解图，判断该用什么模型",
+      "巩固 ARIMA(p,d,q) / SARIMA(p,d,q)(P,D,Q,m)",
+      "巩固 LightGBM 时序化（lag/rolling）",
+      "形成时序模型选择决策树",
     ],
     duration: 45,
     cues: [
-      "加性 vs 乘性怎么选？看季节波动的振幅是否随趋势变化",
-      "周期（cycle）和季节（season）的区别——周期是不固定长度",
-      "分解出来后，哪部分用模型预测？哪部分直接减掉？",
+      "ARIMA 单变量；SARIMA 加季节；SARIMAX 加外生",
+      "LightGBM 多变量强，但外推弱",
+      "数据量小（&lt;500）→ ARIMA；数据量大（&gt;5000）→ LightGBM",
     ],
-    content: `<h3>加性 vs 乘性模型</h3>
-<p><code>y(t) = Trend + Seasonality + Residual</code>（加性）</p>
-<p><code>y(t) = Trend × Seasonality × Residual</code>（乘性，等价于 log 后变加性）</p>
-<pre><code>from statsmodels.tsa.seasonal import seasonal_decompose
-result = seasonal_decompose(df['销量'], model='additive', period=7)
-result.plot()  # 趋势 / 季节 / 残差三张图</code></pre>
-<p><span class="key-pt">判断准则：</span>如果销量的波动幅度随销量增大而增大（如双十一前后），用乘性（或先取 log）。</p>
-<div class="pit-box"><h4>⚠️ 常见错误</h4>
-<p>忘了设 <code>period</code> 参数——周度季节=7，月度=12，没有季节性就不该用这个分解。</p></div>
-<div class="ex-box"><h4>✏️ AI 辅助练习</h4>
-<ol>
-<li>找一份真实销量数据（Kaggle Rossmann / M5 Forecasting）</li>
-<li>用 <code>seasonal_decompose</code> 分解，截图发给 AI 问：『这个分解合理吗？为什么残差还有规律？』</li>
-<li>把 AI 的回答和你的观察对比，写成一段笔记</li>
-</ol></div>`,
+    content: `<h3>时序模型选择决策树</h3>
+<pre><code>数据量 &lt; 500？
+├─ 是 → ARIMA / Prophet / ETS
+└─ 否 → 有强季节？
+        ├─ 是 → SARIMA / Prophet
+        └─ 否 → 多变量？
+                ├─ 是 → LightGBM + lag/rolling
+                └─ 否 → ARIMA</code></pre>
+<h3>关键代码模板</h3>
+<pre><code># SARIMA
+from pmdarima import auto_arima
+model = auto_arima(y, seasonal=True, m=7, stepwise=True)
+
+# LightGBM 时序化
+for lag in [1, 7, 14]:
+    df[f'lag_{lag}'] = df['y'].shift(lag)
+for w in [7, 14]:
+    df[f'rmean_{w}'] = df['y'].shift(1).rolling(w).mean()</code></pre>`,
   },
   {
     id: "deep-3", day: 3, week: 1, track: "deep",
-    title: "平稳性：ADF 检验 + 差分直觉",
-    description: "为什么 ARIMA 要求平稳，怎么让它平稳",
+    title: "特征工程系统化 + 防泄漏",
+    description: "lag/rolling/target encoding/防泄漏检查清单",
     objectives: [
-      "理解平稳性的严格定义（均值/方差/自协方差恒定）",
-      "会跑 ADF / KPSS 检验并读 p 值",
-      "理解差分（d 参数）的数学含义",
+      "掌握 lag/rolling/target encoding 三大特征",
+      "理解数据泄漏的 5 种形式",
+      "建立特征工程代码模板",
     ],
     duration: 45,
     cues: [
-      "ADF 的 H0 是『有单位根』，p<0.05 才能拒绝（即平稳）",
-      "一阶差分 = 今天减昨天；二阶差分 = 差分的差分（很少用）",
-      "季节差分 = 今天减 7 天前（对周季节有效）",
+      "lag 必须用历史（lag_1 = 昨天）",
+      "rolling 必须先 shift(1) 防泄漏",
+      "target encoding 必须 K-fold",
     ],
-    content: `<h3>为什么 ARIMA 要平稳</h3>
-<p>ARIMA 模型的预测本质是『假设统计性质不随时间变化』——如果均值在漂移、方差在爆炸，模型学到的规律明天就失效。</p>
-<pre><code>from statsmodels.tsa.stattools import adfuller
-result = adfuller(df['销量'])
-print(f'ADF 统计量: {result[0]:.4f}')
-print(f'p 值: {result[1]:.4f}')  # < 0.05 才平稳</code></pre>
-<h3>差分的层次</h3>
-<ul>
-<li><strong>一阶差分 d=1：</strong><code>df['销量'].diff()</code>——消除线性趋势</li>
-<li><strong>季节差分 D=1：</strong><code>df['销量'].diff(7)</code>——消除周季节</li>
-<li><strong>log 后再差分：</strong>稳定方差的常用技巧</li>
-</ul>
-<div class="pit-box"><h4>⚠️ 过差分陷阱</h4>
-<p>差分次数过多会让序列过度平滑、丢失信息——看 ACF 图，如果滞后 1 项是强负值（如 -0.5 以下），说明差分过头了。</p></div>`,
-  },
-  {
-    id: "deep-4", day: 4, week: 1, track: "deep",
-    title: "ACF / PACF 读图：ARIMA 的 p 和 q 怎么选",
-    description: "通过自相关图确定 AR 和 MA 阶数",
-    objectives: [
-      "理解 ACF（自相关函数）和 PACF（偏自相关）",
-      "掌握 p/q 选择的三个经典规则",
-      "知道什么时候该用 auto_arima 自动选",
-    ],
-    duration: 45,
-    cues: [
-      "ACF 截尾 → MA(q)；PACF 截尾 → AR(p)",
-      "ACF 拖尾且 PACF 拖尾 → ARMA，靠 AIC 比",
-      "滞后 7/14/21 处有尖刺 → 需要季节项 SARIMA",
-    ],
-    content: `<h3>p / q 选择三规则（经典口诀）</h3>
-<table>
-<tr><th>ACF</th><th>PACF</th><th>模型</th></tr>
-<tr><td>截尾（q 步后归零）</td><td>拖尾</td><td>MA(q)</td></tr>
-<tr><td>拖尾</td><td>截尾（p 步后归零）</td><td>AR(p)</td></tr>
-<tr><td>拖尾</td><td>拖尾</td><td>ARMA(p,q)，遍历比较 AIC</td></tr>
-</table>
-<pre><code>from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-import matplotlib.pyplot as plt
-fig, axes = plt.subplots(2, 1)
-plot_acf(df['销量'].diff().dropna(), ax=axes[0])
-plot_pacf(df['销量'].diff().dropna(), ax=axes[1])</code></pre>
-<div class="pit-box"><h4>⚠️ 实战建议</h4>
-<p>规则是 1970 年代 Box-Jenkins 方法论，现代工程里大多直接用 <code>auto_arima</code>（pmdarima 库）做网格搜索，比人工读图快 10 倍且不易出错。读图能力是『读懂模型在干什么』的必备，但选参数请交给算法。</p></div>`,
-  },
-  {
-    id: "deep-5", day: 5, week: 1, track: "deep",
-    title: "季节性处理：STL 分解 + 傅里叶项",
-    description: "处理周/月/年多重季节性",
-    objectives: [
-      "理解 STL 分解（优于经典分解，能处理变化季节）",
-      "学会用傅里叶项处理多重季节",
-      "了解 TBATS / Prophet 的处理思路",
-    ],
-    duration: 45,
-    cues: [
-      "STL = Seasonal-Trend decomposition using Loess（局部加权回归）",
-      "傅里叶项 = 把季节波看成多个正弦余弦波叠加",
-      "Prophet 内部就是用傅里叶项建模季节",
-    ],
-    content: `<h3>STL 分解</h3>
-<pre><code>from statsmodels.tsa.seasonal import STL
-stl = STL(df['销量'], period=7, robust=True)
-res = stl.fit()
-res.plot()  # 趋势/季节/残差</code></pre>
-<p><span class="key-pt">robust=True</span> 用的是稳健回归，对异常值（如大促）不敏感。</p>
-<h3>傅里叶项（用于带外生变量的回归）</h3>
-<pre><code>from statsmodels.tsa.deterministic import Fourier
-# 周季节用 3 对正余弦，年季节用 10 对
-fourier = Fourier(period=365.25, order=10)
-exog = fourier.in_sample(df.index)</code></pre>
-<div class="ex-box"><h4>✏️ 实战练习</h4>
-<p>用同一份数据，分别做 STL 分解和傅里叶回归，对比两者的残差——哪个更接近白噪声？</p></div>`,
-  },
-  {
-    id: "deep-6", day: 6, week: 1, track: "deep",
-    title: "时序特征工程：lag / rolling / 日期特征",
-    description: "把时序变成表格，让 LightGBM 也能预测时序",
-    objectives: [
-      "掌握 lag 特征（lag_1 / lag_7 / lag_365）",
-      "掌握 rolling 特征（均值/标准差/最大值）",
-      "理解为什么要严格防泄漏",
-    ],
-    duration: 45,
-    cues: [
-      "lag_7 = 7 天前的销量，今天能用",
-      "rolling_7_mean 必须用 shift(1) 先错位，否则泄漏",
-      "日期特征：周几 / 月几 / 是否周末 / 是否发薪日",
-    ],
-    content: `<h3>特征模板</h3>
-<pre><code>def make_features(df):
-    for lag in [1, 7, 14, 28]:
-        df[f'lag_{lag}'] = df['销量'].shift(lag)
-    for w in [7, 14, 28]:
-        df[f'rmean_{w}'] = df['销量'].shift(1).rolling(w).mean()
-        df[f'rstd_{w}'] = df['销量'].shift(1).rolling(w).std()
-    df['dayofweek'] = df.index.dayofweek
-    df['is_weekend'] = (df.index.dayofweek >= 5).astype(int)
-    df['month'] = df.index.month
-    return df</code></pre>
-<div class="pit-box"><h4>⚠️ 致命错误：未来信息泄漏</h4>
-<p>如果你直接 <code>df['销量'].rolling(7).mean()</code>，今天的均值包含了今天的销量——但预测今天时，你不知道今天的销量！必须先 <code>shift(1)</code>。</p></div>
-<div class="ex-box"><h4>✏️ AI 辅助</h4>
-<p>让 AI 帮你检查特征工程代码：<em>"这段代码有没有数据泄漏风险？逐行分析。"</em></p></div>`,
-  },
-  {
-    id: "deep-7", day: 7, week: 1, track: "deep",
-    title: "Week 1 复习 + 综合案例：销量分解",
-    description: "把前 6 天的知识串成一个完整案例",
-    objectives: [
-      "完成一个完整的数据预处理 + 分解 + 特征工程流程",
-      "建立可复用的代码模板",
-      "理解每个步骤对最终预测的贡献",
-    ],
-    duration: 60,
-    cues: [
-      "数据加载 → 平稳性检验 → STL 分解 → 特征工程，串起来",
-      "什么情况下该用 ARIMA？什么情况该用 LightGBM？",
-      "本周产出的代码 / 笔记 / 图，归档到 GitHub",
-    ],
-    content: `<h3>综合案例流程</h3>
+    content: `<h3>数据泄漏的 5 种形式</h3>
 <ol>
-<li>加载 Kaggle Rossmann 数据（1115 家店 × 942 天）</li>
-<li>挑一家店，做 STL 分解（period=7）</li>
-<li>ADF 检验原始序列 + 一阶差分 + 季节差分</li>
-<li>构造 lag/rolling/日期特征</li>
-<li>画 ACF/PACF，记录你的观察</li>
-<li>把所有代码封装成 <code>preprocess.py</code>，推到 GitHub</li>
+<li><strong>未来 lag：</strong>用了『明天的销量』作为今天的特征</li>
+<li><strong>滚动泄漏：</strong>rolling 包含当前时刻</li>
+<li><strong>目标编码泄漏：</strong>用全量数据算 target encode</li>
+<li><strong>训练测试混合：</strong>归一化用了测试集</li>
+<li><strong>时间切分错：</strong>用 shuffle=True 切分时序</li>
 </ol>
-<div class="ex-box"><h4>✏️ 交付物</h4>
-<ul>
-<li>一个 Jupyter Notebook，包含所有分析和图表</li>
-<li>一个 <code>preprocess.py</code> 模块</li>
-<li>一篇 Markdown 笔记，总结本周学到的 5 个最重要概念</li>
-</ul></div>`,
-  },
-
-  // ===== Week 2 · Day 8-14 · ARIMA 家族精通 =====
-  {
-    id: "deep-8", day: 8, week: 2, track: "deep",
-    title: "ARIMA(p,d,q) 完整流程 + auto_arima",
-    description: "用 pmdarima 自动选参，理解每个参数",
-    objectives: [
-      "会用 pmdarima.auto_arima 做参数搜索",
-      "理解 AIC/BIC 的作用（模型选择）",
-      "看懂模型输出（系数 / p 值 / 残差诊断）",
-    ],
-    duration: 45,
-    cues: [
-      "auto_arima 搜索的是 (p,d,q) 的组合，目标是 AIC 最小",
-      "AIC = 拟合优度 + 参数惩罚，越小越好",
-      "信息准则不是绝对的，是相对的（同数据集内比较）",
-    ],
-    content: `<h3>auto_arima 模板</h3>
-<pre><code>from pmdarima import auto_arima
-model = auto_arima(
-    train['销量'],
-    seasonal=False,
-    stepwise=True,           # 启发式搜索（比暴力快）
-    trace=True,              # 打印搜索过程
-    error_action='ignore',
-    suppress_warnings=True,
-    max_p=5, max_q=5, max_d=2,
-)
-print(model.summary())
-model.plot_diagnostics(figsize=(12, 8))  # 残差诊断四图</code></pre>
-<h3>读 summary</h3>
-<ul>
-<li><strong>coef</strong>：每个 AR/MA 项的系数</li>
-<li><strong>P>|z|</strong>：系数显著性（<0.05 才有意义）</li>
-<li><strong>AIC/BIC</strong>：信息准则，越小越好</li>
-<li><strong>Ljung-Box</strong>：残差是否还有自相关（>0.05 才白噪声）</li>
-</ul>`,
-  },
-  {
-    id: "deep-9", day: 9, week: 2, track: "deep",
-    title: "SARIMA：加季节项的 ARIMA",
-    description: "(p,d,q) × (P,D,Q,m) 双重参数",
-    objectives: [
-      "理解 SARIMA 的季节参数 m / P / D / Q",
-      "会用 SARIMA 处理周/月度季节性",
-      "对比 SARIMA vs 普通 ARIMA 的预测效果",
-    ],
-    duration: 45,
-    cues: [
-      "m = 季节周期长度（周度=7，月度=12）",
-      "P/D/Q 是季节维度的 AR/差分/MA",
-      "auto_arima 加 seasonal=True, m=7 自动搜",
-    ],
-    content: `<h3>SARIMA 模型记号</h3>
-<p><code>SARIMA(p,d,q) × (P,D,Q,m)</code></p>
-<ul>
-<li><strong>p,d,q</strong>：非季节部分（Day 8 学过）</li>
-<li><strong>P,D,Q</strong>：季节部分的 AR / 差分 / MA</li>
-<li><strong>m</strong>：季节周期（7=周，12=月，365.25=年）</li>
-</ul>
-<pre><code>model = auto_arima(
-    train['销量'],
-    seasonal=True, m=7,
-    stepwise=True, trace=True,
-    max_p=3, max_q=3, max_P=2, max_Q=2, max_d=1, max_D=1,
-)</code></pre>
-<h3>SARIMA 擅长 / 不擅长的场景</h3>
-<table>
-<tr><th>擅长</th><th>不擅长</th></tr>
-<tr><td>单变量 + 强季节性</td><td>多变量（要用 SARIMAX）</td></tr>
-<tr><td>样本量适中（&gt;2 个完整季节）</td><td>外部冲击（促销/事件）</td></tr>
-<tr><td>趋势线性</td><td>非线性趋势</td></tr>
-</table>`,
-  },
-  {
-    id: "deep-10", day: 10, week: 2, track: "deep",
-    title: "SARIMAX：带外生变量的 SARIMA",
-    description: "把促销/天气/价格作为外生变量输入",
-    objectives: [
-      "理解外生变量（exog）的概念",
-      "会用 SARIMAX 把促销/广告作为外生变量",
-      "知道外生变量预测时的『未来值』问题",
-    ],
-    duration: 45,
-    cues: [
-      "exog 是模型之外但影响目标的变量（促销标记/天气）",
-      "预测时必须提供 exog 的未来值——这是 SARIMAX 的最大限制",
-      "如果未来 exog 未知（如天气），得先预测 exog 本身",
-    ],
-    content: `<pre><code>from statsmodels.tsa.statespace.sarimax import SARIMAX
-model = SARIMAX(
-    train['销量'],
-    exog=train[['促销', '价格', '广告费']],
-    order=(1, 1, 1),
-    seasonal_order=(1, 1, 1, 7),
-)
-res = model.fit(disp=False)
-# 预测时必须提供未来的 exog
-forecast = res.get_forecast(steps=7, exog=test[['促销', '价格', '广告费']])</code></pre>
-<div class="pit-box"><h4>⚠️ 致命陷阱</h4>
-<p>很多人忘了预测时要传 <code>exog</code>，直接报错。更隐蔽的陷阱：你用了『未来才知道的促销』训练（如双十一促销标记），上线时模型要求输入未来 7 天的促销标记——但实际业务里促销计划可能还没定。SARIMAX 适合『促销计划已排期』的场景。</p></div>`,
-  },
-  {
-    id: "deep-11", day: 11, week: 2, track: "deep",
-    title: "ARIMA 诊断：残差 + Ljung-Box + AIC/BIC",
-    description: "判断模型是否『够了』",
-    objectives: [
-      "理解残差诊断的四张图",
-      "会跑 Ljung-Box 检验残差自相关",
-      "会用 AIC/BIC 在多模型间选择",
-    ],
-    duration: 45,
-    cues: [
-      "残差应该是白噪声——没有规律，均值=0，方差恒定",
-      "Ljung-Box p>0.05 → 残差无自相关，模型已『榨干』信息",
-      "AIC 偏向拟合，BIC 偏向简洁（参数少）",
-    ],
-    content: `<h3>残差诊断四图</h3>
-<ol>
-<li><strong>标准化残差图：</strong>应该是无规律的噪声带，不能有趋势</li>
-<li><strong>直方图 + KDE：</strong>应该接近正态分布</li>
-<li><strong>Q-Q 图：</strong>点应该贴着对角线</li>
-<li><strong>相关图（ACF/PACF）：</strong>所有滞后都应该在置信区间内</li>
-</ol>
-<pre><code>from statsmodels.stats.diagnostic import acorr_ljungbox
-lb = acorr_ljungbox(res.resid, lags=[10], return_df=True)
-print(lb)  # 看 p 值，> 0.05 才合格</code></pre>
-<h3>AIC vs BIC</h3>
-<table>
-<tr><th></th><th>AIC</th><th>BIC</th></tr>
-<tr><td>目标</td><td>预测准确</td><td>找真模型</td></tr>
-<tr><td>参数惩罚</td><td>较轻（×2）</td><td>较重（×log(n)）</td></tr>
-<tr><td>样本大时</td><td>倾向选复杂模型</td><td>倾向选简单模型</td></tr>
-</table>`,
-  },
-  {
-    id: "deep-12", day: 12, week: 2, track: "deep",
-    title: "ARIMA vs Prophet 对照（同数据集）",
-    description: "两个模型在同一份数据上横评",
-    objectives: [
-      "理解 Prophet 的优势（自动处理节假日/变点）",
-      "理解 ARIMA 的优势（理论严格/可解释）",
-      "学会用同一评估框架对比多模型",
-    ],
-    duration: 45,
-    cues: [
-      "Prophet 自动识别节假日、变点、季节性——开箱即用",
-      "ARIMA 理论严格，但需要手动调参",
-      "评估指标：MAE / MAPE / RMSE 三件套",
-    ],
-    content: `<pre><code>from prophet import Prophet
-m = Prophet(
-    yearly_seasonality=True,
-    weekly_seasonality=True,
-    changepoint_prior_scale=0.05,  # 趋势灵活度
-)
-m.add_country_holidays(country_name='CN')  # 中国节假日
-m.fit(prophet_df)  # Prophet 要 ds + y 两列
-future = m.make_future_dataframe(periods=7)
-fcst = m.predict(future)</code></pre>
-<h3>横评结论（经验法则）</h3>
-<ul>
-<li><strong>数据干净 + 单变量 + 强季节：</strong>ARIMA 通常更准</li>
-<li><strong>有节假日 + 多重季节 + 缺失值：</strong>Prophet 更省心</li>
-<li><strong>业务场景：</strong>两个都跑，比 MAE，谁好用谁</li>
-</ul>
-<div class="ex-box"><h4>✏️ 今日必做</h4>
-<p>用同一份数据跑两个模型，画对比图，把结果写成报告推到 GitHub。</p></div>`,
-  },
-  {
-    id: "deep-13", day: 13, week: 2, track: "deep",
-    title: "时序交叉验证：TimeSeriesSplit + 滚动回测",
-    description: "不能用 train_test_split(shuffle=True)",
-    objectives: [
-      "理解时序数据为什么不能随机切分",
-      "会用 TimeSeriesSplit 做扩展窗口交叉验证",
-      "掌握滚动回测（rolling forecast）的实现",
-    ],
-    duration: 45,
-    cues: [
-      "随机切分会让测试集混入未来信息——信息泄漏",
-      "TimeSeriesSplit 是『前 n 折训练，第 n+1 折测试』",
-      "滚动回测：每预测一步，把真实值加入训练集",
-    ],
-    content: `<h3>错误做法 vs 正确做法</h3>
-<pre><code># ❌ 错误：随机切分会让模型『偷看』未来
-from sklearn.model_selection import train_test_split
-X_train, X_test = train_test_split(df, test_size=0.2, shuffle=True)
-
-# ✅ 正确：时序切分
-train = df.iloc[:int(len(df)*0.8)]
-test = df.iloc[int(len(df)*0.8):]
-
-# ✅ 更严谨：TimeSeriesSplit
-from sklearn.model_selection import TimeSeriesSplit
-tscv = TimeSeriesSplit(n_splits=5)
-for train_idx, test_idx in tscv.split(df):
-    train, test = df.iloc[train_idx], df.iloc[test_idx]</code></pre>
-<h3>滚动回测（最贴近真实业务）</h3>
-<pre><code>history = train.copy()
-predictions = []
-for t in range(len(test)):
-    model = SARIMAX(history, order=(1,1,1)).fit(disp=False)
-    yhat = model.forecast(steps=1)[0]
-    predictions.append(yhat)
-    history = pd.concat([history, test.iloc[[t]]])  # 真实值入训练集</code></pre>
-<div class="pit-box"><h4>⚠️ 性能提示</h4>
-<p>滚动回测每个 step 都要重新训练，很慢。如果用 LightGBM，可以一次训练后只滚动预测（数据更新但不重训）。</p></div>`,
-  },
-  {
-    id: "deep-14", day: 14, week: 2, track: "deep",
-    title: "里程碑 1 · ARIMA 完整案例（电商销量）",
-    description: "把 Week 1-2 串成一个端到端案例",
-    objectives: [
-      "完成一个可交付的 ARIMA 预测脚本",
-      "产出回测报告（MAE/MAPE + 残差诊断 + 预测图）",
-      "代码归档 GitHub，准备作品集",
-    ],
-    duration: 90,
-    cues: [
-      "交付物 = 代码 + 报告 + 可视化",
-      "报告里必须写：数据 / 方法 / 结果 / 业务建议",
-      "这张图就是你简历里『项目经验』的核心素材",
-    ],
-    content: `<h3>里程碑 1 · 交付物清单</h3>
-<ol>
-<li><strong>数据：</strong>Kaggle Rossmann / M5 Forecasting 任选一份</li>
-<li><strong>预处理：</strong>STL 分解 + ADF 检验 + 特征工程</li>
-<li><strong>建模：</strong>auto_arima + SARIMA + Prophet 三模型对比</li>
-<li><strong>评估：</strong>滚动回测 + MAE/MAPE/RMSE + 残差诊断</li>
-<li><strong>报告：</strong>Markdown 一页纸，含图表 + 业务建议</li>
-</ol>
-<div class="ex-box"><h4>✏️ AI 辅助验收</h4>
-<p>把你的报告发给 AI：<em>"这是我做的销量预测报告，请像资深数据科学家一样批判：方法论哪里有问题？结果是否可信？业务建议是否落地？"</em></p></div>`,
-  },
-
-  // ===== Week 3 · Day 15-21 · ML 时序 + 特征工程 =====
-  {
-    id: "deep-15", day: 15, week: 3, track: "deep",
-    title: "LightGBM 时序化：lag + rolling 特征",
-    description: "把表格模型改造成时序预测利器",
-    objectives: [
-      "理解 LightGBM 为什么在时序上常胜过 ARIMA",
-      "掌握 lag + rolling 特征的批量构造",
-      "学会 LightGBM 的核心参数（learning_rate / num_leaves / max_depth）",
-    ],
-    duration: 45,
-    cues: [
-      "LightGBM 优势：天然处理多变量 + 非线性 + 缺失值",
-      "num_leaves 控制复杂度，过大→过拟合",
-      "early stopping 防过拟合",
-    ],
-    content: `<pre><code>import lightgbm as lgb
-params = {
-    'objective': 'regression',
-    'metric': 'mae',
-    'learning_rate': 0.05,
-    'num_leaves': 31,
-    'max_depth': -1,
-    'feature_fraction': 0.8,
-    'bagging_fraction': 0.8,
-    'bagging_freq': 5,
-    'verbose': -1,
-}
-model = lgb.train(
-    params,
-    train_set=lgb.Dataset(X_train, y_train),
-    valid_sets=[lgb.Dataset(X_val, y_val)],
-    num_boost_round=1000,
-    callbacks=[lgb.early_stopping(50), lgb.log_evaluation(100)],
-)</code></pre>
-<h3>为什么 LightGBM 在时序上常胜</h3>
-<ul>
-<li>ARIMA 假设严格平稳，LightGBM 不需要</li>
-<li>ARIMA 难加入外生变量，LightGBM 天然多变量</li>
-<li>ARIMA 难处理非线性（如促销阈值效应），LightGBM 自动学</li>
-</ul>`,
-  },
-  {
-    id: "deep-16", day: 16, week: 3, track: "deep",
-    title: "Optuna 自动调参：贝叶斯优化",
-    description: "比 GridSearch 快 10 倍",
-    objectives: [
-      "理解 Optuna 的 TPE 贝叶斯优化原理",
-      "学会定义 LightGBM 的搜索空间",
-      "知道早停（median pruner）的用法",
-    ],
-    duration: 45,
-    cues: [
-      "Optuna 比 GridSearch 快，因为它学历史结果",
-      "TPE = Tree-structured Parzen Estimator",
-      "调 100 次 trial 通常够用",
-    ],
-    content: `<pre><code>import optuna
-def objective(trial):
-    params = {
-        'objective': 'regression',
-        'metric': 'mae',
-        'learning_rate': trial.suggest_float('lr', 0.01, 0.3, log=True),
-        'num_leaves': trial.suggest_int('num_leaves', 15, 127),
-        'max_depth': trial.suggest_int('max_depth', 3, 12),
-        'feature_fraction': trial.suggest_float('ff', 0.5, 1.0),
-        'bagging_fraction': trial.suggest_float('bf', 0.5, 1.0),
-        'lambda_l1': trial.suggest_float('l1', 1e-3, 10, log=True),
-        'lambda_l2': trial.suggest_float('l2', 1e-3, 10, log=True),
-    }
-    model = lgb.train(params, ..., num_boost_round=500,
-                      callbacks=[lgb.early_stopping(30)])
-    return model.best_score['valid_0']['l1']
-
-study = optuna.create_study(direction='minimize')
-study.optimize(objective, n_trials=50)
-print(study.best_params)</code></pre>
-<div class="ex-box"><h4>✏️ 实战</h4>
-<p>把里程碑 1 的 ARIMA 案例用 LightGBM + Optuna 重做一遍，对比 MAE 改善了多少。</p></div>`,
-  },
-  {
-    id: "deep-17", day: 17, week: 3, track: "deep",
-    title: "多因子特征工程：价格/促销/天气/广告",
-    description: "业务因子的系统化设计",
-    objectives: [
-      "理解特征工程的业务优先级",
-      "掌握价格弹性、促销叠加、广告衰减的特征构造",
-      "学会特征筛选（Filter / Wrapper / Embedded）",
-    ],
-    duration: 45,
-    cues: [
-      "价格弹性 = 销量变化% / 价格变化%",
-      "促销叠加：折扣 × 节假日 × 库存",
-      "广告衰减（Adstock）：广告效应随时间指数衰减",
-    ],
-    content: `<h3>业务特征清单</h3>
-<table>
-<tr><th>类别</th><th>特征</th><th>构造方法</th></tr>
-<tr><td>价格</td><td>原价/折扣率/相对竞品价</td><td>直接计算</td></tr>
-<tr><td>促销</td><td>促销标记/促销天数/促销深度</td><td>业务系统</td></tr>
-<tr><td>广告</td><td>Adstock 衰减后预算</td><td>指数加权</td></tr>
-<tr><td>季节</td><td>周几/月几/季度/节假日</td><td>日期函数</td></tr>
-<tr><td>天气</td><td>温度/降水/极端天气</td><td>外部数据</td></tr>
-<tr><td>历史</td><td>lag/rolling/同比/环比</td><td>shift/rolling</td></tr>
-</table>
-<pre><code># Adstock 衰减
-def adstock(spend, decay=0.5):
-    result = []
-    acc = 0
-    for x in spend:
-        acc = x + decay * acc
-        result.append(acc)
-    return result</code></pre>`,
-  },
-  {
-    id: "deep-18", day: 18, week: 3, track: "deep",
-    title: "Target Encoding + K-fold 防泄漏",
-    description: "类别特征的神器",
-    objectives: [
-      "理解 Target Encoding 的原理",
-      "掌握 K-fold 防泄漏的实现",
-      "知道什么时候该用 Target Encoding 而不是 OneHot",
-    ],
-    duration: 45,
-    cues: [
-      "Target Encoding = 用每个类别的目标均值替代类别",
-      "直接用全量数据算 → 严重泄漏",
-      "K-fold：用其他折的目标均值编码当前折",
-    ],
-    content: `<h3>为什么需要 Target Encoding</h3>
-<p>对于高基数类别（如 SKU 编号、店铺 ID），OneHot 会产生几千列稀疏矩阵，LightGBM 处理慢且容易过拟合。Target Encoding 把每个类别压缩成一个数字。</p>
-<pre><code>from sklearn.model_selection import KFold
-def target_encode(train, col, target, n_splits=5, smoothing=10):
+<pre><code># 防泄漏 target encoding
+from sklearn.model_selection import KFold
+def target_encode_kfold(train, col, target, n_splits=5):
     global_mean = train[target].mean()
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
     encoded = pd.Series(index=train.index, dtype=float)
     for tr_idx, val_idx in kf.split(train):
-        agg = train.iloc[tr_idx].groupby(col)[target].agg(['mean', 'count'])
-        smooth = (agg['mean'] * agg['count'] + global_mean * smoothing) / (agg['count'] + smoothing)
-        encoded.iloc[val_idx] = train.iloc[val_idx][col].map(smooth).fillna(global_mean)
-    return encoded</code></pre>
-<p><span class="key-pt">smoothing 参数</span>防止小样本类别过拟合——只有 10 个样本的 SKU，它的均值不可信，要向全局均值收缩。</p>`,
+        agg = train.iloc[tr_idx].groupby(col)[target].mean()
+        encoded.iloc[val_idx] = train.iloc[val_idx][col].map(agg).fillna(global_mean)
+    return encoded</code></pre>`,
   },
   {
-    "id": "deep-19", "day": 19, "week": 3, "track": "deep",
-    "title": "SHAP 可解释性：特征贡献图",
-    "description": "给老板讲清楚『广告费贡献多少销量』",
-    "objectives": [
-      "理解 SHAP 值（Shapley Additive exPlanations）",
-      "会画 SHAP summary plot / dependence plot",
-      "知道如何用 SHAP 做特征筛选和业务归因",
-    ],
-    "duration": 45,
-    "cues": [
-      "SHAP 来自博弈论，把预测结果分摊给每个特征",
-      "summary plot：所有特征重要性排序",
-      "dependence plot：某特征的边际效应",
-    ],
-    "content": `<pre><code>import shap
-explainer = shap.TreeExplainer(model)
-shap_values = explainer.shap_values(X_test)
-shap.summary_plot(shap_values, X_test)
-shap.dependence_plot('广告费', shap_values, X_test)</code></pre>
-<h3>SHAP 在业务里的两个核心用法</h3>
-<ol>
-<li><strong>特征筛选：</strong>SHAP 值接近 0 的特征直接删</li>
-<li><strong>业务归因：</strong>『这次预测销量 1000，其中广告贡献 300，促销贡献 200』——老板最爱听</li>
-</ol>
-<div class="ex-box"><h4>✏️ AI 辅助</h4>
-<p>把 SHAP 图发给 AI：<em>"这张 SHAP 图能说明什么业务结论？哪些特征是噪声？"</em></p></div>`,
-  },
-  {
-    "id": "deep-20", "day": 20, "week": 3, "track": "deep",
-    "title": "模型集成：Stacking + 时序加权",
-    "description": "ARIMA + LightGBM + Prophet 三合一",
-    "objectives": [
-      "理解 Stacking / Blending / 加权平均的区别",
-      "学会用残差stacking（ARIMA 跑趋势，LightGBM 跑残差）",
-      "知道集成不是万能的（多样性是前提）",
-    ],
-    "duration": 45,
-    "cues": [
-      "加权平均：最简单，适合基模型差异大",
-      "Stacking：用元模型学权重，更灵活",
-      "残差 stacking：ARIMA 预测 → LightGBM 学残差，效果常最佳",
-    ],
-    "content": `<h3>三种集成方式</h3>
-<pre><code># 方式 1：简单加权
-ensemble = 0.5 * lgb_pred + 0.3 * arima_pred + 0.2 * prophet_pred
-
-# 方式 2：Stacking（用线性回归学权重）
-from sklearn.linear_model import Ridge
-stack_X = np.column_stack([lgb_pred, arima_pred, prophet_pred])
-meta = Ridge(alpha=1.0).fit(stack_X, y_val)
-
-# 方式 3：残差 stacking
-arima_pred = arima_model.predict(train)
-residual = train_y - arima_pred
-lgb_model.fit(X_train, residual)  # 学残差
-final = arima_pred_test + lgb_model.predict(X_test)</code></pre>
-<div class="pit-box"><h4>⚠️ 多样性是前提</h4>
-<p>集成三个高度相关的模型（都用 LightGBM）几乎没有提升。集成有效的前提是基模型『犯错的方式不同』——ARIMA 擅长趋势，LightGBM 擅长非线性，Prophet 擅长季节，集成才有意义。</p></div>`,
-  },
-  {
-    "id": "deep-21", "day": 21, "week": 3, "track": "deep",
-    "title": "Week 3 复习 + LightGBM vs ARIMA 横评",
-    "description": "用同一份数据对比两个模型族",
-    "objectives": [
-      "完成 LightGBM + Optuna + SHAP 端到端流程",
-      "和 Week 2 的 ARIMA 案例横评",
-      "形成『什么时候用什么模型』的决策树",
-    ],
-    "duration": 60,
-    "cues": [
-      "LightGBM 多变量能力强，ARIMA 单变量理论强",
-      "数据量小（&lt;500）→ ARIMA / Prophet",
-      "数据量大 + 多因子 → LightGBM",
-    ],
-    "content": `<h3>横评报告模板</h3>
-<table>
-<tr><th>维度</th><th>ARIMA</th><th>LightGBM</th></tr>
-<tr><td>数据量 &lt;500</td><td>✅ 适合</td><td>❌ 过拟合</td></tr>
-<tr><td>数据量 &gt;5000</td><td>⚠️ 慢</td><td>✅ 适合</td></tr>
-<tr><td>多变量</td><td>⚠️ SARIMAX 受限</td><td>✅ 天然支持</td></tr>
-<tr><td>非线性</td><td>❌ 不支持</td><td>✅ 自动学</td></tr>
-<tr><td>可解释</td><td>✅ 系数直观</td><td>✅ SHAP</td></tr>
-<tr><td>外推</td><td>✅ 理论保证</td><td>❌ 边界外失效</td></tr>
-</table>`,
-  },
-
-  // ===== Week 4 · Day 22-28 · 因果分析入门到实战 =====
-  {
-    "id": "deep-22", "day": 22, "week": 4, "track": "deep",
-    "title": "因果 vs 相关：潜在结果框架",
-    "description": "为什么相关≠因果",
-    "objectives": [
-      "理解潜在结果（potential outcomes）框架",
+    id: "deep-4", day: 4, week: 1, track: "deep",
+    title: "因果 vs 相关：思维范式转换",
+    description: "为什么相关≠因果（P4 入门）",
+    objectives: [
+      "理解潜在结果框架（Neyman-Rubin）",
       "认识混淆变量、选择偏差",
       "建立因果思维的三个核心问题",
     ],
-    "duration": 45,
-    "cues": [
-      "潜在结果：Y(1) 接受处理的潜在结果，Y(0) 不接受",
-      "个体处理效应 ITE = Y(1) - Y(0)，但永远只能观察一个",
-      "平均处理效应 ATE = E[Y(1) - Y(0)]",
+    duration: 45,
+    cues: [
+      "潜在结果 Y(1) / Y(0)，只能观察一个",
+      "ATE = E[Y(1) - Y(0)]",
+      "因果三武器：RCT / 自然实验 / 观察数据+假设",
     ],
-    "content": `<h3>为什么相关≠因果</h3>
-<p>经典案例：冰淇淋销量和溺水人数高度相关，但前者不导致后者——是气温（混淆变量）共同导致。</p>
-<h3>潜在结果框架（Neyman-Rubin）</h3>
+    content: `<h3>经典案例：冰淇淋与溺水</h3>
+<p>冰淇淋销量和溺水人数高度相关，但前者不导致后者——是气温（混淆变量）共同导致。</p>
+<h3>潜在结果框架</h3>
 <ul>
 <li><strong>处理 T：</strong>是否做了某事（如是否促销）</li>
-<li><strong>潜在结果 Y(1), Y(0)：</strong>做和不做的两个平行宇宙</li>
+<li><strong>潜在结果：</strong>Y(1) 做的，Y(0) 不做的</li>
 <li><strong>事实观察：</strong>Y = T·Y(1) + (1-T)·Y(0)——你只能看到一个</li>
-<li><strong>ITE：</strong>Y(1) - Y(0)，但永远未知</li>
 <li><strong>ATE：</strong>E[Y(1) - Y(0)]，可通过实验或方法估计</li>
 </ul>
-<h3>因果推断的三大武器</h3>
+<h3>因果推断三大武器</h3>
 <ol>
 <li><strong>随机对照实验（RCT）：</strong>金标准，但贵</li>
 <li><strong>自然实验：</strong>DID、合成控制、工具变量</li>
 <li><strong>观察数据 + 假设：</strong>DoubleML、Propensity Score</li>
-</ol>`,
+</ol>
+<div class="ex-box"><h4>✏️ 今日思考</h4>
+<p>你工作中遇到的『X 是否导致 Y』问题，能用 RCT 吗？如果不能，需要什么假设？</p></div>`,
   },
   {
-    "id": "deep-23", "day": 23, "week": 4, "track": "deep",
-    "title": "有向无环图（DAG）：画因果图",
-    "description": "用图论工具梳理变量关系",
-    "objectives": [
+    id: "deep-5", day: 5, week: 1, track: "deep",
+    title: "DAG 有向无环图：画因果图",
+    description: "用图论工具梳理变量关系",
+    objectives: [
       "理解 DAG 的节点和有向边",
       "识别混淆变量、中介变量、对撞变量",
-      "学会用 backdoor 准则确定该控制哪些变量",
+      "学会用 backdoor 准则",
     ],
-    "duration": 45,
-    "cues": [
-      "混淆变量：同时影响 T 和 Y，必须控制",
-      "中介变量：T → M → Y，控制 M 会切断真实效应",
-      "对撞变量：T → C ← Y，控制 C 会引入虚假关联",
+    duration: 45,
+    cues: [
+      "混淆变量 C → T, C → Y：必须控制",
+      "中介变量 T → M → Y：控制 M 会切断真实效应",
+      "对撞变量 T → C ← Y：控制 C 引入虚假关联",
     ],
-    "content": `<h3>三种变量的处理原则</h3>
+    content: `<h3>三种变量的处理原则</h3>
 <table>
 <tr><th>类型</th><th>结构</th><th>处理</th></tr>
 <tr><td>混淆变量</td><td>C → T, C → Y</td><td>✅ 必须控制</td></tr>
@@ -751,62 +177,61 @@ final = arima_pred_test + lgb_model.predict(X_test)</code></pre>
 </table>
 <h3>Backdoor 准则</h3>
 <p>要估计 T 对 Y 的因果效应，必须『关闭』所有从 T 到 Y 的后门路径——通过控制路径上的混淆变量。</p>
-<pre><code># 用 pgmpy 画 DAG
-from pgmpy.base import DAG
-dag = DAG()
-dag.add_edges_from([('气温', '冰淇淋销量'),
-                    ('气温', '溺水人数'),
-                    ('冰淇淋销量', '溺水人数')])  # 这是虚假因果</code></pre>
 <div class="ex-box"><h4>✏️ AI 辅助</h4>
 <p>把你的业务场景告诉 AI：<em>"促销影响销量，但还有价格、季节、库存这些变量，帮我画 DAG，识别哪些必须控制。"</em></p></div>`,
   },
+
+  // ───────────────────────────────────────────────────────────
+  // ★ P4 · 因果归因 / 营销评估（Day 6-25，20 天重点）
+  // ───────────────────────────────────────────────────────────
+
+  // ===== Week 2 · Day 6-12 · 经典因果推断方法 =====
   {
-    "id": "deep-24", "day": 24, "week": 4, "track": "deep",
-    "title": "双重差分（DID）实战",
-    "description": "政策/活动效果评估的经典方法",
-    "objectives": [
+    id: "deep-6", day: 6, week: 2, track: "deep",
+    title: "P4 启动 · 双重差分（DID）实战",
+    description: "政策/活动效果评估的经典方法",
+    objectives: [
       "理解 DID 的『平行趋势假设』",
       "会跑 DID 回归并解释系数",
       "知道 DID 失效的场景",
     ],
-    "duration": 45,
-    "cues": [
-      "DID = (实验组后 - 实验组前) - (对照组后 - 对照组前)",
+    duration: 45,
+    cues: [
+      "DID = (实验后-实验前) - (对照后-对照前)",
       "平行趋势假设：没处理的话，两组变化趋势一致",
       "DID 系数 = 政策/活动的因果效应",
     ],
-    "content": `<h3>DID 公式</h3>
+    content: `<h3>DID 公式</h3>
 <p><code>DID = (Ȳ_T,post - Ȳ_T,pre) - (Ȳ_C,post - Ȳ_C,pre)</code></p>
-<pre><code>import statsmodels.api as sm
-import statsmodels.formula.api as smf
+<pre><code>import statsmodels.formula.api as smf
 df['treat_x_post'] = df['treat'] * df['post']
 model = smf.ols('销量 ~ treat + post + treat_x_post', data=df).fit()
-print(model.params['treat_x_post'])  # 这就是 DID 估计</code></pre>
+print(model.params['treat_x_post'])  # DID 估计</code></pre>
 <h3>平行趋势检验</h3>
-<p>在政策实施前的多期数据上，画两组的趋势图，看是否平行。如果不平行，DID 结果不可信。</p>
-<div class="pit-box"><h4>⚠️ DID 的三个陷阱</h4>
+<p>在政策实施前的多期数据上，画两组的趋势图，看是否平行。</p>
+<div class="pit-box"><h4>⚠️ DID 三大陷阱</h4>
 <ol>
-<li>实验组对照组选错（如对照组也受溢出效应影响）</li>
+<li>实验组对照组选错（对照组也受溢出效应）</li>
 <li>没有平行趋势就直接用</li>
 <li>政策时点和其他冲击重合（如同时遇上疫情）</li>
 </ol></div>`,
   },
   {
-    "id": "deep-25", "day": 25, "week": 4, "track": "deep",
-    "title": "合成控制法（Synthetic Control）",
-    "description": "DID 的进化版，构造『合成对照组』",
-    "objectives": [
+    id: "deep-7", day: 7, week: 2, track: "deep",
+    title: "合成控制法（Synthetic Control）",
+    description: "DID 的进化版，构造『合成对照组』",
+    objectives: [
       "理解合成控制法的权重构造",
       "会跑 SyntheticControl 并画对比图",
       "知道和 DID 的适用差异",
     ],
-    "duration": 45,
-    "cues": [
+    duration: 45,
+    cues: [
       "合成控制：用多个对照单位的加权组合模拟实验组",
       "权重通过最小化预处理期差异得到",
       "适合『只有一个实验单位』的场景（如某城市试点）",
     ],
-    "content": `<pre><code>from SyntheticControlMethods import Synth
+    content: `<pre><code>from SyntheticControlMethods import Synth
 sc = Synth(df, outcome='销量', id='城市', time='月份',
            treated_unit='试点城市', treated_time='2025-01',
            n_optim=10)
@@ -820,21 +245,21 @@ sc.plot(path='synth.png')</code></pre>
 </table>`,
   },
   {
-    "id": "deep-26", "day": 26, "week": 4, "track": "deep",
-    "title": "CausalImpact：Google 贝叶斯反事实",
-    "description": "用贝叶斯结构时序构造『如果没有干预会怎样』",
-    "objectives": [
+    id: "deep-8", day: 8, week: 2, track: "deep",
+    title: "CausalImpact：Google 贝叶斯反事实",
+    description: "用贝叶斯结构时序构造『如果没有干预会怎样』",
+    objectives: [
       "理解 CausalImpact 的贝叶斯结构时序模型",
       "会跑 CausalImpact 并解读结果图",
-      "知道 CausalImpact 的核心假设（对照时间序列）",
+      "知道核心假设（对照时间序列）",
     ],
-    "duration": 45,
-    "cues": [
+    duration: 45,
+    cues: [
       "CausalImpact 用贝叶斯结构时序拟合『反事实』",
       "需要提供 1+ 个对照序列（不受处理影响）",
       "输出：累积效应 / 平均效应 / 置信区间",
     ],
-    "content": `<pre><code>from causalimpact import CausalImpact
+    content: `<pre><code>from causalimpact import CausalImpact
 ci = CausalImpact(
     data=df[['目标序列', '对照1', '对照2']],
     pre_period=['2024-01-01', '2025-01-01'],
@@ -842,35 +267,129 @@ ci = CausalImpact(
 )
 ci.run()
 ci.plot()
-print(ci.summary())  # 平均效应 + p 值</code></pre>
+print(ci.summary())</code></pre>
 <h3>CausalImpact 三大要素</h3>
 <ol>
 <li><strong>目标序列：</strong>受处理的时间序列</li>
-<li><strong>对照序列：</strong>不受处理但与目标相关的序列（如同行业其他公司股价）</li>
+<li><strong>对照序列：</strong>不受处理但与目标相关的序列</li>
 <li><strong>处理时点：</strong>明确的事件发生时间</li>
-</ol>
-<div class="ex-box"><h4>✏️ 实战</h4>
-<p>用一份电商促销数据：目标=实验店销量，对照=同公司其他店销量，处理=大促日。跑 CausalImpact，输出促销的因果效应。</p></div>`,
+</ol>`,
   },
   {
-    "id": "deep-27", "day": 27, "week": 4, "track": "deep",
-    "title": "DoubleML：双重机器学习去偏",
-    "description": "高维混淆变量的现代化解决方案",
-    "objectives": [
+    id: "deep-9", day: 9, week: 2, track: "deep",
+    title: "工具变量（IV）+ 双阶段最小二乘（2SLS）",
+    description: "处理内生性的经典方法",
+    objectives: [
+      "理解工具变量的两个条件（相关性 + 外生性）",
+      "会跑 2SLS 回归",
+      "知道在营销场景的应用",
+    ],
+    duration: 45,
+    cues: [
+      "IV 必须影响 T 但不直接影响 Y（只通过 T）",
+      "2SLS：第一阶段用 IV 预测 T，第二阶段用预测的 T 回归 Y",
+      "经典 IV：天气（影响价格但不直接影响销量）",
+    ],
+    content: `<h3>工具变量的两个条件</h3>
+<ol>
+<li><strong>相关性：</strong>Cov(Z, T) ≠ 0（IV 和处理相关）</li>
+<li><strong>外生性：</strong>Cov(Z, ε) = 0（IV 不直接影响 Y）</li>
+</ol>
+<pre><code>from linearmodels.iv import IV2SLS
+model = IV2SLS.from_formula('销量 ~ 1 + [价格 ~ 天气指数] + 季节', data=df)
+result = model.fit()
+print(result.summary())</code></pre>
+<h3>营销场景的 IV</h3>
+<ul>
+<li><strong>天气：</strong>影响冰淇淋价格（供给冲击）但不直接影响需求</li>
+<li><strong>竞争对手定价：</strong>影响自己定价但不直接决定自己销量</li>
+<li><strong>运费波动：</strong>影响终端价格但不影响需求</li>
+</ul>`,
+  },
+  {
+    id: "deep-10", day: 10, week: 2, track: "deep",
+    title: "Propensity Score Matching（PSM）",
+    description: "观察数据的经典匹配法",
+    objectives: [
+      "理解 Propensity Score 的概念",
+      "会跑 PSM 并平衡协变量",
+      "知道 PSM 的局限",
+    ],
+    duration: 45,
+    cues: [
+      "PS = P(T=1|X)，给定协变量被处理的概率",
+      "匹配：找 PS 相似但 T 不同的样本",
+      "局限：只能控制观察到的混淆",
+    ],
+    content: `<pre><code>from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import NearestNeighbors
+
+# 第一步：估计 PS
+ps_model = LogisticRegression().fit(X, T)
+df['ps'] = ps_model.predict_proba(X)[:, 1]
+
+# 第二步：最近邻匹配
+treated = df[df['treat'] == 1]
+control = df[df['treat'] == 0]
+nn = NearestNeighbors(n_neighbors=1).fit(control[['ps']])
+dist, idx = nn.kneighbors(treated[['ps']])
+matched_control = control.iloc[idx.flatten()]</code></pre>
+<div class="pit-box"><h4>⚠️ PSM 的局限</h4>
+<ul>
+<li>只能控制观察到的混淆，未观察到的无能为力</li>
+<li>高维 X 时 PS 估计难</li>
+<li>被 DoubleML 全面取代（Day 12）</li>
+</ul></div>`,
+  },
+  {
+    id: "deep-11", day: 11, week: 2, track: "deep",
+    title: "Week 2 复习 + 因果三角验证案例",
+    description: "用 DID + 合成控制 + CausalImpact 三角验证",
+    objectives: [
+      "完成一个真实业务场景的因果分析",
+      "用三种方法交叉验证结论",
+      "产出可交付的报告",
+    ],
+    duration: 60,
+    cues: [
+      "三角验证：三种方法结论一致 → 强证据",
+      "三角验证：结论不一致 → 方法学有问题",
+      "报告：数据 / 方法 / 结果 / 业务建议 / 局限",
+    ],
+    content: `<h3>项目模板</h3>
+<ol>
+<li><strong>问题：</strong>某次促销活动到底拉动了多少销量？</li>
+<li><strong>数据：</strong>实验组（促销店）+ 对照组（非促销店）× 促销前后各 4 周</li>
+<li><strong>方法：</strong>
+  <ul>
+  <li>DID：检查平行趋势，跑回归</li>
+  <li>CausalImpact：用对照店构造反事实</li>
+  <li>合成控制：用多店加权拟合</li>
+  </ul>
+</li>
+<li><strong>结果：</strong>三种方法的 ATE 估计 + 置信区间</li>
+<li><strong>业务建议：</strong>促销是否值得做？ROI 是多少？</li>
+</ol>`,
+  },
+  {
+    id: "deep-12", day: 12, week: 2, track: "deep",
+    title: "DoubleML：双重机器学习去偏",
+    description: "高维混淆变量的现代化解决方案",
+    objectives: [
       "理解 DoubleML 的去偏原理",
       "会跑 DoubleML 估计因果效应",
       "知道和传统 PS / IV 的差异",
     ],
-    "duration": 45,
-    "cues": [
+    duration: 45,
+    cues: [
       "DoubleML = 两个 ML 模型：一个预测 T，一个预测 Y",
       "用残差做回归，消除混淆偏差",
       "交叉拟合（cross-fitting）防过拟合偏差",
     ],
-    "content": `<h3>DoubleML 三步</h3>
+    content: `<h3>DoubleML 三步</h3>
 <ol>
-<li>用 ML 拟合 T ~ X，得到 T 的残差（处理残差）</li>
-<li>用 ML 拟合 Y ~ X，得到 Y 的残差（结果残差）</li>
+<li>用 ML 拟合 T ~ X，得到 T 的残差</li>
+<li>用 ML 拟合 Y ~ X，得到 Y 的残差</li>
 <li>用残差对残差做 OLS，得到去偏后的因果效应</li>
 </ol>
 <pre><code>from econml.dml import LinearDML
@@ -883,29 +402,207 @@ model = LinearDML(
 model.fit(Y, T, X=X_conf)
 ate = model.ate(X=X_conf)
 print(f'平均因果效应: {ate}')</code></pre>
-<h3>为什么 DoubleML 比 Propensity Score 强</h3>
+<h3>为什么 DoubleML 比 PSM 强</h3>
 <ul>
-<li>PS 只能控制低维混淆，DoubleML 支持高维（几百个变量）</li>
-<li>PS 假设线性，DoubleML 用 ML 自动学非线性</li>
+<li>PSM 只能控制低维混淆，DoubleML 支持高维（几百个变量）</li>
+<li>PSM 假设线性，DoubleML 用 ML 自动学非线性</li>
 <li>DoubleML 有交叉拟合保证，理论严格</li>
 </ul>`,
   },
+
+  // ===== Week 3 · Day 13-19 · 营销组合建模（MMM）+ Robyn =====
   {
-    "id": "deep-28", "day": 28, "week": 4, "track": "deep",
-    "title": "uplift modeling：找对促销敏感的人",
-    "description": "个体处理效应（ITE）估计",
-    "objectives": [
+    id: "deep-13", day: 13, week: 3, track: "deep",
+    title: "营销组合建模（MMM）整体框架",
+    description: "Meta Robyn 的理论基础",
+    objectives: [
+      "理解 MMM 的核心方程",
+      "掌握 Adstock 衰减模型",
+      "知道 MMM 和归因模型的差异",
+    ],
+    duration: 45,
+    cues: [
+      "MMM = Marketing Mix Modeling",
+      "销量 = 基线 + Σ Adstock(Hill(媒体_i)) + 季节 + 价格 + ε",
+      "归因模型看点击路径，MMM 看预算分配",
+    ],
+    content: `<h3>MMM 核心方程</h3>
+<p><code>销量 = 基线 + Σ Adstock(Hill(媒体_i)) + 季节 + 价格 + ε</code></p>
+<h3>Adstock 衰减</h3>
+<p>广告效应不会立即消失，会持续衰减。<br>
+<code>adstock(t) = spend(t) + λ·adstock(t-1)</code>，λ 是留存率（通常 0.3-0.7）。</p>
+<pre><code>def adstock(spend, decay=0.5):
+    result, acc = [], 0
+    for x in spend:
+        acc = x + decay * acc
+        result.append(acc)
+    return result</code></pre>
+<h3>MMM vs 归因模型</h3>
+<table>
+<tr><th></th><th>MMM</th><th>归因（MTA）</th></tr>
+<tr><td>数据粒度</td><td>周/月</td><td>用户级点击流</td></tr>
+<tr><td>能见度</td><td>含线下渠道</td><td>仅数字渠道</td></tr>
+<tr><td>回答问题</td><td>预算怎么分</td><td>哪个触点贡献大</td></tr>
+<tr><td>隐私要求</td><td>低（聚合数据）</td><td>高（Cookie）</td></tr>
+</table>`,
+  },
+  {
+    id: "deep-14", day: 14, week: 3, track: "deep",
+    title: "Hill 饱和函数 + 拐点识别",
+    description: "广告边际效应递减",
+    objectives: [
+      "理解 Hill 函数的数学形式",
+      "掌握半饱和点和陡峭度的意义",
+      "知道怎么从历史数据拟合",
+    ],
+    duration: 45,
+    cues: [
+      "Hill 函数：response(x) = x^γ / (x^γ + θ^γ)",
+      "θ 是半饱和点（达到 50% 效应的投入量）",
+      "γ 是陡峭度（γ 越大越像 S 型）",
+    ],
+    content: `<h3>Hill 函数三种形态</h3>
+<ul>
+<li><strong>γ &lt; 1：</strong>凹型，前期增长快，后期饱和（典型广告）</li>
+<li><strong>γ = 1：</strong>Michaelis-Menten，标准饱和</li>
+<li><strong>γ &gt; 1：</strong>S 型，前期慢，中期快，后期饱和</li>
+</ul>
+<pre><code>import numpy as np
+def hill(x, theta=100, gamma=0.8):
+    return x**gamma / (x**gamma + theta**gamma)
+
+# 拟合
+from scipy.optimize import curve_fit
+popt, _ = curve_fit(hill, spend_data, sales_data)
+theta_fit, gamma_fit = popt</code></pre>
+<div class="ex-box"><h4>✏️ 业务洞察</h4>
+<p>找到 θ 后，如果当前投入 &gt;&gt; θ，说明广告已饱和，加预算 ROI 急降；如果 &lt; θ，说明还有空间。</p></div>`,
+  },
+  {
+    id: "deep-15", day: 15, week: 3, track: "deep",
+    title: "Meta Robyn 实战",
+    description: "工业级 MMM 工具",
+    objectives: [
+      "会跑 Robyn 自动调参",
+      "解读 Robyn 的 Pareto 前沿",
+      "知道怎么选最优模型",
+    ],
+    duration: 60,
+    cues: [
+      "Robyn = Meta 开源 MMM（R 实现）",
+      "用 Nevergrad 自动调参",
+      "Pareto 前沿：NRMSE vs Decomposition RSSD",
+    ],
+    content: `<h3>Robyn 工作流</h3>
+<pre><code># R 代码（Robyn 是 R 包）
+library(Robyn)
+InputCollect &lt;- robyn_inputs(
+    dt_input = data,
+    dt_holidays = holidays,
+    adstock = 'geometric',  # 或 'weibull'
+    date_var = 'date',
+    dep_var = 'sales',
+    dep_var_type = 'revenue',
+    prophet_vars = c('trend', 'season', 'holiday'),
+    paid_media_spends = c('tv', 'ooh', 'print', 'search', 'facebook'),
+    paid_media_vars = c('tv_impressions', ...),
+    factor_vars = c('promo'),
+    window_start = '2024-01-01',
+    window_end = '2025-12-31',
+)
+OutputModels &lt;- robyn_run(InputCollect, iterations = 2000, trials = 5)
+OutputCollect &lt;- robyn_outputs(InputCollect, OutputModels)
+robyn_onepagereport(OutputCollect)</code></pre>
+<h3>解读 Pareto 前沿</h3>
+<p>Robyn 输出多个候选模型，画在『NRMSE（准确度）× RSSD（解释度）』二维图上。<br>
+选 Pareto 前沿上的模型，业务解释最合理。</p>`,
+  },
+  {
+    id: "deep-16", day: 16, week: 3, track: "deep",
+    title: "预算最优分配",
+    description: "把 MMM 结果转化为预算决策",
+    objectives: [
+      "理解预算分配的约束优化",
+      "会跑 Robyn 的预算分配场景",
+      "知道边际 ROI 的概念",
+    ],
+    duration: 45,
+    cues: [
+      "目标：在固定预算下最大化销量",
+      "约束：各渠道预算上下限",
+      "边际 ROI = 最后一元投入的回报",
+    ],
+    content: `<pre><code># Robyn 预算分配
+allocator &lt;- robyn_allocator(
+    InputCollect,
+    OutputCollect,
+    select_model = 'best_model_id',
+    date_range = 'all',
+    total_budget = 1000000,  # 总预算
+    scenario = 'max_response',  # 最大化响应
+    channel_constr_low = 0.5,  # 各渠道下限 50%
+    channel_constr_high = 2,   # 各渠道上限 200%
+)</code></pre>
+<h3>边际 ROI 曲线</h3>
+<p>每个渠道的边际 ROI 随投入递减（Hill 饱和）。最优分配是各渠道的边际 ROI 相等。</p>
+<div class="ex-box"><h4>✏️ 业务价值</h4>
+<p>典型场景：把 TV 预算的 20% 挪到抖音，整体 ROI 涨 15%。这就是 Robyn 的核心价值。</p></div>`,
+  },
+  {
+    id: "deep-17", day: 17, week: 3, track: "deep",
+    title: "贝叶斯 MMM（PyMC 实现）",
+    description: "Python 版的 MMM，带不确定性量化",
+    objectives: [
+      "理解贝叶斯 MMM 的优势",
+      "会用 PyMC 搭建贝叶斯 MMM",
+      "知道和 Robyn 的差异",
+    ],
+    duration: 45,
+    cues: [
+      "贝叶斯：每个参数有分布，不是点估计",
+      "能输出『ROI 是 3.2±0.5』而非『ROI 是 3.2』",
+      "PyMC-Marketing 是 Python 版 Robyn",
+    ],
+    content: `<pre><code>import pymc as pm
+with pm.Model() as mmm:
+    # 媒体渠道的 Adstock + Hill
+    adstock_tv = adstock(tv_spend, decay=pm.Beta('decay_tv', 2, 2))
+    response_tv = hill(adstock_tv, theta=pm.HalfNormal('theta_tv', 100),
+                       gamma=pm.Beta('gamma_tv', 2, 2))
+    # ... 其他渠道
+    # 基线 + 季节 + 趋势
+    baseline = pm.Normal('baseline', mu=1000, sigma=500)
+    trend = pm.Normal('trend', mu=0, sigma=10)
+    season = fourier_series(dates, periods=[7, 365.25])
+    # 似然
+    mu = baseline + trend * t + season + response_tv + ...
+    sigma = pm.HalfNormal('sigma', 50)
+    y = pm.Normal('y', mu=mu, sigma=sigma, observed=sales)
+    trace = pm.sample(2000, tune=1000, chains=4, target_accept=0.9)</code></pre>
+<h3>贝叶斯 vs Robyn</h3>
+<table>
+<tr><th></th><th>Robyn（频率派）</th><th>贝叶斯 MMM</th></tr>
+<tr><td>输出</td><td>点估计</td><td>分布</td></tr>
+<tr><td>不确定性</td><td>置信区间</td><td>可信区间（更直观）</td></tr>
+<tr><td>先验利用</td><td>❌</td><td>✅（能融入历史经验）</td></tr>
+</table>`,
+  },
+  {
+    id: "deep-18", day: 18, week: 3, track: "deep",
+    title: "uplift Modeling：找对促销敏感的人",
+    description: "个体处理效应（ITE）估计",
+    objectives: [
       "理解 uplift 的概念（处理效应的个体差异）",
       "掌握 S/T/X/L Learner 四种方法",
       "知道 uplift 在营销中的应用",
     ],
-    "duration": 45,
-    "cues": [
+    duration: 45,
+    cues: [
       "uplift = Y(1) - Y(0) 在个体层面",
       "四类人：必然买/必然不买/促销才买/促销反而不买",
-      "目标是找『促销才买』的人，给他们促销",
+      "目标是找『促销才买』的人",
     ],
-    "content": `<h3>四种 Learner</h3>
+    content: `<h3>四种 Learner</h3>
 <table>
 <tr><th>方法</th><th>思路</th><th>适用</th></tr>
 <tr><td>S-Learner</td><td>一个模型，把 T 作为特征</td><td>简单</td></tr>
@@ -916,924 +613,69 @@ print(f'平均因果效应: {ate}')</code></pre>
 <pre><code>from econml.uplift import XGBRegressor as UpliftXGB
 model = UpliftXGB()
 model.fit(X, treatment=T, y=Y)
-uplift = model.predict(X)  # 每个人的预测 ITE</code></pre>
-<div class="ex-box"><h4>✏️ 业务应用</h4>
-<p>电商场景：把 uplift 排序，给 Top 20% 的『促销敏感型』用户发券，比平均发券的 ROI 高 3-5 倍。</p></div>`,
-  },
-
-  // ===== Day 29-35 · 阶段二毕业 =====
-  {
-    "id": "deep-29", "day": 29, "week": 5, "track": "deep",
-    "title": "Day 29 · 里程碑 2 启动：完整因果归因报告",
-    "description": "用 DID + CausalImpact + DoubleML 三角验证",
-    "objectives": [
-      "完成一个真实业务场景的因果分析",
-      "用三种方法交叉验证结论",
-      "产出可交付的报告",
-    ],
-    "duration": 90,
-    "cues": [
-      "三角验证：三种方法结论一致 → 强证据",
-      "三角验证：结论不一致 → 方法学有问题",
-      "报告必须含：数据 / 方法 / 结果 / 业务建议 / 局限",
-    ],
-    "content": `<h3>项目模板</h3>
-<ol>
-<li><strong>问题：</strong>某次促销活动到底拉动了多少销量？</li>
-<li><strong>数据：</strong>实验组（促销店）+ 对照组（非促销店）× 促销前后各 4 周</li>
-<li><strong>方法：</strong>
-  <ul>
-  <li>DID：检查平行趋势，跑回归</li>
-  <li>CausalImpact：用对照店构造反事实</li>
-  <li>DoubleML：控制天气/价格/库存等混淆</li>
-  </ul>
-</li>
-<li><strong>结果：</strong>三种方法的 ATE 估计 + 置信区间</li>
-<li><strong>业务建议：</strong>促销是否值得做？ROI 是多少？</li>
-</ol>`,
+uplift = model.predict(X)</code></pre>
+<h3>业务价值</h3>
+<p>把 uplift 排序，给 Top 20% 的『促销敏感型』用户发券，比平均发券的 ROI 高 3-5 倍。</p>`,
   },
   {
-    "id": "deep-30", "day": 30, "week": 5, "track": "deep",
-    "title": "Day 30 · 阶段二总结 + 作品集整理",
-    "description": "回顾 30 天成果，整理作品集",
-    "objectives": [
-      "回顾阶段二学到的核心能力",
-      "整理两个作品（时序预测 + 因果归因）",
-      "准备阶段三的学习计划",
+    id: "deep-19", day: 19, week: 3, track: "deep",
+    title: "Week 3 复习 + MMM 案例端到端",
+    description: "用真实数据跑完整 Robyn",
+    objectives: [
+      "完成一个 Robyn 端到端案例",
+      "产出预算优化建议报告",
+      "形成可复用的代码模板",
     ],
-    "duration": 60,
-    "cues": [
-      "两个作品是简历核心素材",
-      "代码 + 报告 + 可视化，归档 GitHub",
-      "阶段三：回头补统计学，让你『懂为什么』",
+    duration: 90,
+    cues: [
+      "数据：2 年周度数据 × 5 个媒体渠道",
+      "Robyn 自动调参 2000 次",
+      "报告含：模型拟合 / Adstock 参数 / 预算优化",
     ],
-    "content": `<h3>阶段二产出的两个作品</h3>
+    content: `<h3>端到端案例流程</h3>
 <ol>
-<li><strong>时序预测系统</strong>：ARIMA + SARIMA + LightGBM 三模型 + Optuna 调参 + SHAP 归因 + 滚动回测报告</li>
-<li><strong>因果归因报告</strong>：DID + CausalImpact + DoubleML 三角验证 + 业务建议</li>
+<li>准备数据：销量 + 媒体花费 + 价格 + 节假日</li>
+<li>跑 Robyn，选出 Pareto 前沿的最优模型</li>
+<li>解读每个渠道的 Adstock 衰减率 + Hill 饱和点</li>
+<li>计算各渠道的边际 ROI</li>
+<li>跑预算优化场景（+20% / -20% 总预算）</li>
+<li>产出报告：哪个渠道加投、哪个减投、预期增量</li>
 </ol>
-<h3>下一步预告（阶段三）</h3>
-<ul>
-<li>Day 31-65：统计学深入——SARIMA 数学严格版 / 状态空间 / 贝叶斯 / 协整</li>
-<li>目标：从『会用』升级到『懂为什么』+『能读论文』</li>
-</ul>`,
-  },
-  {
-    "id": "deep-31", "day": 31, "week": 5, "track": "deep",
-    "title": "阶段二补丁 1 · 舆情文本因子的入门",
-    "description": "把评论/社媒文本变成销量因子",
-    "objectives": [
-      "理解文本特征的基本流程（分词 → 向量化 → 情感）",
-      "会用 SnowNLP / Transformers 做中文情感分析",
-      "知道如何把情感分数作为外生变量",
-    ],
-    "duration": 45,
-    "cues": [
-      "中文分词：jieba；情感分析：SnowNLP / HanLP",
-      "进阶：HuggingFace 中文 BERT 微调",
-      "把每日情感均值作为 SARIMAX 的 exog",
-    ],
-    "content": `<pre><code># 简单版：SnowNLP
-from snownlp import SnowNLP
-df['情感分'] = df['评论'].apply(lambda x: SnowNLP(x).sentiments)
-
-# 进阶版：HuggingFace BERT
-from transformers import pipeline
-classifier = pipeline('sentiment-analysis', model='uer/roberta-base-finetuned-jd-binary-chinese')
-df['情感分'] = df['评论'].apply(lambda x: classifier(x)[0]['score'])</code></pre>
-<div class="ex-box"><h4>✏️ AI 辅助</h4>
-<p>把评论样本发给 AI：<em>"这批评论能提取出哪些销量相关的信号？除了情感还有什么维度？"</em></p></div>`,
-  },
-  {
-    "id": "deep-32", "day": 32, "week": 5, "track": "deep",
-    "title": "阶段二补丁 2 · Featuretools 自动特征生成",
-    "description": "让算法自动生成几百个特征",
-    "objectives": [
-      "理解深度特征合成（Deep Feature Synthesis）",
-      "会跑 Featuretools 生成特征矩阵",
-      "知道自动特征的陷阱（冗余 + 泄漏）",
-    ],
-    "duration": 45,
-    "cues": [
-      "Featuretools 自动做 groupby + 聚合 + 拼接",
-      "生成几百个特征后必须筛选",
-      "陷阱：自动聚合容易引入未来信息",
-    ],
-    "content": `<pre><code>import featuretools as ft
-es = ft.EntitySet(id='sales')
-es = es.add_dataframe(dataframe_name='sales',
-                     dataframe=df,
-                     index='id',
-                     time_index='日期')
-fm, features = ft.dfs(
-    entityset=es,
-    target_dataframe_name='sales',
-    agg_primitives=['mean', 'sum', 'count', 'max', 'min'],
-    trans_primitives=['day', 'month', 'year'],
-    max_depth=2,
-)
-# 自动生成 100+ 特征</code></pre>`,
-  },
-  {
-    "id": "deep-33", "day": 33, "week": 5, "track": "deep",
-    "title": "阶段二补丁 3 · 概率预测入门",
-    "description": "不只预测值，还预测区间",
-    "objectives": [
-      "理解点预测 vs 概率预测",
-      "会用 LightGBM 的 quantile objective",
-      "知道 Pinball Loss 的计算",
-    ],
-    "duration": 45,
-    "cues": [
-      "概率预测：输出 P10 / P50 / P90 三个分位数",
-      "P10 = 10% 分位（保守），P90 = 90%（乐观）",
-      "区间预测对库存决策至关重要",
-    ],
-    "content": `<pre><code># 分位数 LightGBM
-for alpha in [0.1, 0.5, 0.9]:
-    params = {'objective': 'quantile', 'alpha': alpha, ...}
-    model = lgb.train(params, ...)
-    preds[alpha] = model.predict(X_test)
-
-# Pinball Loss 评估
-def pinball(y_true, y_pred, alpha):
-    diff = y_true - y_pred
-    return np.mean(np.where(diff >= 0, alpha * diff, (alpha-1) * diff))</code></pre>`,
-  },
-  {
-    "id": "deep-34", "day": 34, "week": 5, "track": "deep",
-    "title": "阶段二补丁 4 · 模型监控与漂移检测",
-    "description": "上线后会变差怎么办",
-    "objectives": [
-      "理解数据漂移（data drift）和概念漂移（concept drift）",
-      "会跑 PSI / KS 检验",
-      "建立模型监控仪表盘",
-    ],
-    "duration": 45,
-    "cues": [
-      "数据漂移：X 分布变了，Y|X 不变",
-      "概念漂移：Y|X 关系变了（最致命）",
-      "PSI > 0.2 → 显著漂移，需要重训",
-    ],
-    "content": `<pre><code>def psi(expected, actual, bins=10):
-    expected_pct = np.histogram(expected, bins=bins)[0] / len(expected)
-    actual_pct = np.histogram(actual, bins=bins)[0] / len(actual)
-    return np.sum((actual_pct - expected_pct) * np.log(actual_pct / expected_pct))</code></pre>`,
-  },
-  {
-    "id": "deep-35", "day": 35, "week": 5, "track": "deep",
-    "title": "Day 35 · 阶段二最终总结 + 阶段三导论",
-    "description": "完成阶段二，进入统计学深入",
-    "objectives": [
-      "整理阶段二所有代码和报告",
-      "建立阶段三的学习节奏",
-      "预告阶段三的统计学地图",
-    ],
-    "duration": 60,
-    "cues": [
-      "阶段二：会用 ARIMA / LightGBM / 因果分析",
-      "阶段三：懂为什么 + 能读论文",
-      "重点：SARIMA 数学严格版 / 状态空间 / 贝叶斯 / 协整",
-    ],
-    "content": `<h3>阶段二完成的标志</h3>
-<ul>
-<li>✅ 跑通过 ARIMA / SARIMA / LightGBM / Prophet</li>
-<li>✅ 用过 Optuna 调参 + SHAP 归因</li>
-<li>✅ 用 DID / CausalImpact / DoubleML 做过因果分析</li>
-<li>✅ 有 2 个完整作品归档 GitHub</li>
-</ul>
-<h3>阶段三预告</h3>
-<p>接下来的 30 天，从『会用』升级到『懂为什么』。重点是 SARIMA 数学严格版、状态空间模型、贝叶斯推断、协整与单位根——这些是读论文、做创新的地基。</p>`,
+<div class="ex-box"><h4>✏️ AI 辅助验收</h4>
+<p>把报告发给 AI：<em>"这是我做的 MMM 分析，请像资深营销科学家一样批判：方法论哪里有问题？预算建议是否合理？"</em></p></div>`,
   },
 
-  // ───────────────────────────────────────────────────────────
-  // 阶段三 · 统计学深入（Day 36-65）
-  // 从『会用』升级到『懂为什么』+『能读论文』
-  // ───────────────────────────────────────────────────────────
-
-  // ===== Week 6 · Day 36-42 · 回归与统计推断严格版 =====
+  // ===== Week 4 · Day 20-25 · 实验设计 + P4 毕业 =====
   {
-    id: "deep-36", day: 36, week: 6, track: "deep",
-    title: "线性回归严格版：OLS 假设 + 高斯-马尔可夫定理",
-    description: "为什么 OLS 是 BLUE（最优线性无偏估计）",
+    id: "deep-20", day: 20, week: 4, track: "deep",
+    title: "Geo Lift Test + Switchback 实验",
+    description: "现代 A/B 测试设计",
     objectives: [
-      "掌握 OLS 的六大假设（线性/无完全共线/误差零均值/同方差/无自相关/正态性）",
-      "理解高斯-马尔可夫定理的『最优』含义",
-      "知道违反每个假设的后果 + 检验方法",
+      "理解 Geo Lift Test 的原理",
+      "掌握 Switchback 实验设计",
+      "知道实验设计的样本量计算",
     ],
     duration: 45,
     cues: [
-      "BLUE = Best Linear Unbiased Estimator",
-      "异方差 → 标准误失真 → 用稳健标准误（HC3）",
-      "自相关 → 用 Newey-West 标准误",
+      "Geo Lift：选地理区域做对照（避免用户溢出）",
+      "Switchback：时间轮换处理/对照（适合双边市场）",
+      "样本量：MDE / 显著性 / Power",
     ],
-    content: `<h3>OLS 六大假设</h3>
-<ol>
-<li><strong>线性：</strong>Y = Xβ + ε，参数线性</li>
-<li><strong>无完全共线：</strong>X 之间不能完全相关</li>
-<li><strong>误差零均值：</strong>E[ε|X] = 0（外生性）</li>
-<li><strong>同方差：</strong>Var(ε|X) = σ²（不变）</li>
-<li><strong>无自相关：</strong>Cov(ε_i, ε_j) = 0</li>
-<li><strong>正态性（小样本需要）：</strong>ε ~ N(0, σ²)</li>
-</ol>
-<pre><code>import statsmodels.api as sm
-X = sm.add_constant(X)
-model = sm.OLS(y, X).fit(cov_type='HC3')  # 稳健标准误
-print(model.summary())</code></pre>
-<div class="ex-box"><h4>✏️ AI 辅助</h4>
-<p>把 summary 输出发给 AI：<em>"这个 OLS 结果违反了哪些假设？Durbin-Watson / Jarque-Bera / Omnibus 都说明了什么？"</em></p></div>`,
+    content: `<h3>Geo Lift Test</h3>
+<p>问题：用户级 A/B 测试在营销中有『溢出』（朋友推荐、跨设备）。Geo Lift 选城市级对照，避免溢出。</p>
+<pre><code># 用 Google 的 GeoLift 包（R）
+# library(GeoLift)
+# geo_data &lt;- read.csv('sales_by_city.csv')
+# results &lt;- GeoLift(Y='sales', data=geo_data,
+#                   locations=c('北京','上海','广州'),
+#                   effect_size=0.05, treatment_periods=4)</code></pre>
+<h3>样本量计算</h3>
+<pre><code>from statsmodels.stats.power import tt_solve_power
+n = tt_solve_power(effect_size=0.2, alpha=0.05, power=0.8)
+print(f'每组需要 {int(n)} 样本')</code></pre>`,
   },
   {
-    id: "deep-37", day: 37, week: 6, track: "deep",
-    title: "假设检验全谱：t / F / 卡方 / Wald / LR / LM",
-    description: "六大检验统计量的原理和选择",
-    objectives: [
-      "掌握六大检验的适用场景",
-      "理解 p 值的本质（不是『效应存在概率』）",
-      "知道多重检验的 Bonferroni / BH 校正",
-    ],
-    duration: 45,
-    cues: [
-      "t 检验：单系数；F 检验：多系数联合",
-      "卡方：分类变量独立性",
-      "Wald/LR/LM：三大渐近检验，大样本等价",
-    ],
-    content: `<h3>检验统计量选择决策树</h3>
-<ul>
-<li><strong>单个系数：</strong>t 检验</li>
-<li><strong>多个系数联合：</strong>F 检验（小样本）/ Wald（大样本）</li>
-<li><strong>分类变量独立性：</strong>卡方</li>
-<li><strong>模型整体：</strong>F / LR（似然比）</li>
-</ul>
-<h3>p 值的正确解读</h3>
-<p><span class="key-pt">p 值不是『H0 为真的概率』</span>，而是『假设 H0 为真，观察到当前数据或更极端数据的概率』。</p>
-<pre><code># 多重检验校正
-from statsmodels.stats.multitest import multipletests
-reject, pvals_corrected, _, _ = multipletests(pvals, method='fdr_bh')  # BH 控制 FDR</code></pre>`,
-  },
-  {
-    id: "deep-38", day: 38, week: 6, track: "deep",
-    title: "置信区间 + Bootstrap + 多重检验",
-    description: "区间估计与非参数方法",
-    objectives: [
-      "理解置信区间的频率派解释",
-      "掌握 Bootstrap 重采样原理",
-      "知道多重检验问题的严重性",
-    ],
-    duration: 45,
-    cues: [
-      "95% CI 不是『95% 概率包含真值』，而是『重复采样100次，95次包含真值』",
-      "Bootstrap：从样本有放回重采样估计分布",
-      "100 个因子做检验，5% 显著性 → 平均 5 个假阳性",
-    ],
-    content: `<pre><code># Bootstrap 计算均值置信区间
-def bootstrap_ci(data, n_boot=10000, alpha=0.05):
-    boots = [np.random.choice(data, len(data), replace=True).mean() for _ in range(n_boot)]
-    return np.percentile(boots, [100*alpha/2, 100*(1-alpha/2)])
-
-# 多重检验：100 个因子，5% 阈值 → 至少 5 个假阳性（期望）
-# Bonferroni：α/n → 最严格
-# BH（Benjamini-Hochberg）：控制 FDR → 较温和</code></pre>
-<div class="pit-box"><h4>⚠️ 多重检验的陷阱</h4>
-<p>测试 100 个因子是否预测股价，5% 显著性下，<strong>即使所有因子都是噪声</strong>，平均也会有 5 个『显著』。这是量化研究最大的统计陷阱。</p></div>`,
-  },
-  {
-    id: "deep-39", day: 39, week: 6, track: "deep",
-    title: "广义线性模型：Logistic / Poisson / Gamma",
-    description: "不同分布族对应不同 GLM",
-    objectives: [
-      "理解 GLM 的三要素（分布 + 链接函数 + 线性预测）",
-      "知道 Logistic / Poisson / Gamma 各自适用场景",
-      "会跑 statsmodels 的 GLM",
-    ],
-    duration: 45,
-    cues: [
-      "二分类（买/不买）→ Logistic（Bernoulli + logit）",
-      "计数（订单数）→ Poisson（Poisson + log）",
-      "正偏连续（金额）→ Gamma（Gamma + log/inverse）",
-    ],
-    content: `<pre><code>import statsmodels.api as sm
-# Logistic（二分类）
-logit = sm.GLM(y_binary, X, family=sm.families.Binomial()).fit()
-
-# Poisson（计数）
-poisson = sm.GLM(y_count, X, family=sm.families.Poisson()).fit()
-
-# Gamma（正偏连续）
-gamma = sm.GLM(y_positive, X, family=sm.families.Gamma(link='log')).fit()</code></pre>
-<h3>GLM 三要素对照</h3>
-<table>
-<tr><th>分布</th><th>链接</th><th>典型场景</th></tr>
-<tr><td>Bernoulli</td><td>logit</td><td>是否购买/流失</td></tr>
-<tr><td>Poisson</td><td>log</td><td>每日订单数</td></tr>
-<tr><td>Negative Binomial</td><td>log</td><td>过离散计数</td></tr>
-<tr><td>Gamma</td><td>log/inverse</td><td>金额/时长</td></tr>
-<tr><td>Gaussian</td><td>identity</td><td>连续对称</td></tr>
-</table>`,
-  },
-  {
-    id: "deep-40", day: 40, week: 6, track: "deep",
-    title: "混合效应模型：随机截距 + 随机斜率",
-    description: "面板数据和分层结构的处理",
-    objectives: [
-      "理解固定效应 vs 随机效应",
-      "会跑 statsmodels 的 MixedLM",
-      "知道面板数据的两大场景",
-    ],
-    duration: 45,
-    cues: [
-      "固定效应：每个组的截距单独估计",
-      "随机效应：假设截距来自共同分布（省参数）",
-      "面板：N 个个体 × T 期，如 1000 个 SKU × 30 天",
-    ],
-    content: `<pre><code>import statsmodels.formula.api as smf
-# 随机截距：每个 SKU 有自己的基线
-model = smf.mixedlm('销量 ~ 价格 + 促销', data=df, groups=df['sku_id'])
-result = model.fit()
-
-# 随机斜率：每个 SKU 的价格弹性不同
-model = smf.mixedlm('销量 ~ 价格', data=df, groups=df['sku_id'],
-                    re_formula='~价格')
-result = model.fit()</code></pre>
-<h3>什么时候用混合效应模型</h3>
-<ul>
-<li>多 SKU / 多店 / 多用户的销量预测</li>
-<li>重复测量数据（如同一患者多次就诊）</li>
-<li>分层结构（SKU → 品类 → 区域）</li>
-</ul>`,
-  },
-  {
-    id: "deep-41", day: 41, week: 6, track: "deep",
-    title: "正则化回归：Ridge / Lasso / ElasticNet 数学原理",
-    description: "防过拟合的数学原理",
-    objectives: [
-      "理解 L1（Lasso）和 L2（Ridge）的几何含义",
-      "知道 ElasticNet 的折衷",
-      "会用坐标下降法理解 Lasso",
-    ],
-    duration: 45,
-    cues: [
-      "Ridge：损失 + λ·‖β‖²，系数缩小但不为零",
-      "Lasso：损失 + λ·‖β‖₁，能产生稀疏解（特征选择）",
-      "ElasticNet：α·L1 + (1-α)·L2，兼顾两者",
-    ],
-    content: `<pre><code>from sklearn.linear_model import Ridge, Lasso, ElasticNet
-ridge = Ridge(alpha=1.0).fit(X, y)      # L2
-lasso = Lasso(alpha=0.1).fit(X, y)      # L1（稀疏）
-en = ElasticNet(alpha=0.1, l1_ratio=0.5).fit(X, y)  # 折衷</code></pre>
-<h3>几何直观</h3>
-<ul>
-<li><strong>Ridge</strong>：约束区域是圆，最优解在圆与等高线相切处——系数缩小但非零</li>
-<li><strong>Lasso</strong>：约束区域是菱形，最优解常在顶点——某些系数精确为零</li>
-</ul>
-<div class="ex-box"><h4>✏️ AI 辅助</h4>
-<p>让 AI 帮你画一张 Ridge vs Lasso 的约束区域图，理解为什么 Lasso 能做特征选择。</p></div>`,
-  },
-  {
-    id: "deep-42", day: 42, week: 6, track: "deep",
-    title: "Week 6 复习 + 回归诊断实战",
-    description: "用真实数据做完整回归诊断",
-    objectives: [
-      "跑完一个完整的回归分析流程",
-      "诊断所有假设违反并修正",
-      "形成可复用的诊断模板",
-    ],
-    duration: 60,
-    cues: [
-      "诊断六图：残差 vs 拟合 / Q-Q / Scale-Location / 残差 vs 杠杆",
-      "Breusch-Pagan 检验异方差",
-      "VIF 检查多重共线",
-    ],
-    content: `<h3>回归诊断完整流程</h3>
-<ol>
-<li>跑 OLS，看 summary</li>
-<li>画残差诊断图（残差 vs 拟合 / Q-Q / Scale-Location）</li>
-<li>检验异方差（Breusch-Pagan）</li>
-<li>检验多重共线（VIF &gt; 10 严重）</li>
-<li>检验自相关（Durbin-Watson，理想≈2）</li>
-<li>根据违反的假设选择修正方案（稳健 SE / Ridge / 加变量）</li>
-</ol>
-<pre><code>from statsmodels.stats.diagnostic import het_breuschpagan
-from statsmodels.stats.outliers_influence import variance_inflation_factor
-bp = het_breuschpagan(model.resid, X)
-vif = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]</code></pre>`,
-  },
-
-  // ===== Week 7 · Day 43-49 · 时序统计学深入 =====
-  {
-    id: "deep-43", day: 43, week: 7, track: "deep",
-    title: "SARIMA 数学严格版：差分方程 + Box-Jenkins",
-    description: "理解 SARIMA 的数学结构",
-    objectives: [
-      "理解 AR / MA / 差分的算子表示",
-      "掌握 Box-Jenkins 方法论的完整流程",
-      "看懂 SARIMA 论文里的公式",
-    ],
-    duration: 45,
-    cues: [
-      "AR(p)：y_t = c + φ₁y_{t-1} + ... + φ_p·y_{t-p} + ε_t",
-      "MA(q)：y_t = c + ε_t + θ₁ε_{t-1} + ... + θ_q·ε_{t-q}",
-      "ARMA = AR + MA，用滞后算子 B 表示",
-    ],
-    content: `<h3>滞后算子 B</h3>
-<p><code>B^k · y_t = y_{t-k}</code>，AR(1) 可写为 <code>(1 - φB)y_t = ε_t</code>。</p>
-<h3>SARIMA(p,d,q)(P,D,Q,m)</h3>
-<p><code>Φ(B^m)φ(B)(1-B)^d(1-B^m)^D y_t = Θ(B^m)θ(B)ε_t</code></p>
-<ul>
-<li>φ(B)：非季节 AR 部分</li>
-<li>θ(B)：非季节 MA 部分</li>
-<li>Φ(B^m)：季节 AR 部分</li>
-<li>Θ(B^m)：季节 MA 部分</li>
-</ul>
-<h3>Box-Jenkins 方法论（1970）</h3>
-<ol>
-<li>识别（Identification）：看 ACF/PACF 选 p/q</li>
-<li>估计（Estimation）：最大似然估计参数</li>
-<li>诊断（Diagnostics）：残差 Ljung-Box</li>
-<li>预测（Forecast）：用拟合模型预测</li>
-</ol>`,
-  },
-  {
-    id: "deep-44", day: 44, week: 7, track: "deep",
-    title: "状态空间模型（SSM）+ Kalman 滤波",
-    description: "SARIMA 的更一般框架",
-    objectives: [
-      "理解状态空间表示（状态方程 + 观测方程）",
-      "掌握 Kalman 滤波的预测-更新循环",
-      "知道 SARIMA / 局部线性趋势 / 结构时序都是 SSM 特例",
-    ],
-    duration: 45,
-    cues: [
-      "状态方程：x_t = F·x_{t-1} + w_t",
-      "观测方程：y_t = H·x_t + v_t",
-      "Kalman = 预测（用状态方程）→ 更新（用观测）",
-    ],
-    content: `<h3>状态空间表示</h3>
-<pre><code>状态方程：x_t = F·x_{t-1} + w_t,  w_t ~ N(0, Q)
-观测方程：y_t = H·x_t + v_t,      v_t ~ N(0, R)</code></pre>
-<p>很多模型都能写成这个形式：ARMA、局部线性趋势、结构时序、动态回归。</p>
-<pre><code>from statsmodels.tsa.statespace.structural import UnobservedComponents
-model = UnobservedComponents(
-    df['销量'],
-    level='local linear trend',  # 局部线性趋势
-    seasonal=7,                  # 周季节
-    stochastic_seasonal=True,
-)
-res = model.fit()</code></pre>
-<h3>Kalman 滤波循环</h3>
-<ol>
-<li><strong>预测：</strong>x̂_{t|t-1} = F·x̂_{t-1|t-1}</li>
-<li><strong>更新：</strong>x̂_{t|t} = x̂_{t|t-1} + K·(y_t - H·x̂_{t|t-1})</li>
-<li>K 是 Kalman 增益，权衡预测和观测</li>
-</ol>`,
-  },
-  {
-    id: "deep-45", day: 45, week: 7, track: "deep",
-    title: "VAR 向量自回归 + 脉冲响应",
-    description: "多变量时序的因果关系",
-    objectives: [
-      "理解 VAR 的多方程结构",
-      "会跑 VAR 并选阶数",
-      "掌握脉冲响应函数（IRF）和方差分解",
-    ],
-    duration: 45,
-    cues: [
-      "VAR(p)：每个变量都对自己的滞后 + 其他变量的滞后回归",
-      "选阶：AIC / BIC / HQ",
-      "脉冲响应：一个变量冲击对其他变量的动态影响",
-    ],
-    content: `<pre><code>from statsmodels.tsa.api import VAR
-model = VAR(df[['销量', '价格', '广告']])
-results = model.select_order(maxlags=10)
-print(results.summary())  # 选阶
-var_res = model.fit(3)    # 拟合 VAR(3)
-irf = var_res.irf(10)
-irf.plot()</code></pre>
-<h3>VAR 的适用场景</h3>
-<ul>
-<li>多个相互影响的时间序列（价格↔销量↔库存）</li>
-<li>宏观经济学（GDP↔通胀↔利率）</li>
-<li>需求与营销的互动分析</li>
-</ul>
-<div class="pit-box"><h4>⚠️ VAR 需要 Stationary</h4>
-<p>VAR 假设所有序列平稳。如果不平稳，要么差分，要么用 VECM（向量误差修正模型，Day 47 协整）。</p></div>`,
-  },
-  {
-    id: "deep-46", day: 46, week: 7, track: "deep",
-    title: "单位根检验深入：ADF / PP / KPSS / ZA",
-    description: "严格判断平稳性",
-    objectives: [
-      "掌握 ADF / PP / KPSS 的差异",
-      "理解结构性断点单位根（Zivot-Andrews）",
-      "知道检验的 size distortion 问题",
-    ],
-    duration: 45,
-    cues: [
-      "ADF：H0=有单位根（不平稳）；KPSS：H0=平稳（反向）",
-      "两者交叉验证最稳",
-      "ZA：允许一次结构性断点",
-    ],
-    content: `<h3>三大检验的对比</h3>
-<table>
-<tr><th></th><th>ADF</th><th>PP</th><th>KPSS</th></tr>
-<tr><td>H0</td><td>有单位根</td><td>有单位根</td><td>平稳</td></tr>
-<tr><td>p&lt;0.05</td><td>拒绝→平稳</td><td>拒绝→平稳</td><td>拒绝→不平稳</td></tr>
-<tr><td>修正</td><td>基本</td><td>异方差稳健</td><td>反向验证</td></tr>
-</table>
-<pre><code>from statsmodels.tsa.stattools import adfuller, kpss
-adf = adfuller(series)     # p<0.05 → 平稳
-kpss_res = kpss(series)    # p>0.05 → 平稳（注意反向）</code></pre>
-<h3>结构性断点（Zivot-Andrews）</h3>
-<p>很多时序在政策/事件时有结构性断点，普通 ADF 检验会误判。ZA 检验允许在断点处自动搜索，更稳健。</p>`,
-  },
-  {
-    id: "deep-47", day: 47, week: 7, track: "deep",
-    title: "协整与误差修正模型（ECM）",
-    description: "非平稳但共同运动的序列",
-    objectives: [
-      "理解协整（两个 I(1) 序列的线性组合是 I(0)）",
-      "会跑 Engle-Granger 两步法",
-      "知道 VECM 是 VAR + 协整约束",
-    ],
-    duration: 45,
-    cues: [
-      "伪回归：两个无关的非平稳序列看起来高度相关",
-      "协整：长期均衡关系，短期偏离会被拉回",
-      "ECM：Δy_t = α(y_{t-1} - βx_{t-1}) + 短期项",
-    ],
-    content: `<h3>经典案例：醉酒与狗</h3>
-<p>主人和狗都随机游走（非平稳），但狗绳把他们绑在一起——他们的距离是平稳的（协整）。</p>
-<pre><code># Engle-Granger 两步法
-# 第一步：OLS 估计长期关系
-res = sm.OLS(y, sm.add_constant(x)).fit()
-residual = res.resid
-# 第二步：检验残差平稳
-adf_res = adfuller(residual)  # 残差平稳 → 协整</code></pre>
-<h3>VECM（向量误差修正模型）</h3>
-<p>VAR + 误差修正项，刻画多变量的长期均衡 + 短期调整。</p>
-<pre><code>from statsmodels.tsa.vector_ar.vecm import VECM, coint_johansen
-# Johansen 检验协整阶数
-johansen = coint_johansen(df, det_order=0, k_ar_diff=1)
-vecm = VECM(df, k_ar_diff=1, coint_rank=1).fit()</code></pre>`,
-  },
-  {
-    id: "deep-48", day: 48, week: 7, track: "deep",
-    title: "GARCH 族：波动率建模",
-    description: "方差随时间变化的时序",
-    objectives: [
-      "理解波动率聚集（volatility clustering）",
-      "会跑 ARCH / GARCH / EGARCH",
-      "知道在金融/电力/库存的应用",
-    ],
-    duration: 45,
-    cues: [
-      "ARCH(p)：方差依赖于过去 p 期残差平方",
-      "GARCH(p,q)：方差依赖于过去残差 + 过去方差",
-      "EGARCH：能刻画不对称（跌比涨波动更大）",
-    ],
-    content: `<pre><code>from arch import arch_model
-am = arch_model(returns, vol='Garch', p=1, q=1)
-res = am.fit()
-print(res.summary())
-fig = res.plot()  # 波动率估计</code></pre>
-<h3>GARCH 在供应链的应用</h3>
-<ul>
-<li><strong>需求波动率预测：</strong>用于安全库存计算</li>
-<li><strong>价格波动率：</strong>大宗商品/电力套保</li>
-<li><strong>异常检测：</strong>波动率突增=需求结构性变化</li>
-</ul>`,
-  },
-  {
-    id: "deep-49", day: 49, week: 7, track: "deep",
-    title: "Week 7 复习 + 时序统计学对照表",
-    description: "把所有时序方法整理成一张表",
-    objectives: [
-      "形成 SARIMA / SSM / VAR / VECM / GARCH 的对照表",
-      "知道每个方法的适用场景",
-      "能根据数据特征选方法",
-    ],
-    duration: 60,
-    cues: [
-      "单变量平稳 → ARMA",
-      "单变量非平稳 → ARIMA / SARIMA",
-      "多变量协整 → VECM；多变量不协整 → VAR（差分后）",
-    ],
-    content: `<h3>时序统计学方法地图</h3>
-<table>
-<tr><th>方法</th><th>单/多变量</th><th>平稳要求</th><th>典型场景</th></tr>
-<tr><td>ARMA</td><td>单</td><td>平稳</td><td>基础建模</td></tr>
-<tr><td>ARIMA / SARIMA</td><td>单</td><td>差分后平稳</td><td>含趋势/季节</td></tr>
-<tr><td>VAR</td><td>多</td><td>所有平稳</td><td>多变量互动</td></tr>
-<tr><td>VECM</td><td>多</td><td>协整</td><td>长期均衡</td></tr>
-<tr><td>SSM / Kalman</td><td>单/多</td><td>灵活</td><td>状态估计</td></tr>
-<tr><td>GARCH</td><td>单</td><td>残差</td><td>波动率</td></tr>
-<tr><td>UnobservedComponents</td><td>单</td><td>灵活</td><td>趋势+季节分解</td></tr>
-</table>`,
-  },
-
-  // ===== Week 8 · Day 50-56 · 高级时序方法 =====
-  {
-    id: "deep-50", day: 50, week: 8, track: "deep",
-    title: "Holt-Winters 三指数平滑",
-    description: "和 SARIMA 等价但更直观",
-    objectives: [
-      "理解一次/二次/三次指数平滑",
-      "掌握 Holt-Winters 的加性/乘性",
-      "知道和 SARIMA 的等价关系",
-    ],
-    duration: 45,
-    cues: [
-      "一次：单参数无趋势",
-      "二次：加趋势（Holt）",
-      "三次：加季节（Holt-Winters）",
-    ],
-    content: `<pre><code>from statsmodels.tsa.holtwinters import ExponentialSmoothing
-model = ExponentialSmoothing(
-    train,
-    trend='add',          # 或 'mul'
-    seasonal='add',       # 或 'mul'
-    seasonal_periods=7,
-)
-res = model.fit()
-fcst = res.forecast(7)</code></pre>
-<h3>和 SARIMA 的等价</h3>
-<p>Holt-Winters 加性 ≈ SARIMA(0,1,1)(0,1,1,m)，但参数更少、更易调。</p>`,
-  },
-  {
-    id: "deep-51", day: 51, week: 8, track: "deep",
-    title: "TBATS：复杂季节性 + Box-Cox",
-    description: "处理多重季节性（如日+周+年）",
-    objectives: [
-      "理解 TBATS 名字的含义",
-      "会用 TBATS 处理非整数季节",
-      "知道和 Prophet 的差异",
-    ],
-    duration: 45,
-    cues: [
-      "TBATS = Trigonometric + Box-Cox + ARMA + Trend + Seasonal",
-      "用三角函数处理多重季节",
-      "Box-Cox 变换稳定方差",
-    ],
-    content: `<pre><code>from tbats import TBATS
-estimator = TBATS(seasonal_periods=[7, 365.25])  # 周度+年度
-model = estimator.fit(train)
-fcst = model.forecast(steps=7)</code></pre>
-<h3>适用场景</h3>
-<ul>
-<li>电力负荷（日+周+年三重季节）</li>
-<li>零售销量（周+月+年）</li>
-<li>交通流量（小时+日+周）</li>
-</ul>`,
-  },
-  {
-    id: "deep-52", day: 52, week: 8, track: "deep",
-    title: "变点检测：PELT / BOCPD / CUSUM",
-    description: "找出时序结构变化的时点",
-    objectives: [
-      "理解三大变点检测方法",
-      "会跑 ruptures 库",
-      "知道业务应用（如促销生效时点）",
-    ],
-    duration: 45,
-    cues: [
-      "PELT：精确线性时间",
-      "BOCPD：贝叶斯在线变点",
-      "CUSUM：工业控制图经典",
-    ],
-    content: `<pre><code>import ruptures as rpt
-# PELT 检测变点
-algo = rpt.Pelt(model='rbf').fit(series)
-bkps = algo.predict(pen=10)  # penalty 控制变点数
-
-# 在线变点（Bayesian）
-import bayespy
-# BOCPD 实现</code></pre>
-<h3>业务应用</h3>
-<ul>
-<li><strong>促销生效时点：</strong>销量拐点 = 促销真实生效时</li>
-<li><strong>异常检测：</strong>结构性变化 ≠ 噪声</li>
-<li><strong>模型重训时机：</strong>变点后需要重训</li>
-</ul>`,
-  },
-  {
-    id: "deep-53", day: 53, week: 8, track: "deep",
-    title: "异常检测：STL 残差 + Isolation Forest + DBSCAN",
-    description: "三类异常检测方法",
-    objectives: [
-      "理解异常的三种类型（点/上下文/集合）",
-      "会跑 Isolation Forest / DBSCAN",
-      "知道用 STL 残差做时序异常",
-    ],
-    duration: 45,
-    cues: [
-      "点异常：单个极端值",
-      "上下文异常：在特定上下文下异常（如夏天穿棉袄）",
-      "集合异常：单个正常，合在一起异常",
-    ],
-    content: `<pre><code># 方法 1：STL 残差
-resid = STL(series, period=7).fit().resid
-z = (resid - resid.mean()) / resid.std()
-anomalies = z[np.abs(z) > 3]
-
-# 方法 2：Isolation Forest
-from sklearn.ensemble import IsolationForest
-iso = IsolationForest(contamination=0.01).fit(X)
-labels = iso.predict(X)  # -1 异常
-
-# 方法 3：DBSCAN
-from sklearn.cluster import DBSCAN
-labels = DBSCAN(eps=0.5, min_samples=5).fit_predict(X)</code></pre>`,
-  },
-  {
-    id: "deep-54", day: 54, week: 8, track: "deep",
-    title: "Prophet 数学原理：加性模型 + 变点 + 季节",
-    description: "拆开 Prophet 看内部",
-    objectives: [
-      "理解 Prophet 的加性分解",
-      "掌握趋势变点的自动检测",
-      "知道 Prophet 的局限",
-    ],
-    duration: 45,
-    cues: [
-      "Prophet：y = g(t) + s(t) + h(t) + ε",
-      "g(t)：分段线性或 logistic 趋势",
-      "s(t)：傅里叶项；h(t)：节假日",
-    ],
-    content: `<h3>Prophet 的四个组件</h3>
-<ul>
-<li><strong>趋势 g(t)：</strong>分段线性或 saturating growth（logistic）</li>
-<li><strong>季节 s(t)：</strong>傅里叶项（年=10 阶，周=3 阶）</li>
-<li><strong>节假日 h(t)：</strong>虚拟变量</li>
-<li><strong>误差 ε：</strong>正态</li>
-</ul>
-<p>变点（changepoints）默认 25 个候选位置，L1 正则选出真正生效的。</p>
-<pre><code>from prophet import Prophet
-m = Prophet(
-    changepoint_prior_scale=0.05,  # 趋势灵活度
-    seasonality_prior_scale=10,    # 季节强度
-    changepoint_range=0.8,         # 变点候选在前 80%
-)</code></pre>
-<div class="pit-box"><h4>⚠️ Prophet 的局限</h4>
-<ul>
-<li>不能自动处理外生变量（要手动）</li>
-<li>对高频数据（小时级）效果差</li>
-<li>不能学习变量之间的交互</li>
-</ul></div>`,
-  },
-  {
-    id: "deep-55", day: 55, week: 8, track: "deep",
-    title: "层级预测：自底向上 / 自顶向下 / MinT",
-    description: "SKU → 品类 → 总部的预测自洽",
-    objectives: [
-      "理解层级预测的调和问题",
-      "掌握三种调和方法",
-      "知道 MinT 是 SOTA",
-    ],
-    duration: 45,
-    cues: [
-      "底层 SKU 预测加总 ≠ 总部分类预测——不自洽",
-      "自底向上：直接加总",
-      "MinT（Trace Minimization）：最优调和",
-    ],
-    content: `<pre><code># hts 库（或 hierarchicalforecast）
-from hierarchicalforecast.core import HierarchicalReconciliation
-from hierarchicalforecast.methods import BottomUp, TopDown, MinTrace
-reconcilers = [BottomUp(), TopDown(method='average_proportions'),
-               MinTrace(method='ols')]
-hrec = HierarchicalReconciliation(reconcilers=reconcilers)
-fcst_reconciled = hrec.reconcile(fcst, S, tags)</code></pre>
-<h3>MinT 原理</h3>
-<p>MinT 通过最小化调和后预测的协方差迹（trace），找到最优的调和矩阵——既利用上层稳定信息，又保留下层细节。</p>`,
-  },
-  {
-    id: "deep-56", day: 56, week: 8, track: "deep",
-    title: "Week 8 复习 + 综合案例：多方法横评",
-    description: "用同一份数据对比所有高级时序方法",
-    objectives: [
-      "完成 Holt-Winters / TBATS / Prophet / SSM 横评",
-      "形成『什么时候用什么』的决策树",
-      "建立高级时序的代码模板库",
-    ],
-    duration: 60,
-    cues: [
-      "单变量 + 简单季节 → Holt-Winters",
-      "多重季节 → TBATS / Prophet",
-      "需要状态解释 → SSM",
-    ],
-    content: `<h3>横评结论（经验法则）</h3>
-<table>
-<tr><th>场景</th><th>推荐</th></tr>
-<tr><td>单变量 + 周季节</td><td>Holt-Winters / SARIMA</td></tr>
-<tr><td>多重季节（日+周+年）</td><td>TBATS / Prophet</td></tr>
-<tr><td>含节假日 + 变点</td><td>Prophet</td></tr>
-<tr><td>需要状态解释</td><td>UnobservedComponents（SSM）</td></tr>
-<tr><td>多变量协整</td><td>VECM</td></tr>
-<tr><td>波动率建模</td><td>GARCH</td></tr>
-</table>`,
-  },
-
-  // ===== Week 9 · Day 57-65 · 贝叶斯与决策 =====
-  {
-    id: "deep-57", day: 57, week: 9, track: "deep",
-    title: "贝叶斯推断严格版：共轭先验 + MCMC",
-    description: "贝叶斯的数学原理",
-    objectives: [
-      "理解贝叶斯定理的三要素（先验/似然/后验）",
-      "掌握共轭先验的便利性",
-      "知道 MCMC 的原理（Metropolis / Gibbs / HMC）",
-    ],
-    duration: 45,
-    cues: [
-      "先验 × 似然 = 后验（归一化前）",
-      "共轭：Beta 先验 + 二项似然 → Beta 后验",
-      "MCMC：构造马尔可夫链，使其平稳分布=后验",
-    ],
-    content: `<h3>贝叶斯定理</h3>
-<p><code>P(θ|D) = P(D|θ) · P(θ) / P(D)</code></p>
-<ul>
-<li>P(θ)：先验（观察数据前的信念）</li>
-<li>P(D|θ)：似然（数据在参数下的概率）</li>
-<li>P(θ|D)：后验（观察数据后的信念）</li>
-</ul>
-<h3>共轭先验对照</h3>
-<table>
-<tr><th>似然</th><th>共轭先验</th><th>后验</th></tr>
-<tr><td>Bernoulli</td><td>Beta</td><td>Beta</td></tr>
-<tr><td>Poisson</td><td>Gamma</td><td>Gamma</td></tr>
-<tr><td>Gaussian（均值）</td><td>Gaussian</td><td>Gaussian</td></tr>
-<tr><td>Multinomial</td><td>Dirichlet</td><td>Dirichlet</td></tr>
-</table>
-<h3>MCMC 直觉</h3>
-<p>当后验没有解析解（如非共轭），用 MCMC 采样近似。三大算法：</p>
-<ul>
-<li><strong>Metropolis：</strong>提议 + 接受/拒绝</li>
-<li><strong>Gibbs：</strong>逐维采样（要求条件分布好算）</li>
-<li><strong>HMC（Hamiltonian）：</strong>用梯度信息高效采样（PyMC/Stan 默认）</li>
-</ul>`,
-  },
-  {
-    id: "deep-58", day: 58, week: 9, track: "deep",
-    title: "PyMC 实战：贝叶斯线性回归 + 贝叶斯 SARIMA",
-    description: "用代码做贝叶斯建模",
-    objectives: [
-      "会写 PyMC 模型",
-      "掌握贝叶斯线性回归",
-      "了解贝叶斯时序结构",
-    ],
-    duration: 45,
-    cues: [
-      "PyMC 用概率编程语法描述模型",
-      "sample() 触发 NUTS（HMC 变种）采样",
-      "ArviZ 做后验分析",
-    ],
-    content: `<pre><code>import pymc as pm
-import arviz as az
-
-with pm.Model() as model:
-    # 先验
-    alpha = pm.Normal('alpha', mu=0, sigma=10)
-    beta = pm.Normal('beta', mu=0, sigma=10)
-    sigma = pm.HalfNormal('sigma', sigma=1)
-
-    # 似然
-    mu = alpha + beta * X
-    y_obs = pm.Normal('y_obs', mu=mu, sigma=sigma, observed=y)
-
-    # 采样
-    trace = pm.sample(2000, tune=1000, chains=4)
-
-az.summary(trace)
-az.plot_trace(trace)</code></pre>
-<h3>贝叶斯 vs 频率派</h3>
-<p>频率派：参数是固定的，数据是随机的。<br>
-贝叶斯：参数是随机的（有分布），数据是观察到的。</p>`,
-  },
-  {
-    id: "deep-59", day: 59, week: 9, track: "deep",
-    title: "贝叶斯结构时序（BSTS）",
-    description: "Google 的因果分析底层",
-    objectives: [
-      "理解 BSTS 的状态空间 + 贝叶斯结构",
-      "会跑 BSTS 做时序预测",
-      "知道 BSTS 是 CausalImpact 的底层",
-    ],
-    duration: 45,
-    cues: [
-      "BSTS = Bayesian Structural Time Series",
-      "把趋势 + 季节 + 回归都建成贝叶斯组件",
-      "天然提供预测区间",
-    ],
-    content: `<pre><code># Python 版本：用 tfp 或 statsmodels 的 UnobservedComponents + 贝叶斯
-# R 版本（推荐）：bsts 包
-# library(bsts)
-# ss &lt;- AddLocalLinearTrend(list(), y)
-# ss &lt;- AddSeasonal(ss, y, nseasons = 7)
-# model &lt;- bsts(y, state.specification = ss, niter = 1000)</code></pre>
-<h3>BSTS 在 CausalImpact 中的角色</h3>
-<p>CausalImpact = BSTS 反事实构造 + 点估计 + 置信区间。BSTS 提供反事实的『如果没有干预会怎样』。</p>`,
-  },
-  {
-    id: "deep-60", day: 60, week: 9, track: "deep",
+    id: "deep-21", day: 21, week: 4, track: "deep",
     title: "贝叶斯 A/B 测试 + 序贯检验",
     description: "比频率派 A/B 更直观",
     objectives: [
@@ -1847,17 +689,10 @@ az.plot_trace(trace)</code></pre>
       "贝叶斯：后验分布 + 胜率",
       "序贯：可以随时停止（无 peeking 问题）",
     ],
-    content: `<pre><code># 贝叶斯 A/B 测试
-import numpy as np
-# A 组：1000 用户，120 转化
-# B 组：1000 用户，135 转化
-conv_a, n_a = 120, 1000
-conv_b, n_b = 135, 1000
-
-# 后验 Beta 分布
-samples_a = np.random.beta(conv_a + 1, n_a - conv_a + 1, 100000)
-samples_b = np.random.beta(conv_b + 1, n_b - conv_b + 1, 100000)
-# B 组胜率
+    content: `<pre><code>import numpy as np
+# A 组：1000 用户，120 转化；B 组：1000，135 转化
+samples_a = np.random.beta(121, 881, 100000)
+samples_b = np.random.beta(136, 866, 100000)
 p_b_better = (samples_b > samples_a).mean()
 print(f'B 组胜率: {p_b_better:.1%}')</code></pre>
 <h3>贝叶斯 A/B 的业务优势</h3>
@@ -1868,168 +703,140 @@ print(f'B 组胜率: {p_b_better:.1%}')</code></pre>
 </ul>`,
   },
   {
-    id: "deep-61", day: 61, week: 9, track: "deep",
-    title: "损失函数与决策理论：MAE/MAPE 背后的数学",
-    description: "不同指标背后的统计假设",
+    id: "deep-22", day: 22, week: 4, track: "deep",
+    title: "EconML + SHAP 因果归因",
+    description: "把因果效应和特征贡献结合",
     objectives: [
-      "理解损失函数 = 决策问题的数学化",
-      "知道 MSE 对应均值、MAE 对应中位数、Pinball 对应分位数",
-      "建立指标选择决策树",
+      "会用 EconML 估计异质处理效应（HTE）",
+      "结合 SHAP 解释因果效应",
+      "知道 Causal Forest 的原理",
     ],
     duration: 45,
     cues: [
-      "MSE 最小化 → 预测均值",
-      "MAE 最小化 → 预测中位数",
-      "Pinball Loss → 预测任意分位数",
+      "HTE = 不同人群的处理效应不同",
+      "Causal Forest = Random Forest 的因果版",
+      "SHAP + Causal Forest = 因果归因图",
     ],
-    content: `<h3>损失函数与最优预测的对应</h3>
-<table>
-<tr><th>损失函数</th><th>最优预测</th><th>适用场景</th></tr>
-<tr><td>MSE (L2)</td><td>条件均值</td><td>对称误差、连续值</td></tr>
-<tr><td>MAE (L1)</td><td>条件中位数</td><td>异常值鲁棒</td></tr>
-<tr><td>Pinball (α)</td><td>条件 α 分位数</td><td>区间预测/库存</td></tr>
-<tr><td>Huber</td><td>均值+鲁棒</td><td>半鲁棒回归</td></tr>
-<tr><td>0-1 Loss</td><td>众数</td><td>分类</td></tr>
-</table>
-<h3>MAPE 的陷阱</h3>
-<p>MAPE = |y - ŷ| / |y|，当 y 接近 0 时爆炸。WAPE（weighted APE）更稳健。</p>`,
+    content: `<pre><code>from econml.dml import CausalForestDML
+cf = CausalForestDML(
+    model_y=RandomForestRegressor(),
+    model_t=RandomForestClassifier(),
+    discrete_treatment=True,
+    n_estimators=100,
+)
+cf.fit(Y, T, X=X)
+# 估计每个人的 ITE
+ite = cf.effect(X)
+# 哪些特征影响 ITE？
+shap_values = cf.shap_values(X)</code></pre>
+<h3>业务应用</h3>
+<p>用 Causal Forest 找『对促销最敏感的 SKU 群体』，然后定向投促销。</p>`,
   },
   {
-    id: "deep-62", day: 62, week: 9, track: "deep",
-    title: "概率预测与评分规则：CRPS / Pinball",
-    description: "评估概率预测的好坏",
+    id: "deep-23", day: 23, week: 4, track: "deep",
+    title: "高维混淆变量控制",
+    description: "几百个变量时怎么控制混淆",
     objectives: [
-      "理解 CRPS（连续排位概率分数）",
-      "会算 Pinball Loss",
-      "知道为什么概率预测比点预测重要",
+      "理解高维混淆的挑战",
+      "掌握 Lasso + DoubleML 的组合",
+      "知道 Double Selection Lasso",
     ],
     duration: 45,
     cues: [
-      "CRPS = 预测分布 CDF 与观察值的积分距离",
-      "Pinball Loss = 分位数损失",
-      "概率预测不追求『准』，追求『校准』",
+      "高维：协变量数 &gt; 样本数",
+      "Double Selection：分两步 Lasso 选混淆变量",
+      "选出的变量再做线性回归",
     ],
-    content: `<pre><code># Pinball Loss
-def pinball(y_true, y_pred, alpha):
-    diff = y_true - y_pred
-    return np.mean(np.where(diff >= 0, alpha * diff, (alpha-1) * diff))
-
-# CRPS（用 properscoring 库）
-from properscoring import crps_ensemble
-crps = crps_ensemble(y_true, ensemble_forecasts).mean()</code></pre>
-<h3>校准 vs 锐度</h3>
-<ul>
-<li><strong>校准（Calibration）：</strong>说 90% 置信区间，90% 的真实值确实在内</li>
-<li><strong>锐度（Sharpness）：</strong>区间越窄越好</li>
-<li><strong>CRPS：</strong>同时考虑校准和锐度</li>
-</ul>`,
+    content: `<h3>Double Selection Lasso（Chernozhukov 2015）</h3>
+<ol>
+<li>用 Lasso 拟合 Y ~ X，选影响 Y 的变量</li>
+<li>用 Lasso 拟合 T ~ X，选影响 T 的变量</li>
+<li>取并集，作为混淆变量控制</li>
+<li>用 OLS 估计因果效应</li>
+</ol>
+<pre><code>from sklearn.linear_model import LassoCV
+lasso_y = LassoCV().fit(X, Y)
+selected_y = X.columns[lasso_y.coef_ != 0]
+lasso_t = LassoCV().fit(X, T)
+selected_t = X.columns[lasso_t.coef_ != 0]
+controls = list(set(selected_y) | set(selected_t))
+# 用选出的控制变量做 OLS
+import statsmodels.api as sm
+model = sm.OLS(Y, sm.add_constant(df[controls + ['T']])).fit()</code></pre>`,
   },
   {
-    id: "deep-63", day: 63, week: 9, track: "deep",
-    title: "蒙特卡洛方法 + Bootstrap 再抽样",
-    description: "用随机化解决确定性问题",
+    id: "deep-24", day: 24, week: 4, track: "deep",
+    title: "P4 毕业项目启动：完整营销 ROI 归因系统",
+    description: "用学到的所有因果方法做一个真实项目",
     objectives: [
-      "理解蒙特卡洛积分",
-      "掌握 Bootstrap 的多种变体",
-      "知道在库存仿真中的应用",
+      "整合 DID + CausalImpact + DoubleML + MMM",
+      "产出可交付的营销 ROI 报告",
+      "代码归档 GitHub",
     ],
-    duration: 45,
+    duration: 90,
     cues: [
-      "蒙特卡洛：用大数定律近似积分",
-      "Bootstrap：从样本重采样估计分布",
-      "块 Bootstrap：时序专用（保留时间结构）",
+      "项目：某品牌 2025 年 Q3 促销的完整因果归因",
+      "四种方法三角验证",
+      "报告：方法 / 结果 / 业务建议 / 局限",
     ],
-    content: `<pre><code># 蒙特卡洛模拟库存
-demand_samples = np.random.lognormal(mean=5, sigma=0.5, size=10000)
-stock = 200
-shortage = np.maximum(demand_samples - stock, 0).mean()  # 期望缺货
-overstock = np.maximum(stock - demand_samples, 0).mean()  # 期望滞销
-
-# 块 Bootstrap（时序）
-from arch.bootstrap import StationaryBootstrap
-bs = StationaryBootstrap(10, returns)
-ci = bs.conf_int(lambda x: x.mean(), 1000)</code></pre>`,
+    content: `<h3>毕业项目结构</h3>
+<ol>
+<li><strong>数据：</strong>2 年周度数据（销量 + 5 渠道广告 + 促销 + 价格 + 节假日）</li>
+<li><strong>分析 1（短期效应）：</strong>DID + CausalImpact 估计单次促销的因果效应</li>
+<li><strong>分析 2（长期 ROI）：</strong>Robyn / 贝叶斯 MMM 估计各渠道的长期 ROI</li>
+<li><strong>分析 3（用户分层）：</strong>uplift modeling 找敏感人群</li>
+<li><strong>分析 4（异质效应）：</strong>Causal Forest 找哪些 SKU 对促销最敏感</li>
+<li><strong>综合报告：</strong>方法 / 结果 / 预算优化建议 / 风险评估</li>
+</ol>`,
   },
   {
-    id: "deep-64", day: 64, week: 9, track: "deep",
-    title: "非参数统计：核密度 / 经验分布 / 置换检验",
-    description: "不假设分布的方法",
+    id: "deep-25", day: 25, week: 4, track: "deep",
+    title: "P4 阶段总结：因果分析能力地图",
+    description: "回顾 20 天 P4 学到的能力",
     objectives: [
-      "理解非参数方法的优势",
-      "会跑置换检验",
-      "知道核密度估计（KDE）",
-    ],
-    duration: 45,
-    cues: [
-      "非参数：不假设正态/特定分布",
-      "KDE：用核函数平滑直方图",
-      "置换检验：通过随机重排标签计算 p 值",
-    ],
-    content: `<pre><code># KDE
-from scipy.stats import gaussian_kde
-kde = gaussian_kde(data)
-x_grid = np.linspace(data.min(), data.max(), 100)
-density = kde(x_grid)
-
-# 置换检验
-def permutation_test(group_a, group_b, n_perm=10000):
-    obs_diff = group_a.mean() - group_b.mean()
-    combined = np.concatenate([group_a, group_b])
-    n_a = len(group_a)
-    diffs = []
-    for _ in range(n_perm):
-        np.random.shuffle(combined)
-        diffs.append(combined[:n_a].mean() - combined[n_a:].mean())
-    p = (np.abs(diffs) >= np.abs(obs_diff)).mean()
-    return p</code></pre>`,
-  },
-  {
-    id: "deep-65", day: 65, week: 9, track: "deep",
-    title: "阶段三总结：统计学能力地图 + 自测",
-    description: "回顾 30 天统计学深入",
-    objectives: [
-      "形成统计学能力地图",
-      "自测：能独立解决什么问题",
-      "准备阶段四：供应链库存决策",
+      "形成因果分析能力地图",
+      "整理 P4 作品（毕业项目）",
+      "预告 P5 库存补货",
     ],
     duration: 60,
     cues: [
-      "回归诊断 / 假设检验 / 贝叶斯 / 时序严格版",
-      "能读懂论文的方法部分",
-      "能根据数据特征选方法",
+      "20 天掌握了从『相关』到『因果』的完整武器库",
+      "毕业项目是简历核心素材",
+      "P5：从预测到决策",
     ],
-    content: `<h3>阶段三完成标志</h3>
+    content: `<h3>P4 完成标志</h3>
 <ul>
-<li>✅ 掌握 OLS 假设 + 诊断 + 修正</li>
-<li>✅ 理解 SARIMA 数学结构（滞后算子）</li>
-<li>✅ 会用 SSM / Kalman / VAR / VECM / GARCH</li>
-<li>✅ 掌握贝叶斯建模（PyMC）</li>
-<li>✅ 能用概率预测（CRPS / Pinball）</li>
+<li>✅ 掌握潜在结果框架 + DAG</li>
+<li>✅ 会用 DID / 合成控制 / CausalImpact</li>
+<li>✅ 会用 DoubleML / EconML（HTE）</li>
+<li>✅ 会用 Robyn / 贝叶斯 MMM</li>
+<li>✅ 会用 uplift modeling 找敏感人群</li>
+<li>✅ 会设计 Geo Lift / 贝叶斯 A/B</li>
+<li>✅ 有一个完整营销 ROI 归因作品</li>
 </ul>
-<h3>下一步：阶段四（Day 66-100）</h3>
-<p>路径 A：供应链库存决策——把前 65 天学的所有方法用到真实业务场景。</p>`,
+<h3>P5 预告</h3>
+<p>从『促销有没有效』转到『该补多少货』——把预测能力接到库存决策。</p>`,
   },
 
   // ───────────────────────────────────────────────────────────
-  // 阶段四 · 路径 A · 供应链库存决策（Day 66-100）
-  // 把前 65 天的所有方法应用到真实业务场景
+  // ★ P5 · 库存与补货决策（Day 26-45，20 天重点）
   // ───────────────────────────────────────────────────────────
 
-  // ===== Week 10 · Day 66-72 · 库存理论基础 =====
+  // ===== Week 5 · Day 26-32 · 库存理论基础 + SARIMA 穿插 =====
   {
-    id: "deep-66", day: 66, week: 10, track: "deep",
-    title: "库存理论：EOQ / 安全库存 / 服务水准",
+    id: "deep-26", day: 26, week: 5, track: "deep",
+    title: "P5 启动 · 库存理论：EOQ / 安全库存 / 服务水准",
     description: "经典库存模型",
     objectives: [
       "理解经济订货量（EOQ）",
       "掌握安全库存的计算",
-      "知道服务水准（Cycle Service / Fill Rate）的差异",
+      "知道 Cycle Service vs Fill Rate 的差异",
     ],
     duration: 45,
     cues: [
       "EOQ = √(2DS/H)，平衡订货成本和持有成本",
       "安全库存 = z·σ·√L",
-      "Cycle Service vs Fill Rate——后者更业务友好",
+      "Fill Rate 比 Cycle Service 更业务友好",
     ],
     content: `<h3>EOQ 经济订货量</h3>
 <pre><code>import numpy as np
@@ -2041,50 +848,83 @@ EOQ = np.sqrt(2 * D * S / H)  # ≈ 387</code></pre>
 <pre><code>from scipy.stats import norm
 z = norm.ppf(0.95)              # 95% 服务水准
 sigma_L = 50                    # 提前期内需求标准差
-safety_stock = z * sigma_L      # ≈ 82
-reorder_point = mean_demand_L + safety_stock</code></pre>
+safety_stock = z * sigma_L      # ≈ 82</code></pre>
 <h3>两类服务水准</h3>
 <ul>
-<li><strong>Cycle Service Rate：</strong>不缺货的周期比例（CSL=95% 表示 100 个周期有 95 个不缺货）</li>
-<li><strong>Fill Rate：</strong>需求被即时满足的比例（FR=95% 表示 100 件需求 95 件即时满足）</li>
-</ul>
-<p>老板更关心 Fill Rate——因为它直接关联客户体验。</p>`,
+<li><strong>Cycle Service Rate：</strong>不缺货的周期比例</li>
+<li><strong>Fill Rate：</strong>需求被即时满足的比例（老板更关心）</li>
+</ul>`,
   },
   {
-    id: "deep-67", day: 67, week: 10, track: "deep",
-    title: "多级库存优化（Multi-Echelon）",
-    description: "仓库 → 门店 → 货架的协同",
+    id: "deep-27", day: 27, week: 5, track: "deep",
+    title: "SARIMA 数学严格版（用到时补）",
+    description: "理解 SARIMA 的数学结构",
     objectives: [
-      "理解多级供应链的牛鞭效应",
-      "掌握级库存（echelon stock）概念",
-      "知道多级优化的收益",
+      "理解 AR / MA / 差分的算子表示",
+      "掌握 Box-Jenkins 方法论",
+      "看懂 SARIMA 论文里的公式",
     ],
     duration: 45,
     cues: [
-      "级库存 = 本级库存 + 下游所有库存",
-      "集中式 vs 分散式优化",
-      "多级优化可降低总库存 20-30%",
+      "AR(p)：y_t = c + φ₁y_{t-1} + ... + ε_t",
+      "MA(q)：y_t = c + ε_t + θ₁ε_{t-1} + ...",
+      "滞后算子 B：B^k · y_t = y_{t-k}",
     ],
-    content: `<h3>级库存（Echelon Stock）</h3>
-<p>传统：每个节点独立优化自己的库存。<br>
-多级：把整条链看成一个整体，优化级库存。</p>
-<pre><code># 简化：两级（中央仓 + 多门店）
-# 级库存 = 中央仓库存 + 在途 + 所有门店库存
-# 优化目标：在级服务水准约束下最小化总成本</code></pre>
-<h3>牛鞭效应</h3>
-<p>需求波动沿供应链上游放大：零售 ±5% → 批发 ±10% → 制造 ±20%。<br>
-原因：信息延迟、批量订货、价格波动、配给博弈。</p>
-<div class="ex-box"><h4>✏️ 业务应用</h4>
-<p>分享需求信息（POS 数据上传）可显著缓解牛鞭效应。</p></div>`,
+    content: `<h3>SARIMA(p,d,q)(P,D,Q,m)</h3>
+<p><code>Φ(B^m)φ(B)(1-B)^d(1-B^m)^D y_t = Θ(B^m)θ(B)ε_t</code></p>
+<ul>
+<li>φ(B)：非季节 AR</li>
+<li>θ(B)：非季节 MA</li>
+<li>Φ(B^m)：季节 AR</li>
+<li>Θ(B^m)：季节 MA</li>
+</ul>
+<h3>Box-Jenkins 方法论</h3>
+<ol>
+<li>识别：看 ACF/PACF 选 p/q</li>
+<li>估计：最大似然</li>
+<li>诊断：残差 Ljung-Box</li>
+<li>预测</li>
+</ol>
+<pre><code>from statsmodels.tsa.statespace.sarimax import SARIMAX
+model = SARIMAX(y, order=(1,1,1), seasonal_order=(1,1,1,7))
+res = model.fit(disp=False)
+print(res.summary())</code></pre>`,
   },
   {
-    id: "deep-68", day: 68, week: 10, track: "deep",
+    id: "deep-28", day: 28, week: 5, track: "deep",
+    title: "SARIMAX：带外生变量的 SARIMA",
+    description: "把促销/天气作为外生变量",
+    objectives: [
+      "理解 exog 的概念",
+      "会用 SARIMAX 加入业务变量",
+      "知道外生变量的『未来值』问题",
+    ],
+    duration: 45,
+    cues: [
+      "exog 是模型之外但影响目标的变量",
+      "预测时必须提供 exog 的未来值",
+      "适合促销计划已排期的场景",
+    ],
+    content: `<pre><code>from statsmodels.tsa.statespace.sarimax import SARIMAX
+model = SARIMAX(
+    train['销量'],
+    exog=train[['促销', '价格', '广告费']],
+    order=(1, 1, 1),
+    seasonal_order=(1, 1, 1, 7),
+)
+res = model.fit(disp=False)
+forecast = res.get_forecast(steps=7, exog=test[['促销', '价格', '广告费']])</code></pre>
+<div class="pit-box"><h4>⚠️ 致命陷阱</h4>
+<p>预测时要传 <code>exog</code>，否则报错。更隐蔽的陷阱：你用了『未来才知道的促销』训练，上线时模型要求未来 7 天的促销标记——但实际业务里促销计划可能还没定。</p></div>`,
+  },
+  {
+    id: "deep-29", day: 29, week: 5, track: "deep",
     title: "(s, S) / (r, Q) 补货策略",
     description: "工业级补货算法",
     objectives: [
       "理解 (s, S) 和 (r, Q) 策略",
       "掌握参数确定方法",
-      "知道在 ERP 系统里的实现",
+      "知道在 ERP 系统的实现",
     ],
     duration: 45,
     cues: [
@@ -2093,13 +933,10 @@ reorder_point = mean_demand_L + safety_stock</code></pre>
       "s = 安全库存 + 提前期需求",
     ],
     content: `<h3>(s, S) 策略</h3>
-<p>当库存降到 s（reorder point）时，订货补到 S（order-up-to level）。</p>
 <pre><code>s = expected_demand_during_leadtime + safety_stock
-S = s + EOQ  # 或其他经济批量</code></pre>
+S = s + EOQ</code></pre>
 <h3>(r, Q) 策略</h3>
-<p>当库存降到 r 时，订固定批量 Q。</p>
-<pre><code># 选择 r, Q 的近似公式
-r = mean_demand_L + z * sigma_L  # 再订货点
+<pre><code>r = mean_demand_L + z * sigma_L  # 再订货点
 Q = EOQ                          # 订货量</code></pre>
 <h3>策略选择</h3>
 <ul>
@@ -2109,19 +946,43 @@ Q = EOQ                          # 订货量</code></pre>
 </ul>`,
   },
   {
-    id: "deep-69", day: 69, week: 10, track: "deep",
+    id: "deep-30", day: 30, week: 5, track: "deep",
+    title: "多级库存优化（Multi-Echelon）",
+    description: "仓库 → 门店 → 货架的协同",
+    objectives: [
+      "理解多级供应链的牛鞭效应",
+      "掌握级库存（echelon stock）概念",
+      "知道多级优化的收益",
+    ],
+    duration: 45,
+    cues: [
+      "级库存 = 本级 + 下游所有",
+      "集中式 vs 分散式优化",
+      "多级优化可降总库存 20-30%",
+    ],
+    content: `<h3>级库存（Echelon Stock）</h3>
+<p>传统：每个节点独立优化。<br>
+多级：把整条链看成整体，优化级库存。</p>
+<h3>牛鞭效应</h3>
+<p>需求波动沿供应链放大：零售 ±5% → 批发 ±10% → 制造 ±20%。<br>
+原因：信息延迟、批量订货、价格波动、配给博弈。</p>
+<div class="ex-box"><h4>✏️ 缓解牛鞭</h4>
+<p>分享 POS 数据（销售点）、减小批量、稳定价格、VMI（供应商管理库存）。</p></div>`,
+  },
+  {
+    id: "deep-31", day: 31, week: 5, track: "deep",
     title: "S&OP 销售运营计划的量化",
     description: "把预测接到财务和产能",
     objectives: [
       "理解 S&OP 流程",
-      "掌握预测在 S&OP 中的角色",
+      "掌握预测在 S&OP 的角色",
       "知道和财务/产能的协调",
     ],
     duration: 45,
     cues: [
       "S&OP = Sales and Operations Planning",
       "月度滚动：需求 → 供应 → 财务对齐",
-      "预测 + 库存 + 产能 = 供应计划",
+      "量化：基线预测 + 不确定性 + 财务模拟",
     ],
     content: `<h3>S&OP 月度循环</h3>
 <ol>
@@ -2138,8 +999,8 @@ Q = EOQ                          # 订货量</code></pre>
 </ul>`,
   },
   {
-    id: "deep-70", day: 70, week: 10, track: "deep",
-    title: "Week 10 复习 + 库存仿真",
+    id: "deep-32", day: 32, week: 5, track: "deep",
+    title: "Week 5 复习 + 库存仿真",
     description: "用蒙特卡洛模拟库存系统",
     objectives: [
       "完成一个库存仿真系统",
@@ -2148,8 +1009,8 @@ Q = EOQ                          # 订货量</code></pre>
     ],
     duration: 60,
     cues: [
-      "仿真 = 模拟 1000 天，看库存/缺货/成本",
-      "对比 (s,S) vs (r,Q) vs 其他策略",
+      "仿真 = 模拟 1000 天",
+      "对比 (s,S) vs (r,Q)",
       "成本 = 持有 + 订货 + 缺货",
     ],
     content: `<pre><code>def simulate_inventory(demand_gen, policy, days=1000):
@@ -2157,37 +1018,33 @@ Q = EOQ                          # 订货量</code></pre>
     stock = policy['S_init']
     for d in range(days):
         demand = demand_gen()
-        # 补货决策
         if stock &lt; policy['s']:
             order = policy['S'] - stock
             costs += order * policy['unit_cost'] + policy['order_cost']
             stock += order
-        # 满足需求
         sold = min(stock, demand)
         shortages += max(0, demand - stock)
         stock -= sold
         costs += stock * policy['hold_cost']
         inventory.append(stock)
-    return {'avg_stock': np.mean(inventory), 'shortage': shortages, 'cost': costs}</code></pre>
-<div class="ex-box"><h4>✏️ 实战</h4>
-<p>跑 3 种策略 × 10 种需求场景，画服务水准 vs 总成本的 Pareto 前沿。</p></div>`,
+    return {'avg_stock': np.mean(inventory), 'shortage': shortages, 'cost': costs}</code></pre>`,
   },
 
-  // ===== Week 11 · Day 71-77 · 概率预测 + 库存决策 =====
+  // ===== Week 6 · Day 33-39 · 概率预测 + 高级库存方法 =====
   {
-    id: "deep-71", day: 71, week: 11, track: "deep",
+    id: "deep-33", day: 33, week: 6, track: "deep",
     title: "概率预测：分位数 LightGBM",
     description: "不只预测值，还预测分布",
     objectives: [
       "掌握分位数回归",
       "会跑多分位数 LightGBM",
-      "知道如何把概率预测接到库存决策",
+      "把概率预测接到库存决策",
     ],
     duration: 45,
     cues: [
       "P10/P50/P90 = 保守/中位/乐观",
       "Pinball Loss 训练分位数",
-      "概率预测直接喂给库存决策模型",
+      "概率预测直接喂给库存决策",
     ],
     content: `<pre><code>import lightgbm as lgb
 quantiles = [0.1, 0.5, 0.9]
@@ -2203,16 +1060,16 @@ target_quantile = 1 - (1 - service_level) * 2  # ≈ 0.9
 stock = preds[target_quantile]</code></pre>
 <h3>概率预测 vs 点预测</h3>
 <p>点预测：『下周销量 1000』——给不出不确定性。<br>
-概率预测：『下周销量 P50=1000，P90=1500』——直接算出该备多少货。</p>`,
+概率预测：『下周 P50=1000，P90=1500』——直接算出该备多少货。</p>`,
   },
   {
-    id: "deep-72", day: 72, week: 11, track: "deep",
+    id: "deep-34", day: 34, week: 6, track: "deep",
     title: "DeepAR：Amazon 概率预测 SOTA",
     description: "深度学习概率预测",
     objectives: [
       "理解 DeepAR 的自回归结构",
       "会跑 GluonTS 的 DeepAR",
-      "知道 DeepAR vs 分位数 LightGBM 的差异",
+      "知道 DeepAR vs 分位数 LightGBM",
     ],
     duration: 45,
     cues: [
@@ -2222,10 +1079,8 @@ stock = preds[target_quantile]</code></pre>
     ],
     content: `<pre><code>from gluonts.model.deepar import DeepAREstimator
 from gluonts.trainer import Trainer
-
 estimator = DeepAREstimator(
-    freq='D',
-    prediction_length=7,
+    freq='D', prediction_length=7,
     trainer=Trainer(epochs=50, learning_rate=1e-3),
 )
 predictor = estimator.train(train_data)
@@ -2238,54 +1093,85 @@ forecasts = list(predictor.predict(test_data))</code></pre>
 </ul>`,
   },
   {
-    id: "deep-73", day: 73, week: 11, track: "deep",
+    id: "deep-35", day: 35, week: 6, track: "deep",
+    title: "贝叶斯推断 + PyMC（用到时补）",
+    description: "贝叶斯的数学原理",
+    objectives: [
+      "理解贝叶斯定理",
+      "掌握共轭先验",
+      "知道 MCMC 的原理",
+    ],
+    duration: 45,
+    cues: [
+      "先验 × 似然 = 后验",
+      "共轭：Beta 先验 + 二项似然 → Beta 后验",
+      "MCMC：构造马尔可夫链，平稳分布=后验",
+    ],
+    content: `<h3>贝叶斯定理</h3>
+<p><code>P(θ|D) = P(D|θ) · P(θ) / P(D)</code></p>
+<pre><code>import pymc as pm
+with pm.Model() as model:
+    alpha = pm.Normal('alpha', mu=0, sigma=10)
+    beta = pm.Normal('beta', mu=0, sigma=10)
+    sigma = pm.HalfNormal('sigma', sigma=1)
+    mu = alpha + beta * X
+    y_obs = pm.Normal('y_obs', mu=mu, sigma=sigma, observed=y)
+    trace = pm.sample(2000, tune=1000, chains=4)</code></pre>
+<h3>共轭先验对照</h3>
+<table>
+<tr><th>似然</th><th>共轭先验</th></tr>
+<tr><td>Bernoulli</td><td>Beta</td></tr>
+<tr><td>Poisson</td><td>Gamma</td></tr>
+<tr><td>Gaussian</td><td>Gaussian</td></tr>
+</table>`,
+  },
+  {
+    id: "deep-36", day: 36, week: 6, track: "deep",
     title: "强化学习补货入门",
     description: "Amazon RL 库存控制",
     objectives: [
       "理解 RL 的状态/动作/奖励",
       "知道 RL 在补货中的优势",
-      "了解 RL 库存的论文脉络",
+      "了解 RL 库存的论文",
     ],
     duration: 45,
     cues: [
       "RL = 试错学习最优策略",
-      "状态 = 当前库存 + 预测",
-      "奖励 = -（持有成本 + 缺货成本）",
+      "状态 = 库存 + 预测",
+      "奖励 = -（持有 + 缺货 + 订货成本）",
     ],
     content: `<h3>RL 补货建模</h3>
 <ul>
 <li><strong>状态 s_t：</strong>当前库存 + 预测分布 + 提前期</li>
 <li><strong>动作 a_t：</strong>订多少</li>
 <li><strong>奖励 r_t：</strong>-（持有 + 缺货 + 订货成本）</li>
-<li><strong>转移：</strong>库存演化</li>
 </ul>
-<pre><code># 简化 RL 实现（Stable-Baselines3）
-from stable_baselines3 import PPO
+<pre><code>from stable_baselines3 import PPO
 env = InventoryEnv(...)  # 自定义环境
 model = PPO('MlpPolicy', env, verbose=1)
 model.learn(total_timesteps=100000)</code></pre>
 <div class="ex-box"><h4>✏️ 进阶论文</h4>
-<p>Amazon 2021 论文 <em>Reinforcement Learning for Inventory Optimization</em>——RL 在大规模补货中的工业应用。</p></div>`,
+<p>Amazon 2021 论文 <em>Reinforcement Learning for Inventory Optimization</em></p></div>`,
   },
   {
-    id: "deep-74", day: 74, week: 11, track: "deep",
+    id: "deep-37", day: 37, week: 6, track: "deep",
     title: "新品冷启动：相似品迁移 + Chronos 零样本",
     description: "新品无历史数据怎么办",
     objectives: [
       "掌握相似品迁移方法",
-      "会用 Chronos / TimeGPT 做零样本预测",
+      "会用 Chronos 零样本预测",
       "知道冷启动的不同场景",
     ],
     duration: 45,
     cues: [
-      "新品冷启动：无历史数据",
-      "方法 1：找相似 SKU 迁移预测",
+      "方法 1：找相似 SKU 迁移",
       "方法 2：Chronos 零样本大模型",
+      "方法 3：贝叶斯先验借用",
     ],
     content: `<pre><code># 方法 1：相似品迁移
 from sklearn.metrics.pairwise import cosine_similarity
 sim = cosine_similarity(new_sku_features, existing_sku_features)
-similar_skus = sim.argsort()[0][-5:]  # Top 5 相似
+similar_skus = sim.argsort()[0][-5:]
 forecast = existing_forecasts[similar_skus].mean()
 
 # 方法 2：Chronos 零样本
@@ -2293,106 +1179,308 @@ from chronos import ChronosPipeline
 pipeline = ChronosPipeline.from_pretrained('amazon/chronos-t5-large')
 forecast = pipeline.predict(context=new_sku_short_history, prediction_length=7)</code></pre>
 <h3>Chronos 的革命</h3>
-<p>Chronos 是 Amazon 2024 发布的时序大模型，预训练于百万级时序，可以零样本预测——给少量历史就能输出，不需要训练。</p>`,
+<p>Amazon 2024 发布的时序大模型，预训练于百万级时序，零样本预测——给少量历史就能输出。</p>`,
   },
   {
-    "id": "deep-75", "day": 75, "week": 11, "track": "deep",
-    "title": "间断性需求：Croston / TSB 算法",
-    "description": "慢销品的特殊预测",
-    "objectives": [
-      "理解间断性需求的特点",
-      "掌握 Croston / TSB 方法",
+    id: "deep-38", day: 38, week: 6, track: "deep",
+    title: "间断性需求：Croston / TSB",
+    description: "慢销品的特殊预测",
+    objectives: [
+      "理解间断性需求",
+      "掌握 Croston / TSB",
       "知道和普通时序的差异",
     ],
-    "duration": 45,
-    "cues": [
-      "间断性：很多天销量=0，偶尔有大单",
-      "Croston：分开预测『需求间隔』和『需求大小』",
-      "TSB = Teunter-Syntetos-Babai（改进版）",
+    duration: 45,
+    cues: [
+      "间断性：很多天销量=0",
+      "Croston：分开预测『间隔』和『大小』",
+      "TSB 是改进版",
     ],
-    "content": `<pre><code>def croston(series, alpha=0.1):
+    content: `<pre><code>def croston(series, alpha=0.1):
     nonzero = series[series &gt; 0]
     intervals = np.diff(nonzero.index)
-    # 指数平滑两个分量
-    z = nonzero.ewm(alpha=alpha).mean()  # 需求大小
-    p = pd.Series(intervals).ewm(alpha=alpha).mean()  # 间隔
-    forecast = z / p  # 单期需求率
+    z = nonzero.ewm(alpha=alpha).mean()
+    p = pd.Series(intervals).ewm(alpha=alpha).mean()
+    forecast = z / p
     return forecast</code></pre>
-<h3>什么场景用 Croston</h3>
+<h3>ABC 分类策略</h3>
 <ul>
-<li>A 类快销品：天天有销量 → 普通 ARIMA</li>
-<li>B 类中销品：偶尔缺货 → Croston</li>
-<li>C 类慢销品：很多天 = 0 → TSB</li>
+<li>A 类快销：天天有销量 → ARIMA</li>
+<li>B 类中销：偶尔缺货 → Croston</li>
+<li>C 类慢销：很多天=0 → TSB</li>
 </ul>`,
   },
   {
-    "id": "deep-76", "day": 76, "week": 11, "track": "deep",
-    "title": "缺货需求还原：Censored Demand",
-    "description": "卖断货 ≠ 没需求",
-    "objectives": [
+    id: "deep-39", day: 39, week: 6, track: "deep",
+    title: "缺货需求还原（Censored Demand）",
+    description: "卖断货 ≠ 没需求",
+    objectives: [
       "理解截断数据问题",
       "掌握需求还原方法",
-      "知道在库存优化中的影响",
+      "知道在库存优化的影响",
     ],
-    "duration": 45,
-    "cues": [
+    duration: 45,
+    cues: [
       "销量 = min(需求, 库存)",
-      "库存=0 时观察到的销量被截断",
-      "用 Tobit 模型或 survival 分析还原",
+      "库存=0 时观察被截断",
+      "用 Tobit 或 EM 算法还原",
     ],
     content: `<h3>截断数据问题</h3>
-<p>实际观察到的不是需求，而是销量 = min(需求, 库存)。库存=0 时的销量=0，但真实需求可能&gt;0。</p>
-<pre><code># 用 Tobit 模型（截断回归）
-from statsmodels.discrete.discrete_model import Tobit  # 或 censored 回归
-# 或用 EM 算法：E 步估计真实需求，M 步拟合模型</code></pre>
-<div class="pit-box"><h4>⚠️ 不还原需求的后果</h4>
-<p>如果不还原，模型学到『缺货期销量低 → 以后少备点货』——持续缺货死循环。这是供应链预测最隐蔽的陷阱。</p></div>`,
-  },
-  {
-    "id": "deep-77", "day": 77, "week": 11, "track": "deep",
-    "title": "Week 11 复习 + 营销 MMM 入门",
-    "description": "Meta Robyn 营销组合建模",
-    "objectives": [
-      "理解 MMM 的框架",
-      "掌握 Adstock 衰减 + Hill 饱和",
-      "会用 Robyn 做预算分配",
-    ],
-    "duration": 60,
-    "cues": [
-      "MMM = Marketing Mix Modeling",
-      "Adstock：广告效应随时间衰减",
-      "Hill：边际效应递减",
-    ],
-    "content": `<h3>MMM 的核心方程</h3>
-<p><code>销量 = 基线 + Σ Adstock(Hill(媒体_i)) + 季节 + 价格 + ε</code></p>
-<pre><code># R 实现（Robyn）
-# library(Robyn)
-# Robyn(InputCollect, ...) 自动调参 + 产出 Pareto 前沿</code></pre>
-<h3>Adstock 衰减</h3>
-<p>广告效应不会立即消失，会持续衰减。<code>adstock(t) = spend(t) + λ·adstock(t-1)</code>，λ 是留存率。</p>
-<h3>Hill 饱和函数</h3>
-<p>广告投入越多边际效应越小。<code>response(x) = x^γ / (x^γ + θ^γ)</code>，θ 是半饱和点，γ 是陡峭度。</p>
-<div class="ex-box"><h4>✏️ 业务价值</h4>
-<p>MMM 能回答老板最关心的问题：『把预算从 TV 挪到抖音，ROI 会涨多少？』</p></div>`,
+<p>实际观察到的不是需求，而是销量 = min(需求, 库存)。</p>
+<pre><code># 用 EM 算法
+# E 步：估计缺货期的真实需求（用预测分布）
+# M 步：用还原后的需求重新拟合模型
+for iteration in range(100):
+    # E 步
+    stockout_mask = (inventory == 0)
+    imputed_demand = np.where(stockout_mask,
+                              np.maximum(predicted_demand, observed_sales),
+                              observed_sales)
+    # M 步
+    model.fit(imputed_demand)</code></pre>
+<div class="pit-box"><h4>⚠️ 不还原的后果</h4>
+<p>模型学到『缺货期销量低 → 以后少备货』——持续缺货死循环。</p></div>`,
   },
 
-  // ===== Week 12-14 · Day 78-95 · 工程化 + 端到端项目 =====
+  // ===== Week 7 · Day 40-45 · P5 毕业项目 =====
   {
-    "id": "deep-78", "day": 78, "week": 12, "track": "deep",
-    "title": "模型服务化：Flask / FastAPI",
-    "description": "把模型变成 API",
-    "objectives": [
+    id: "deep-40", day: 40, week: 7, track: "deep",
+    title: "P5 毕业项目启动：端到端库存优化系统",
+    description: "把 P4 + P5 学的整合成一个系统",
+    objectives: [
+      "选定业务场景（电商/快消/医药）",
+      "设计系统架构",
+      "制定 6 天开发计划",
+    ],
+    duration: 60,
+    cues: [
+      "场景：销量预测 + 库存优化 + 营销归因",
+      "架构：数据 → 特征 → 模型 → 决策 → 报告",
+      "产出：代码 + 报告 + Demo",
+    ],
+    content: `<h3>毕业项目目标</h3>
+<ol>
+<li><strong>数据层：</strong>销售 + 库存 + 营销 + 外部</li>
+<li><strong>特征层：</strong>lag/rolling/广告衰减/节假日</li>
+<li><strong>模型层：</strong>LightGBM + 概率预测</li>
+<li><strong>决策层：</strong>(s, S) + 安全库存</li>
+<li><strong>归因层：</strong>DID + SHAP 量化营销 ROI</li>
+<li><strong>展示层：</strong>Streamlit Dashboard</li>
+</ol>`,
+  },
+  {
+    id: "deep-41", day: 41, week: 7, track: "deep",
+    title: "毕业项目 Day 2：数据 + 特征 + 模型",
+    description: "端到端预测管线",
+    objectives: [
+      "完成数据整合 + 特征工程",
+      "训练多分位数 LightGBM",
+      "Optuna 调参",
+    ],
+    duration: 60,
+    cues: [
+      "防泄漏检查",
+      "P10/P50/P90 三模型",
+      "SHAP 分析",
+    ],
+    content: `<h3>今日任务</h3>
+<ol>
+<li>加载 Kaggle M5 / Rossmann 数据</li>
+<li>合并库存数据</li>
+<li>构造 lag/rolling/日期/营销特征</li>
+<li>训练 P10/P50/P90 LightGBM</li>
+<li>Optuna 调参</li>
+<li>SHAP 分析</li>
+</ol>`,
+  },
+  {
+    id: "deep-42", day: 42, week: 7, track: "deep",
+    title: "毕业项目 Day 3：库存决策模块",
+    description: "把概率预测接到补货",
+    objectives: [
+      "实现 (s, S) 补货策略",
+      "基于概率预测算安全库存",
+      "蒙特卡洛仿真",
+    ],
+    duration: 60,
+    cues: [
+      "P90 作为再订货点",
+      "服务水准 95% 计算",
+      "仿真 1000 次评估",
+    ],
+    content: `<h3>今日任务</h3>
+<ol>
+<li>读取概率预测结果</li>
+<li>按服务水准 95% 算目标库存</li>
+<li>用 (s, S) 策略生成补货建议</li>
+<li>蒙特卡洛仿真对比 P50 vs P90 决策</li>
+<li>输出补货建议表（每个 SKU 多少件）</li>
+</ol>`,
+  },
+  {
+    id: "deep-43", day: 43, week: 7, track: "deep",
+    title: "毕业项目 Day 4：因果归因模块",
+    description: "整合 P4 的因果分析",
+    objectives: [
+      "评估某次促销的真实效果",
+      "DID + CausalImpact + SHAP 三角验证",
+      "产出归因报告",
+    ],
+    duration: 60,
+    cues: [
+      "DID：实验组 vs 对照组",
+      "CausalImpact：贝叶斯反事实",
+      "SHAP：特征贡献",
+    ],
+    content: `<h3>今日任务</h3>
+<ol>
+<li>识别一次促销活动作为处理</li>
+<li>DID 估计因果效应</li>
+<li>CausalImpact 构造反事实</li>
+<li>SHAP 分析促销贡献</li>
+<li>三角对比，写归因报告</li>
+</ol>`,
+  },
+  {
+    id: "deep-44", day: 44, week: 7, track: "deep",
+    title: "毕业项目 Day 5：API + Dashboard",
+    description: "服务化 + 可视化",
+    objectives: [
+      "FastAPI 暴露预测接口",
+      "Streamlit Dashboard",
+      "Docker 打包",
+    ],
+    duration: 60,
+    cues: [
+      "API：/predict /reorder /attribution",
+      "Dashboard：销量图 + 库存建议 + 归因",
+      "一键部署",
+    ],
+    content: `<pre><code># FastAPI
+from fastapi import FastAPI
+app = FastAPI()
+@app.post('/predict')
+def predict(inp): ...
+@app.post('/reorder')
+def reorder(inp): ...
+
+# Streamlit
+import streamlit as st
+st.title('供应链决策系统')
+st.line_chart(sales_data)
+st.dataframe(reorder_table)</code></pre>`,
+  },
+  {
+    id: "deep-45", day: 45, week: 7, track: "deep",
+    title: "P5 毕业总结：从预测到决策",
+    description: "回顾 20 天 P5 + 项目完成",
+    objectives: [
+      "完成端到端供应链决策系统",
+      "整理作品集",
+      "预告 P6 Agent",
+    ],
+    duration: 60,
+    cues: [
+      "P4 + P5 整合成完整系统",
+      "作品 = 代码 + 报告 + Demo",
+      "P6：让 AI 自动化整个流程",
+    ],
+    content: `<h3>P5 完成标志</h3>
+<ul>
+<li>✅ 掌握 EOQ / 安全库存 / 多级库存</li>
+<li>✅ 掌握 (s, S) / (r, Q) 补货</li>
+<li>✅ 会用概率预测（分位数 LGBM / DeepAR）</li>
+<li>✅ 会用 RL 补货（入门）</li>
+<li>✅ 会处理冷启动 / 间断需求 / 缺货还原</li>
+<li>✅ 有一个端到端供应链决策系统</li>
+</ul>
+<h3>P6 预告</h3>
+<p>下一步：用 Agent 自动化整个流程——让 AI 自动挖因子、跑回测、出报告。</p>`,
+  },
+
+  // ───────────────────────────────────────────────────────────
+  // P6 · Agent + 毕业项目（Day 46-65，20 天）
+  // ───────────────────────────────────────────────────────────
+
+  // ===== Week 8 · Day 46-52 · 工程化基础 =====
+  {
+    id: "deep-46", day: 46, week: 8, track: "deep",
+    title: "P6 启动 · 软件工程基础",
+    description: "Git / 测试 / 代码规范",
+    objectives: [
+      "掌握 Git 工作流",
+      "会写 pytest 单元测试",
+      "理解代码规范和 CI",
+    ],
+    duration: 45,
+    cues: [
+      "Git：分支 / 合并 / 冲突解决",
+      "pytest：测试驱动开发",
+      "CI：GitHub Actions 自动跑测试",
+    ],
+    content: `<h3>Git 工作流</h3>
+<pre><code>git checkout -b feature/new-model
+git add .
+git commit -m "feat: add new model"
+git push origin feature/new-model
+# 在 GitHub 上开 PR</code></pre>
+<h3>pytest 测试模板</h3>
+<pre><code># test_features.py
+import pytest
+import pandas as pd
+def test_lag_no_leakage():
+    df = pd.DataFrame({'y': [1, 2, 3, 4]})
+    df['lag_1'] = df['y'].shift(1)
+    assert df.loc[1, 'lag_1'] == 1  # 第 2 行的 lag_1 应该是第 1 行</code></pre>`,
+  },
+  {
+    id: "deep-47", day: 47, week: 8, track: "deep",
+    title: "Docker 容器化",
+    description: "一次构建处处运行",
+    objectives: [
+      "会写 Dockerfile",
+      "掌握镜像构建",
+      "知道 docker-compose",
+    ],
+    duration: 45,
+    cues: [
+      "Dockerfile：FROM + COPY + RUN + CMD",
+      "构建：docker build -t name .",
+      "Compose：多服务编排",
+    ],
+    content: `<pre><code>FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
+<pre><code># docker-compose.yml
+version: '3'
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: example</code></pre>`,
+  },
+  {
+    id: "deep-48", day: 48, week: 8, track: "deep",
+    title: "FastAPI 模型服务化",
+    description: "把模型变成 API",
+    objectives: [
       "会写 FastAPI 服务",
-      "掌握模型加载 + 预测接口",
+      "掌握模型加载 + 预测",
       "知道 API 文档自动生成",
     ],
-    "duration": 45,
-    "cues": [
+    duration: 45,
+    cues: [
       "FastAPI 比 Flask 快、自带类型校验",
-      "pickle/joblib 保存模型",
-      "/docs 自动生成 Swagger",
+      "joblib 保存模型",
+      "/docs 自动 Swagger",
     ],
-    "content": `<pre><code>from fastapi import FastAPI
+    content: `<pre><code>from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 
@@ -2412,573 +1500,1586 @@ def predict(inp: ForecastInput):
     return {'forecast': float(pred[0])}</code></pre>`,
   },
   {
-    "id": "deep-79", "day": 79, "week": 12, "track": "deep",
-    "title": "Docker 容器化",
-    "description": "一次构建处处运行",
-    "objectives": [
-      "会写 Dockerfile",
-      "掌握镜像构建 + 容器运行",
-      "知道 docker-compose 多服务编排",
-    ],
-    "duration": 45,
-    "cues": [
-      "Dockerfile：FROM + COPY + RUN + CMD",
-      "构建：docker build -t name .",
-      "运行：docker run -p 8000:8000 name",
-    ],
-    "content": `<pre><code># Dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
-<pre><code># 构建运行
-docker build -t forecast-api .
-docker run -p 8000:8000 forecast-api</code></pre>`,
-  },
-  {
-    "id": "deep-80", "day": 80, "week": 12, "track": "deep",
-    "title": "MLflow 实验追踪",
-    "description": "管理上百次实验",
-    "objectives": [
+    id: "deep-49", day: 49, week: 8, track: "deep",
+    title: "MLflow 实验追踪",
+    description: "管理上百次实验",
+    objectives: [
       "会用 MLflow 记录参数/指标/模型",
       "掌握实验对比",
       "知道模型注册中心",
     ],
-    "duration": 45,
-    "cues": [
-      "MLflow Tracking：记录实验",
-      "MLflow Models：模型版本管理",
-      "MLflow Registry：上线审批",
+    duration: 45,
+    cues: [
+      "Tracking：记录实验",
+      "Models：模型版本",
+      "Registry：上线审批",
     ],
-    "content": `<pre><code>import mlflow
+    content: `<pre><code>import mlflow
 mlflow.set_experiment('销量预测')
-
 with mlflow.start_run():
-    mlflow.log_params({'model': 'lightgbm', 'lr': 0.05, 'num_leaves': 31})
+    mlflow.log_params({'model': 'lightgbm', 'lr': 0.05})
     mlflow.log_metrics({'mae': 12.5, 'mape': 0.15})
     mlflow.lightgbm.log_model(model, 'model')</code></pre>`,
   },
   {
-    "id": "deep-81", "day": 81, "week": 12, "track": "deep",
-    "title": "Airflow / Prefect 流水线编排",
-    "description": "定时跑批预测",
-    "objectives": [
-      "理解 DAG（有向无环图）",
+    id: "deep-50", day: 50, week: 8, track: "deep",
+    title: "Airflow / Prefect 流水线编排",
+    description: "定时跑批预测",
+    objectives: [
+      "理解 DAG",
       "会写 Airflow DAG",
       "知道定时调度",
     ],
-    "duration": 45,
-    "cues": [
-      "DAG：任务依赖关系图",
-      "Operator：BashOperator/PythonOperator",
-      "Schedule：cron 表达式",
+    duration: 45,
+    cues: [
+      "DAG：任务依赖图",
+      "Operator：Bash / Python",
+      "Schedule：cron",
     ],
-    "content": `<pre><code>from airflow import DAG
+    content: `<pre><code>from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 
 dag = DAG('daily_forecast', schedule_interval='0 6 * * *',
           start_date=datetime(2026, 1, 1))
-
-def fetch_data(): ...
-def train_model(): ...
-def predict(): ...
-
 t1 = PythonOperator(task_id='fetch', python_callable=fetch_data, dag=dag)
 t2 = PythonOperator(task_id='train', python_callable=train_model, dag=dag)
 t3 = PythonOperator(task_id='predict', python_callable=predict, dag=dag)
 t1 &gt;&gt; t2 &gt;&gt; t3</code></pre>`,
   },
   {
-    "id": "deep-82", "day": 82, "week": 12, "track": "deep",
-    "title": "Week 12 复习 + MLOps 全景图",
-    "description": "把工程化工具串起来",
-    "objectives": [
+    id: "deep-51", day: 51, week: 8, track: "deep",
+    title: "监控与告警 + 数据漂移",
+    description: "模型上线后会变差",
+    objectives: [
+      "理解数据漂移 vs 概念漂移",
+      "会跑 PSI / KS 检验",
+      "建立监控仪表盘",
+    ],
+    duration: 45,
+    cues: [
+      "数据漂移：X 分布变了",
+      "概念漂移：Y|X 关系变了（致命）",
+      "PSI > 0.2 → 重训",
+    ],
+    content: `<pre><code>def psi(expected, actual, bins=10):
+    expected_pct = np.histogram(expected, bins=bins)[0] / len(expected)
+    actual_pct = np.histogram(actual, bins=bins)[0] / len(actual)
+    return np.sum((actual_pct - expected_pct) * np.log(actual_pct / expected_pct))</code></pre>`,
+  },
+  {
+    id: "deep-52", day: 52, week: 8, track: "deep",
+    title: "Week 8 复习 + MLOps 全景图",
+    description: "把工程化工具串起来",
+    objectives: [
       "理解 MLOps 全流程",
       "知道每个工具的位置",
       "建立工程化能力地图",
     ],
-    "duration": 60,
-    "cues": [
-      "数据 → 实验 → 训练 → 部署 → 监控 → 再训练",
+    duration: 60,
+    cues: [
+      "数据 → 实验 → 训练 → 部署 → 监控",
       "工具：Git/MLflow/Docker/Airflow/Prometheus",
       "MLOps = DevOps + ML",
     ],
-    "content": `<h3>MLOps 全景图</h3>
+    content: `<h3>MLOps 全景图</h3>
 <table>
 <tr><th>阶段</th><th>工具</th></tr>
-<tr><td>版本控制</td><td>Git + DVC（数据版本）</td></tr>
-<tr><td>实验追踪</td><td>MLflow / Weights &amp; Biases</td></tr>
-<tr><td>编排</td><td>Airflow / Prefect / Kubeflow</td></tr>
-<tr><td>服务化</td><td>FastAPI / BentoML / Seldon</td></tr>
-<tr><td>容器</td><td>Docker / Kubernetes</td></tr>
-<tr><td>监控</td><td>Prometheus / Grafana / Evidently</td></tr>
+<tr><td>版本控制</td><td>Git + DVC</td></tr>
+<tr><td>实验追踪</td><td>MLflow / W&amp;B</td></tr>
+<tr><td>编排</td><td>Airflow / Prefect</td></tr>
+<tr><td>服务化</td><td>FastAPI / BentoML</td></tr>
+<tr><td>容器</td><td>Docker / K8s</td></tr>
+<tr><td>监控</td><td>Prometheus / Evidently</td></tr>
 </table>`,
   },
 
-  // ===== Day 83-100 · 毕业项目 =====
+  // ===== Week 9 · Day 53-59 · Agent 框架 =====
   {
-    "id": "deep-83", "day": 83, "week": 13, "track": "deep",
-    "title": "毕业项目启动：端到端供应链决策系统",
-    "description": "把所有学到的技术整合成一个系统",
-    "objectives": [
-      "选定业务场景（电商/快消/医药）",
-      "设计系统架构",
-      "制定 18 天开发计划",
+    id: "deep-53", day: 53, week: 9, track: "deep",
+    title: "LangGraph：图式 Agent 编排",
+    description: "2024-2026 最热的 Agent 框架",
+    objectives: [
+      "理解 LangGraph 的图结构",
+      "会写简单的 Agent",
+      "知道和 LangChain 的差异",
     ],
-    "duration": 60,
-    "cues": [
-      "场景：销量预测 + 库存优化 + 营销归因",
-      "架构：数据 → 特征 → 模型 → 决策 → 报告",
-      "产出：代码 + 报告 + Demo + 答辩 PPT",
+    duration: 45,
+    cues: [
+      "LangGraph = LangChain 的状态机进化版",
+      "节点 = 函数，边 = 条件跳转",
+      "支持循环、分支、人在环",
     ],
-    "content": `<h3>毕业项目目标</h3>
-<p>构建一个端到端系统，涵盖：</p>
-<ol>
-<li><strong>数据层：</strong>多源数据整合（销售 + 库存 + 营销 + 外部）</li>
-<li><strong>特征层：</strong>lag/rolling/广告衰减/节假日</li>
-<li><strong>模型层：</strong>LightGBM + 概率预测</li>
-<li><strong>决策层：</strong>库存优化 + 补货建议</li>
-<li><strong>归因层：</strong>DID + SHAP 量化营销 ROI</li>
-<li><strong>展示层：</strong>Streamlit Dashboard</li>
-</ol>`,
+    content: `<pre><code>from langgraph.graph import StateGraph, END
+from typing import TypedDict, Annotated
+
+class State(TypedDict):
+    question: str
+    analysis: str
+    answer: str
+
+def analyze(state):
+    state['analysis'] = llm.invoke(f"分析: {state['question']}")
+    return state
+
+def answer(state):
+    state['answer'] = llm.invoke(f"基于 {state['analysis']} 回答")
+    return state
+
+workflow = StateGraph(State)
+workflow.add_node('analyze', analyze)
+workflow.add_node('answer', answer)
+workflow.add_edge('analyze', 'answer')
+workflow.add_edge('answer', END)
+app = workflow.compile()</code></pre>`,
   },
   {
-    "id": "deep-84", "day": 84, "week": 13, "track": "deep",
-    "title": "毕业项目 Day 2：数据 + 特征",
-    "description": "数据清洗 + 特征工程",
-    "objectives": [
-      "完成数据整合和清洗",
-      "构造完整特征集",
-      "建立特征存储",
+    id: "deep-54", day: 54, week: 9, track: "deep",
+    title: "RD-Agent：自动挖因子闭环",
+    description: "微软开源的因子挖掘 Agent",
+    objectives: [
+      "理解 RD-Agent 的架构",
+      "知道因子挖掘的自动化闭环",
+      "了解在金融/供应链的应用",
     ],
-    "duration": 60,
-    "cues": [
-      "多源数据合并（销售 + 库存 + 营销）",
-      "特征工程模板复用",
-      "防泄漏检查",
+    duration: 45,
+    cues: [
+      "RD-Agent = Research & Development Agent",
+      "自动：提出因子 → 测试 → 迭代",
+      "微软开源，2024 发布",
     ],
-    "content": `<h3>今日任务清单</h3>
+    content: `<h3>RD-Agent 工作流</h3>
 <ol>
-<li>加载销售数据（Kaggle M5 / Rossmann）</li>
-<li>合并营销数据（广告/促销标记）</li>
-<li>构造 lag/rolling/日期/营销特征</li>
-<li>Target Encoding SKU/品类</li>
-<li>防泄漏检查（AI 辅助 code review）</li>
-<li>特征存储（parquet）</li>
-</ol>`,
+<li><strong>提出假设：</strong>LLM 生成因子想法（如『过去 7 天波动率』）</li>
+<li><strong>编码实现：</strong>自动生成 Python 代码</li>
+<li><strong>回测验证：</strong>跑历史回测，计算 IC</li>
+<li><strong>迭代改进：</strong>基于结果让 LLM 改进因子</li>
+</ol>
+<pre><code># RD-Agent（简化）
+from rd_agent import RDAgent
+agent = RDAgent(
+    data_config='config.yaml',
+    llm='deepseek-v4-pro',
+    factor_universe=['价格', '成交量', '基本面'],
+)
+agent.run(iterations=100)</code></pre>`,
   },
   {
-    "id": "deep-85", "day": 85, "week": 13, "track": "deep",
-    "title": "毕业项目 Day 3：模型训练 + 评估",
-    "description": "LightGBM + 概率预测 + Optuna",
-    "objectives": [
-      "训练多分位数 LightGBM",
-      "Optuna 调参",
-      "滚动回测评估",
+    id: "deep-55", day: 55, week: 9, track: "deep",
+    title: "Multi-Agent 投研框架",
+    description: "多角色协作的 Agent",
+    objectives: [
+      "理解 Multi-Agent 的协作模式",
+      "知道 TradingAgents 框架",
+      "了解在投研的应用",
     ],
-    "duration": 60,
-    "cues": [
-      "P10/P50/P90 三分位数模型",
-      "Optuna 50 次试验",
-      "回测 4 周 + MAE/MAPE/Pinball",
+    duration: 45,
+    cues: [
+      "多 Agent = 多角色（分析师/交易员/风控）",
+      "每个 Agent 有不同工具和视角",
+      "协作产出综合决策",
     ],
-    "content": `<h3>今日任务清单</h3>
-<ol>
-<li>训练 P10/P50/P90 三个 LightGBM</li>
-<li>Optuna 搜索超参</li>
-<li>SHAP 分析特征贡献</li>
-<li>滚动回测 4 周</li>
-<li>记录到 MLflow</li>
-</ol>`,
+    content: `<h3>Multi-Agent 角色分工</h3>
+<table>
+<tr><th>角色</th><th>职责</th></tr>
+<tr><td>数据 Agent</td><td>拉数据、清洗</td></tr>
+<tr><td>分析 Agent</td><td>跑模型、出洞察</td></tr>
+<tr><td>交易 Agent</td><td>生成交易建议</td></tr>
+<tr><td>风控 Agent</td><td>评估风险</td></tr>
+<tr><td>协调 Agent</td><td>整合、决策</td></tr>
+</table>
+<pre><code># 简化框架
+from crewai import Agent, Task, Crew
+
+analyst = Agent(role='分析师', goal='找信号', llm=llm)
+trader = Agent(role='交易员', goal='出建议', llm=llm)
+risk = Agent(role='风控', goal='防风险', llm=llm)
+
+crew = Crew(agents=[analyst, trader, risk])
+result = crew.kickoff(input='分析某 SKU 的补货决策')</code></pre>`,
   },
   {
-    "id": "deep-86", "day": 86, "week": 13, "track": "deep",
-    "title": "毕业项目 Day 4：库存决策模块",
-    "description": "把概率预测接到补货",
-    "objectives": [
-      "实现 (s, S) 补货策略",
-      "基于概率预测算安全库存",
-      "蒙特卡洛仿真评估",
+    id: "deep-56", day: 56, week: 9, track: "deep",
+    title: "AutoML 全流程：H2O / AutoGluon",
+    description: "一键建模",
+    objectives: [
+      "理解 AutoML 的原理",
+      "会跑 H2O / AutoGluon",
+      "知道 AutoML 的局限",
     ],
-    "duration": 60,
-    "cues": [
-      "P90 作为再订货点",
-      "服务水准 95% 的库存计算",
-      "仿真 1000 次评估成本",
+    duration: 45,
+    cues: [
+      "AutoML = 自动特征 + 模型 + 调参",
+      "H2O：传统 ML，企业级",
+      "AutoGluon：Amazon 开源，含深度学习",
     ],
-    "content": `<h3>今日任务清单</h3>
-<ol>
-<li>读取概率预测结果</li>
-<li>按服务水准 95% 算目标库存</li>
-<li>用 (s, S) 策略生成补货建议</li>
-<li>蒙特卡洛仿真对比 P50 vs P90 决策</li>
-</ol>`,
-  },
-  {
-    "id": "deep-87", "day": 87, "week": 13, "track": "deep",
-    "title": "毕业项目 Day 5：因果归因模块",
-    "description": "DID + CausalImpact + SHAP",
-    "objectives": [
-      "评估某次促销的真实效果",
-      "三角验证（DID + CausalImpact + DoubleML）",
-      "产出归因报告",
-    ],
-    "duration": 60,
-    "cues": [
-      "DID：实验组 vs 对照组",
-      "CausalImpact：贝叶斯反事实",
-      "DoubleML：控制高维混淆",
-    ],
-    "content": `<h3>今日任务清单</h3>
-<ol>
-<li>识别一次促销活动作为处理</li>
-<li>DID 估计因果效应</li>
-<li>CausalImpact 构造反事实</li>
-<li>DoubleML 控制混淆变量</li>
-<li>三角对比，写归因报告</li>
-</ol>`,
-  },
-  {
-    "id": "deep-88", "day": 88, "week": 14, "track": "deep",
-    "title": "毕业项目 Day 6：API + Dashboard",
-    "description": "服务化 + 可视化",
-    "objectives": [
-      "FastAPI 暴露预测接口",
-      "Streamlit 做 Dashboard",
-      "Docker 打包",
-    ],
-    "duration": 60,
-    "cues": [
-      "API：/predict /reorder /attribution",
-      "Dashboard：销量图 + 库存建议 + 归因",
-      "Docker 一键部署",
-    ],
-    "content": `<h3>Dashboard 设计</h3>
+    content: `<pre><code># AutoGluon
+from autogluon.tabular import TabularPredictor
+predictor = TabularPredictor(label='销量', eval_metric='mae').fit(
+    train_data,
+    time_limit=3600,  # 1 小时
+)
+predictions = predictor.predict(test_data)
+predictor.leaderboard(test_data)</code></pre>
+<div class="pit-box"><h4>⚠️ AutoML 的局限</h4>
 <ul>
-<li>顶部：KPI 概览（总销量/缺货率/服务水准）</li>
-<li>左：时间序列图 + 预测区间</li>
-<li>右：补货建议表</li>
-<li>下：营销归因图（SHAP / DID 对比）</li>
-</ul>`,
+<li>不能处理数据泄漏（你要自己防）</li>
+<li>特征工程有限（复杂的 lag/rolling 要手动）</li>
+<li>可解释性差</li>
+</ul></div>`,
   },
   {
-    "id": "deep-89", "day": 89, "week": 14, "track": "deep",
-    "title": "毕业项目 Day 7：MLOps + 监控",
-    "description": "实验追踪 + 数据漂移检测",
-    "objectives": [
-      "集成 MLflow",
-      "实现数据漂移监控",
-      "建立再训练触发器",
+    id: "deep-57", day: 57, week: 9, track: "deep",
+    title: "人在环（Human-in-the-Loop）",
+    description: "Agent + 人工审核",
+    objectives: [
+      "理解 Human-in-the-Loop 的价值",
+      "知道什么时候必须人来审核",
+      "设计审核工作流",
     ],
-    "duration": 60,
-    "cues": [
-      "每次预测记录 MLflow",
-      "PSI > 0.2 触发告警",
-      "概念漂移 → 重训",
+    duration: 45,
+    cues: [
+      "自动 80%，人工审核 20%（关键决策）",
+      "审核点：异常预测 / 大额决策 / 模型不自信",
+      "反馈循环：人工修正喂回模型",
     ],
-    "content": `<h3>今日任务清单</h3>
+    content: `<h3>Human-in-the-Loop 触发条件</h3>
 <ol>
-<li>每次预测记录到 MLflow</li>
-<li>计算特征 PSI（vs 训练集）</li>
-<li>PSI &gt; 0.2 触发 Slack 告警</li>
-<li>写再训练脚本</li>
+<li><strong>低置信度：</strong>模型预测的不确定性大</li>
+<li><strong>异常值：</strong>输入偏离训练分布</li>
+<li><strong>大额决策：</strong>补货金额 &gt; 阈值</li>
+<li><strong>新模式：</strong>结构性变化（如疫情）</li>
+</ol>
+<pre><code># LangGraph 人在环
+def human_review(state):
+    if state['confidence'] &lt; 0.8 or state['amount'] &gt; 100000:
+        # 暂停，等待人工
+        return 'await_human'
+    return 'auto_approve'</code></pre>`,
+  },
+  {
+    id: "deep-58", day: 58, week: 9, track: "deep",
+    title: "A/B 测试设计 + 统计显著性",
+    description: "证明你的模型真的有用",
+    objectives: [
+      "理解 A/B 测试的设计原则",
+      "会算样本量和显著性",
+      "知道业务指标 vs 模型指标的对齐",
+    ],
+    duration: 45,
+    cues: [
+      "A/B = 对照实验，证明因果",
+      "样本量由 MDE / 显著性 / Power 决定",
+      "MAE 降了但库存成本没降？业务指标对齐问题",
+    ],
+    content: `<pre><code>from statsmodels.stats.power import tt_solve_power
+n = tt_solve_power(effect_size=0.1, alpha=0.05, power=0.8)
+print(f'每组需要 {int(n)} 样本')
+
+# 业务指标对照
+# 模型指标：MAE / MAPE
+# 业务指标：缺货率 / 库存周转 / 总成本
+# 必须证明：模型指标改善 → 业务指标改善</code></pre>`,
+  },
+  {
+    id: "deep-59", day: 59, week: 9, track: "deep",
+    title: "Week 9 复习 + Agent 案例",
+    description: "用 Agent 自动化一个真实任务",
+    objectives: [
+      "完成一个 Agent 自动化案例",
+      "整合 LangGraph + RD-Agent",
+      "知道 Agent 的边界",
+    ],
+    duration: 60,
+    cues: [
+      "案例：Agent 自动跑销量预测 + 出报告",
+      "Agent 能做：拉数据 / 跑模型 / 写报告",
+      "Agent 不能做：定义业务问题 / 判断结论合理性",
+    ],
+    content: `<h3>Agent 自动化案例</h3>
+<ol>
+<li><strong>输入：</strong>用户问『下周 SKU123 的销量预测』</li>
+<li><strong>Agent 1（数据）：</strong>拉历史销量 + 库存</li>
+<li><strong>Agent 2（特征）：</strong>构造 lag/rolling</li>
+<li><strong>Agent 3（模型）：</strong>调 LightGBM 预测</li>
+<li><strong>Agent 4（报告）：</strong>生成 Markdown 报告</li>
+<li><strong>Agent 5（审核）：</strong>人工 review 异常</li>
+</ol>
+<div class="ex-box"><h4>✏️ AI 辅助</h4>
+<p>让 AI 帮你设计 Agent 工作流：<em>"我要自动化销量预测到报告的全流程，帮我设计 5 个 Agent 的协作图。"</em></p></div>`,
+  },
+
+  // ===== Week 10 · Day 60-65 · P6 毕业项目 =====
+  {
+    id: "deep-60", day: 60, week: 10, track: "deep",
+    title: "P6 毕业项目启动：Agent 化决策系统",
+    description: "整合 P4+P5+P6 的所有能力",
+    objectives: [
+      "设计 Agent 化系统架构",
+      "整合 LangGraph + LightGBM + Robyn",
+      "制定 6 天开发计划",
+    ],
+    duration: 60,
+    cues: [
+      "系统：用户提问 → Agent 协作 → 出报告",
+      "整合 P4 因果 + P5 库存 + P6 Agent",
+      "产出：可交互的 Demo",
+    ],
+    content: `<h3>P6 毕业项目目标</h3>
+<ol>
+<li><strong>用户接口：</strong>自然语言提问（『SKU123 该补多少货？』）</li>
+<li><strong>数据 Agent：</strong>自动拉数据 + 清洗</li>
+<li><strong>预测 Agent：</strong>调 LightGBM + 概率预测</li>
+<li><strong>决策 Agent：</strong>(s, S) 策略 + 库存建议</li>
+<li><strong>归因 Agent：</strong>DID/SHAP 量化营销 ROI</li>
+<li><strong>报告 Agent：</strong>自动生成 Markdown + Dashboard</li>
 </ol>`,
   },
   {
-    "id": "deep-90", "day": 90, "week": 14, "track": "deep",
-    "title": "毕业项目 Day 8：测试 + 文档",
-    "description": "代码质量和可维护性",
-    "objectives": [
+    id: "deep-61", day: 61, week: 10, track: "deep",
+    title: "毕业项目 Day 2-3：核心模块开发",
+    description: "实现 5 个 Agent",
+    objectives: [
+      "实现数据/预测/决策 Agent",
+      "用 LangGraph 串联",
+      "测试端到端流程",
+    ],
+    duration: 90,
+    cues: [
+      "每个 Agent 一个函数",
+      "LangGraph 串联状态流转",
+      "测试：给一个问题，跑通全链",
+    ],
+    content: `<pre><code>from langgraph.graph import StateGraph, END
+
+class State(TypedDict):
+    question: str
+    data: dict
+    prediction: dict
+    decision: dict
+    report: str
+
+workflow = StateGraph(State)
+workflow.add_node('data_agent', data_agent)
+workflow.add_node('predict_agent', predict_agent)
+workflow.add_node('decision_agent', decision_agent)
+workflow.add_node('report_agent', report_agent)
+workflow.add_edge('data_agent', 'predict_agent')
+workflow.add_edge('predict_agent', 'decision_agent')
+workflow.add_edge('decision_agent', 'report_agent')
+workflow.add_edge('report_agent', END)
+app = workflow.compile()</code></pre>`,
+  },
+  {
+    id: "deep-62", day: 62, week: 10, track: "deep",
+    title: "毕业项目 Day 4-5：UI + 部署",
+    description: "Streamlit + Docker 部署",
+    objectives: [
+      "Streamlit 交互界面",
+      "Docker 打包",
+      "部署到 HuggingFace Space",
+    ],
+    duration: 90,
+    cues: [
+      "UI：输入框 + 按钮 + 结果展示",
+      "Docker 一键启动",
+      "HuggingFace Space 免费托管",
+    ],
+    content: `<pre><code>import streamlit as st
+st.title('🤖 Agent 化决策系统')
+question = st.text_input('你的问题', 'SKU123 下周该补多少货？')
+if st.button('运行'):
+    result = app.invoke({'question': question})
+    st.write(result['report'])</code></pre>`,
+  },
+  {
+    id: "deep-63", day: 63, week: 10, track: "deep",
+    title: "毕业项目 Day 6：测试 + 文档",
+    description: "代码质量",
+    objectives: [
       "写单元测试",
-      "完成 README 和使用文档",
+      "完成 README",
       "代码重构",
     ],
-    "duration": 60,
-    "cues": [
-      "pytest 测试关键函数",
+    duration: 60,
+    cues: [
+      "pytest 测试每个 Agent",
       "README 含架构图",
       "类型注解 + docstring",
     ],
-    "content": `<h3>今日任务清单</h3>
-<ol>
-<li>写 pytest 测试（特征工程/模型/决策）</li>
-<li>更新 README：安装/使用/架构</li>
-<li>加类型注解 + docstring</li>
-<li>GitHub Actions 跑 CI</li>
-</ol>`,
-  },
-  {
-    "id": "deep-91", "day": 91, "week": 14, "track": "deep",
-    "title": "毕业项目 Day 9：报告写作",
-    "description": "写一份能放进简历的报告",
-    "objectives": [
-      "写技术报告",
-      "写业务报告（给老板看）",
-      "整理作品集",
-    ],
-    "duration": 60,
-    "cues": [
-      "技术报告：方法 + 代码 + 结果",
-      "业务报告：问题 + 方案 + ROI",
-      "作品集：GitHub + Demo + PPT",
-    ],
-    "content": `<h3>两份报告模板</h3>
-<p><strong>技术报告（10 页）</strong>：数据/方法/实验/结果/讨论</p>
-<p><strong>业务报告（3 页）</strong>：业务问题/方案概述/预期 ROI/实施路径</p>
-<h3>作品集要素</h3>
+    content: `<h3>测试清单</h3>
 <ul>
-<li>GitHub repo（含 README + 测试）</li>
-<li>在线 Demo（HuggingFace Space / Streamlit Cloud）</li>
-<li>3 分钟介绍视频</li>
+<li>test_data_agent：数据加载正确</li>
+<li>test_predict_agent：预测不 NaN</li>
+<li>test_decision_agent：库存 &gt; 0</li>
+<li>test_e2e：端到端不报错</li>
 </ul>`,
   },
   {
-    "id": "deep-92", "day": 92, "week": 15, "track": "deep",
-    "title": "毕业项目 Day 10：答辩准备",
-    "description": "准备 15 分钟答辩 PPT",
-    "objectives": [
+    id: "deep-64", day: 64, week: 10, track: "deep",
+    title: "毕业项目 Day 7：答辩准备",
+    description: "准备 15 分钟答辩",
+    objectives: [
       "设计答辩结构",
-      "练习 15 分钟讲解",
+      "练习讲解",
       "准备 Q&A",
     ],
-    "duration": 60,
-    "cues": [
+    duration: 60,
+    cues: [
       "15 分钟：问题(2) + 方法(5) + 结果(5) + 业务(3)",
       "重点：业务价值 + 技术亮点",
-      "Q&A 预演：常见刁难问题",
+      "Q&A 预演",
     ],
-    "content": `<h3>答辩 PPT 结构（15 张）</h3>
+    content: `<h3>答辩 PPT 结构（15 张）</h3>
 <ol>
-<li>封面 + 自我介绍</li>
-<li>业务问题（为什么做）</li>
+<li>封面</li>
+<li>业务问题</li>
 <li>数据描述</li>
-<li>方法概述</li>
-<li>特征工程亮点</li>
-<li>模型对比</li>
+<li>方法概述（P4 因果 + P5 库存 + P6 Agent）</li>
+<li>P4：因果归因亮点</li>
+<li>P5：库存优化结果</li>
+<li>P6：Agent 架构图</li>
 <li>关键结果</li>
-<li>库存决策效果</li>
-<li>营销归因发现</li>
 <li>业务 ROI 估算</li>
-<li>工程化架构</li>
-<li>未来改进方向</li>
-<li>代码 Demo 截图</li>
-<li>致谢</li>
+<li>未来改进</li>
+<li>Demo 截图</li>
 <li>Q&amp;A</li>
 </ol>`,
   },
   {
-    "id": "deep-93", "day": 93, "week": 15, "track": "deep",
-    "title": "毕业项目 Day 11：模拟答辩 + 迭代",
-    "description": "AI 扮演面试官",
-    "objectives": [
-      "模拟答辩",
-      "根据反馈迭代",
-      "完善作品集",
+    id: "deep-65", day: 65, week: 10, track: "deep",
+    title: "P6 毕业总结 + 100 天中程复盘",
+    description: "回顾 P6 + 100 天中程",
+    objectives: [
+      "回顾 P6 学到的能力",
+      "复盘前 65 天成果",
+      "预告后 35 天（因子 + 电力大宗）",
     ],
-    "duration": 60,
-    "cues": [
-      "让 AI 扮演资深数据科学家提问",
-      "记录回答不好的问题",
-      "迭代 PPT 和 Demo",
+    duration: 60,
+    cues: [
+      "P6：从单兵到 Agent 指挥官",
+      "65 天已完成 2 个作品（P4 因果 + P5 库存）",
+      "后 35 天：深化因子 + 扩展电力大宗",
     ],
-    "content": `<div class="ex-box"><h4>✏️ AI 模拟答辩 Prompt</h4>
-<p><em>"你是一名资深数据科学家，请像面试官一样针对我的毕业项目提问。重点问：方法选择是否合理？结果是否可信？业务建议是否落地？每次问 1 个，等我回答后再深入追问。"</em></p></div>`,
+    content: `<h3>65 天能力地图</h3>
+<table>
+<tr><th>领域</th><th>熟练度</th></tr>
+<tr><td>因果归因（P4）</td><td>✅ 专家</td></tr>
+<tr><td>库存补货（P5）</td><td>✅ 专家</td></tr>
+<tr><td>Agent 化（P6）</td><td>✅ 熟练</td></tr>
+<tr><td>工程化</td><td>✅ 熟练</td></tr>
+</table>
+<h3>后 35 天预告</h3>
+<ul>
+<li>Day 66-80：因子挖掘深化（IC / ICIR / RD-Agent）</li>
+<li>Day 81-100：电力市场 + 大宗商品量化（扩展视野）</li>
+</ul>`,
+  },
+
+  // ───────────────────────────────────────────────────────────
+  // 因子挖掘深化（Day 66-80，15 天）
+  // ───────────────────────────────────────────────────────────
+
+  // ===== Week 11 · Day 66-72 · 因子体系基础 =====
+  {
+    id: "deep-66", day: 66, week: 11, track: "deep",
+    title: "因子挖掘启动 · 什么是因子",
+    description: "金融级因子思维",
+    objectives: [
+      "理解因子的三个条件（预测力 + 数值化 + 持续观察）",
+      "区分金融因子和供应链因子",
+      "知道因子体系和特征工程的差异",
+    ],
+    duration: 45,
+    cues: [
+      "因子 ≠ 特征：因子强调可解释 + 持续有效",
+      "金融因子：动量 / 价值 / 质量 / 波动率",
+      "供应链因子：促销深度 / 价格弹性 / 库存周转",
+    ],
+    content: `<h3>因子的三个条件</h3>
+<ol>
+<li><strong>有预测力：</strong>和目标相关</li>
+<li><strong>能数值化：</strong>喂给模型</li>
+<li><strong>能持续观察：</strong>未来也能获取</li>
+</ol>
+<h3>金融因子经典四类</h3>
+<table>
+<tr><th>类别</th><th>例子</th></tr>
+<tr><td>动量</td><td>过去 12 月收益率</td></tr>
+<tr><td>价值</td><td>PE / PB / 股息率</td></tr>
+<tr><td>质量</td><td>ROE / 资产周转</td></tr>
+<tr><td>波动率</td><td>过去 60 日波动 / Beta</td></tr>
+</table>`,
   },
   {
-    "id": "deep-94", "day": 94, "week": 15, "track": "deep",
-    "title": "毕业项目 Day 12：最终打磨",
-    "description": "把所有细节打磨到位",
-    "objectives": [
+    id: "deep-67", day: 67, week: 11, track: "deep",
+    title: "IC（信息系数）+ ICIR",
+    description: "因子的预测力评估",
+    objectives: [
+      "理解 IC 的计算",
+      "掌握 ICIR（信息比率）",
+      "知道有效因子的阈值",
+    ],
+    duration: 45,
+    cues: [
+      "IC = corr(因子值, 未来收益)",
+      "|IC| > 0.03 在金融算有效（噪声大）",
+      "ICIR = mean(IC) / std(IC)，衡量稳定性",
+    ],
+    content: `<pre><code>def calculate_ic(factor, forward_return):
+    """计算 IC（Spearman 秩相关更稳健）"""
+    from scipy.stats import spearmanr
+    ic, _ = spearmanr(factor, forward_return)
+    return ic
+
+def calculate_icir(ic_series):
+    """IC 序列的 IR"""
+    return ic_series.mean() / ic_series.std()</code></pre>
+<h3>有效因子阈值</h3>
+<ul>
+<li><strong>金融：</strong>|IC| &gt; 0.03，ICIR &gt; 0.3</li>
+<li><strong>供应链：</strong>|IC| &gt; 0.1（噪声小，要求高）</li>
+<li><strong>衰减：</strong>IC 随时间衰减，需要监控</li>
+</ul>`,
+  },
+  {
+    id: "deep-68", day: 68, week: 11, track: "deep",
+    title: "因子换手 + 衰减分析",
+    description: "因子的生命周期",
+    objectives: [
+      "理解因子换手率",
+      "掌握 IC 衰减曲线",
+      "知道因子半衰期",
+    ],
+    duration: 45,
+    cues: [
+      "换手 = 因子值变化的频率",
+      "高换手 → 高交易成本",
+      "衰减：因子预测力随时间下降",
+    ],
+    content: `<pre><code># IC 衰减曲线
+for horizon in [1, 5, 10, 20, 60]:
+    forward_ret = df['收益'].shift(-horizon)
+    ic = calculate_ic(df['因子'], forward_ret)
+    print(f'{horizon}天 IC: {ic:.4f}')
+
+# 换手率
+turnover = df['因子'].diff().abs().mean() / df['因子'].std()</code></pre>
+<h3>因子生命周期</h3>
+<ol>
+<li>发现期：IC 高但不稳定</li>
+<li>验证期：IC 稳定，ICIR 提升</li>
+<li>衰减期：市场学习，IC 下降</li>
+<li>失效期：IC 接近 0</li>
+</ol>`,
+  },
+  {
+    id: "deep-69", day: 69, week: 11, track: "deep",
+    title: "因子相关性矩阵 + 合成",
+    description: "因子之间的去冗余",
+    objectives: [
+      "理解因子相关性",
+      "掌握因子合成（PCA / 等权 / IC 加权）",
+      "知道去冗余的原则",
+    ],
+    duration: 45,
+    cues: [
+      "高相关因子 = 信息冗余",
+      "合成：PCA / 等权 / IC 加权",
+      "保留信息正交的因子",
+    ],
+    content: `<pre><code># 因子相关性
+import seaborn as sns
+corr = df[factor_list].corr()
+sns.heatmap(corr, annot=True)
+
+# PCA 合成
+from sklearn.decomposition import PCA
+pca = PCA(n_components=1)
+composite = pca.fit_transform(df[factor_list])
+
+# IC 加权
+weights = ic_series / ic_series.sum()
+composite = (df[factor_list] * weights).sum(axis=1)</code></pre>`,
+  },
+  {
+    id: "deep-70", day: 70, week: 11, track: "deep",
+    title: "供应链因子的设计",
+    description: "把因子思维迁移到供应链",
+    objectives: [
+      "设计供应链专属因子",
+      "知道和金融因子的差异",
+      "建立供应链因子库",
+    ],
+    duration: 45,
+    cues: [
+      "供应链因子：促销深度 / 库存周转 / 价格弹性",
+      "目标：销量 / 缺货 / 滞销",
+      "和金融因子的差异：频率低 / 噪声小 / 业务可解释",
+    ],
+    content: `<h3>供应链因子库（举例）</h3>
+<table>
+<tr><th>类别</th><th>因子</th><th>计算</th></tr>
+<tr><td>价格</td><td>折扣深度</td><td>1 - 实际价/原价</td></tr>
+<tr><td>价格</td><td>相对竞品价</td><td>自己价/品类均价</td></tr>
+<tr><td>库存</td><td>库存周转</td><td>销量/平均库存</td></tr>
+<tr><td>库存</td><td>缺货天数</td><td>过去 30 天缺货天数</td></tr>
+<tr><td>促销</td><td>促销强度</td><td>促销天数占比</td></tr>
+<tr><td>季节</td><td>季节指数</td><td>本月销量/年均</td></tr>
+<tr><td>历史</td><td>动量</td><td>过去 7 天涨幅</td></tr>
+<tr><td>历史</td><td>波动率</td><td>过去 30 天 std</td></tr>
+</table>`,
+  },
+  {
+    id: "deep-71", day: 71, week: 11, track: "deep",
+    title: "因子回测框架",
+    description: "系统化测试因子",
+    objectives: [
+      "理解因子回测流程",
+      "会跑分层回测",
+      "知道回测的陷阱",
+    ],
+    duration: 45,
+    cues: [
+      "分层回测：按因子值分 5 档，看收益差异",
+      "多空组合：做多 Top 减做空 Bottom",
+      "陷阱：前视偏差 / 幸存者偏差 / 过拟合",
+    ],
+    content: `<pre><code>def factor_backtest(df, factor, return_col, n_groups=5):
+    """分层回测"""
+    df['group'] = pd.qcut(df[factor], n_groups, labels=False)
+    group_returns = df.groupby('group')[return_col].mean()
+    long_short = group_returns.iloc[-1] - group_returns.iloc[0]
+    return group_returns, long_short</code></pre>
+<h3>三大陷阱</h3>
+<ol>
+<li><strong>前视偏差：</strong>用了未来数据</li>
+<li><strong>幸存者偏差：</strong>只看现存标的，忽略退市/下架</li>
+<li><strong>过拟合：</strong>在历史上调参到完美</li>
+</ol>`,
+  },
+  {
+    id: "deep-72", day: 72, week: 11, track: "deep",
+    title: "Week 11 复习 + 因子库建设",
+    description: "建立自己的因子库",
+    objectives: [
+      "完成一个 50+ 因子的库",
+      "每个因子含 IC / 换手 / 衰减",
+      "归档 GitHub",
+    ],
+    duration: 60,
+    cues: [
+      "因子库 = 数据 + 计算 + 评估",
+      "可视化：IC 时间序列 / 分层收益",
+      "持续迭代",
+    ],
+    content: `<h3>因子库结构</h3>
+<pre><code>factor_library/
+├── factors/
+│   ├── price_factors.py
+│   ├── inventory_factors.py
+│   ├── promotion_factors.py
+│   └── momentum_factors.py
+├── evaluation/
+│   ├── ic_calculator.py
+│   ├── decay_analyzer.py
+│   └── backtest.py
+├── data/
+│   └── raw_data.parquet
+└── README.md</code></pre>`,
+  },
+
+  // ===== Week 12 · Day 73-80 · RD-Agent + 高级因子 =====
+  {
+    id: "deep-73", day: 73, week: 12, track: "deep",
+    title: "RD-Agent 深入：自动挖因子闭环",
+    description: "让 AI 自动生成和测试因子",
+    objectives: [
+      "深入理解 RD-Agent 架构",
+      "会跑 RD-Agent 自动挖因子",
+      "知道和手动挖因子的差异",
+    ],
+    duration: 60,
+    cues: [
+      "RD-Agent = LLM + 代码生成 + 回测",
+      "自动：假设 → 编码 → 测试 → 迭代",
+      "效率比人工高 10-100 倍",
+    ],
+    content: `<h3>RD-Agent 闭环</h3>
+<ol>
+<li><strong>提出假设：</strong>LLM 基于领域知识生成因子想法</li>
+<li><strong>编码：</strong>自动生成 Python 实现</li>
+<li><strong>回测：</strong>自动跑历史回测</li>
+<li><strong>评估：</strong>计算 IC / ICIR / 换手</li>
+<li><strong>迭代：</strong>基于结果让 LLM 改进</li>
+</ol>
+<pre><code># 简化 RD-Agent
+class RDAgent:
+    def __init__(self, llm, data):
+        self.llm = llm
+        self.data = data
+    def propose(self):
+        return self.llm.invoke('提出一个销量预测因子')
+    def code(self, idea):
+        return self.llm.invoke(f'用 Python 实现: {idea}')
+    def test(self, code):
+        exec(code)
+        return calculate_ic(...)
+    def iterate(self, n=100):
+        for _ in range(n):
+            idea = self.propose()
+            code = self.code(idea)
+            ic = self.test(code)
+            if ic &gt; 0.1:
+                save_factor(code)</code></pre>`,
+  },
+  {
+    id: "deep-74", day: 74, week: 12, track: "deep",
+    title: "因子正交化 + Alpha 剥离",
+    description: "因子之间的去相关",
+    objectives: [
+      "理解因子正交化",
+      "掌握残差化（residualization）",
+      "知道 Alpha 剥离",
+    ],
+    duration: 45,
+    cues: [
+      "正交化：让因子之间不相关",
+      "残差化：从一个因子中剔除其他因子的成分",
+      "Alpha = 收益中无法被已知因子解释的部分",
+    ],
+    content: `<pre><code># 残差化
+from sklearn.linear_model import LinearRegression
+# 把 factor_B 对 factor_A 回归，取残差
+model = LinearRegression().fit(df[['factor_A']], df['factor_B'])
+df['factor_B_pure'] = df['factor_B'] - model.predict(df[['factor_A']])
+
+# Gram-Schmidt 正交化
+def orthogonalize(factors_df):
+    result = factors_df.copy()
+    for i in range(1, len(factors_df.columns)):
+        for j in range(i):
+            result.iloc[:, i] -= np.dot(result.iloc[:, i], result.iloc[:, j]) / \
+                                  np.dot(result.iloc[:, j], result.iloc[:, j]) * result.iloc[:, j]
+    return result</code></pre>`,
+  },
+  {
+    id: "deep-75", day: 75, week: 12, track: "deep",
+    title: "因子组合 + 风险控制",
+    description: "多因子组合优化",
+    objectives: [
+      "理解因子组合",
+      "掌握均值-方差优化",
+      "知道风险预算",
+    ],
+    duration: 45,
+    cues: [
+      "组合 = 多因子加权",
+      "均值-方差：最大化收益/风险",
+      "风险预算：按风险贡献分配",
+    ],
+    content: `<pre><code># 均值-方差优化
+from scipy.optimize import minimize
+def portfolio_variance(weights, cov_matrix):
+    return weights @ cov_matrix @ weights
+
+def optimize_portfolio(expected_returns, cov_matrix, target_return):
+    n = len(expected_returns)
+    constraints = [
+        {'type': 'eq', 'fun': lambda w: np.sum(w) - 1},
+        {'type': 'eq', 'fun': lambda w: w @ expected_returns - target_return}
+    ]
+    bounds = [(0, 0.3)] * n  # 单标的上限 30%
+    result = minimize(portfolio_variance, np.ones(n)/n,
+                      args=(cov_matrix,), constraints=constraints, bounds=bounds)
+    return result.x</code></pre>`,
+  },
+  {
+    id: "deep-76", day: 76, week: 12, track: "deep",
+    title: "变点检测 + 因子失效预警",
+    description: "因子何时失效",
+    objectives: [
+      "理解因子失效信号",
+      "掌握变点检测",
+      "建立失效预警",
+    ],
+    duration: 45,
+    cues: [
+      "IC 持续下降 → 失效",
+      "变点：IC 序列的结构性变化",
+      "PELT / BOCPD 算法",
+    ],
+    content: `<pre><code>import ruptures as rpt
+# 检测 IC 序列的变点
+algo = rpt.Pelt(model='rbf').fit(ic_series.values)
+bkps = algo.predict(pen=10)
+
+# 失效预警
+def failure_warning(ic_series, window=60, threshold=0.02):
+    recent_ic = ic_series[-window:].mean()
+    historical_ic = ic_series[:-window].mean()
+    if recent_ic &lt; threshold * historical_ic:
+        return '⚠️ 因子可能失效'</code></pre>`,
+  },
+  {
+    id: "deep-77", day: 77, week: 12, track: "deep",
+    title: "高级因子：非线性和交互",
+    description: "用 ML 挖非线性因子",
+    objectives: [
+      "理解非线性因子",
+      "掌握交互因子",
+      "知道用树模型提取特征重要性",
+    ],
+    duration: 45,
+    cues: [
+      "非线性：原始因子的变换（平方/对数/分位）",
+      "交互：两因子的乘积/比值",
+      "树模型自动学交互",
+    ],
+    content: `<pre><code># 非线性变换
+df['factor_log'] = np.log1p(df['factor'].clip(lower=0))
+df['factor_rank'] = df['factor'].rank(pct=True)
+
+# 交互因子
+df['price_x_promo'] = df['price'] * df['promotion']
+df['momentum_div_vol'] = df['momentum'] / (df['volatility'] + 1e-8)
+
+# 用 LightGBM 自动学交互
+import lightgbm as lgb
+model = lgb.LGBMRegressor().fit(X, y)
+importance = model.feature_importances_</code></pre>`,
+  },
+  {
+    id: "deep-78", day: 78, week: 12, track: "deep",
+    title: "因子归因报告",
+    description: "解释模型的预测来源",
+    objectives: [
+      "理解因子归因",
+      "结合 SHAP 做归因",
+      "产出业务报告",
+    ],
+    duration: 45,
+    cues: [
+      "归因 = 解释预测来源",
+      "SHAP：每个特征的贡献",
+      "业务报告：哪些因子驱动了这次预测",
+    ],
+    content: `<pre><code>import shap
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X_test)
+
+# 单次预测归因
+def explain_prediction(idx):
+    base = explainer.expected_value
+    contributions = pd.Series(shap_values[idx], index=X_test.columns)
+    top_factors = contributions.abs().sort_values(ascending=False).head(5)
+    return f"预测来源：{top_factors.to_dict()}"
+
+# 全局归因
+shap.summary_plot(shap_values, X_test)</code></pre>`,
+  },
+  {
+    id: "deep-79", day: 79, week: 12, track: "deep",
+    title: "因子管理 + 版本控制",
+    description: "工程化的因子库",
+    objectives: [
+      "理解因子工程化",
+      "掌握因子版本控制",
+      "建立因子注册中心",
+    ],
+    duration: 45,
+    cues: [
+      "因子像代码：版本 + 测试 + 文档",
+      "注册中心：因子元数据",
+      "A/B 测试：新因子 vs 旧因子",
+    ],
+    content: `<h3>因子注册中心</h3>
+<pre><code># factor_registry.yaml
+factors:
+  - id: momentum_7d
+    version: 1.2.0
+    description: 过去 7 天动量
+    formula: "close.pct_change(7)"
+    ic_30d: 0.08
+    status: production
+  - id: price_elasticity
+    version: 0.3.0
+    description: 价格弹性
+    formula: "demand_change / price_change"
+    ic_30d: 0.12
+    status: experiment</code></pre>`,
+  },
+  {
+    id: "deep-80", day: 80, week: 12, track: "deep",
+    title: "因子阶段总结 + 作品整理",
+    description: "回顾 15 天因子挖掘",
+    objectives: [
+      "形成因子工程能力地图",
+      "整理因子库作品",
+      "预告电力大宗",
+    ],
+    duration: 60,
+    cues: [
+      "因子思维可迁移到任何预测问题",
+      "RD-Agent 是 2026 的核心竞争力",
+      "电力大宗：扩展视野",
+    ],
+    content: `<h3>因子阶段完成标志</h3>
+<ul>
+<li>✅ 掌握 IC / ICIR / 换手 / 衰减</li>
+<li>✅ 会设计供应链因子</li>
+<li>✅ 会跑分层回测</li>
+<li>✅ 会用 RD-Agent 自动挖因子</li>
+<li>✅ 会用 SHAP 做因子归因</li>
+<li>✅ 有一个 50+ 因子的因子库</li>
+</ul>
+<h3>电力大宗预告</h3>
+<p>把因子思维迁移到电力和大宗商品——不同行业的因子不同，但方法论相通。</p>`,
+  },
+
+  // ───────────────────────────────────────────────────────────
+  // 电力 + 大宗商品业务（Day 81-100，20 天，扩展视野）
+  // ───────────────────────────────────────────────────────────
+
+  // ===== Week 13 · Day 81-87 · 电力市场 =====
+  {
+    id: "deep-81", day: 81, week: 13, track: "deep",
+    title: "电力市场结构入门",
+    description: "日前 / 实时 / 辅助服务",
+    objectives: [
+      "理解电力市场的四个子市场",
+      "知道电价形成的机制",
+      "了解电力预测的特殊性",
+    ],
+    duration: 45,
+    cues: [
+      "日前市场：提前一天报价",
+      "实时市场：当天平衡",
+      "辅助服务：调频/备用",
+      "容量市场：长期容量补偿",
+    ],
+    content: `<h3>电力市场四子市场</h3>
+<table>
+<tr><th>市场</th><th>时间尺度</th><th>交易内容</th></tr>
+<tr><td>日前</td><td>D-1</td><td>主能量</td></tr>
+<tr><td>实时</td><td>5-15 分钟</td><td>偏差平衡</td></tr>
+<tr><td>辅助服务</td><td>秒-分钟</td><td>调频/备用</td></tr>
+<tr><td>容量</td><td>年度</td><td>容量补偿</td></tr>
+</table>
+<h3>电价预测的特殊性</h3>
+<ul>
+<li>强季节性（日/周/年）</li>
+<li>尖峰（极端天气时价格暴涨）</li>
+<li>负电价（可再生能源过剩时）</li>
+<li>跳跃（机组故障）</li>
+</ul>`,
+  },
+  {
+    id: "deep-82", day: 82, week: 13, track: "deep",
+    title: "电价预测：TFT + PatchTST",
+    description: "2026 SOTA 时序模型",
+    objectives: [
+      "理解 TFT（Temporal Fusion Transformer）",
+      "掌握 PatchTST",
+      "知道和传统方法的差异",
+    ],
+    duration: 60,
+    cues: [
+      "TFT：Google 可解释 DL 时序",
+      "PatchTST：把序列切 patch",
+      "Chronos：零样本预测",
+    ],
+    content: `<pre><code># PyTorch Forecasting 的 TFT
+from pytorch_forecasting import TemporalFusionTransformer
+tft = TemporalFusionTransformer.from_dataset(training_dataset)
+trainer = pl.Trainer(max_epochs=50)
+trainer.fit(tft, train_dataloader, val_dataloader)
+
+# PatchTST
+from patchtst import PatchTST
+model = PatchTST(
+    patch_len=16,
+    stride=8,
+    d_model=128,
+    n_heads=4,
+    n_layers=3,
+)</code></pre>
+<h3>TFT 的优势</h3>
+<ul>
+<li>可解释：变量重要性 + 时点注意力</li>
+<li>多变量 + 多步预测</li>
+<li>处理已知未来变量（如节假日）</li>
+</ul>`,
+  },
+  {
+    id: "deep-83", day: 83, week: 13, track: "deep",
+    title: "电力调度优化：Gurobi + Pyomo",
+    description: "数学规划求解器",
+    objectives: [
+      "理解调度优化的数学模型",
+      "会写 Pyomo 模型",
+      "知道 LP / MIP 的差异",
+    ],
+    duration: 60,
+    cues: [
+      "调度 = 在约束下最小化成本",
+      "约束：发电平衡 / 容量 / 爬坡",
+      "Gurobi：商业求解器（学术免费）",
+    ],
+    content: `<pre><code>import pyomo.environ as pyo
+model = pyo.ConcreteModel()
+model.gen = pyo.Set(initialize=['G1', 'G2', 'G3'])
+model.t = pyo.RangeSet(1, 24)
+model.P = pyo.Var(model.gen, model.t, domain=pyo.NonNegativeReals)
+
+# 目标：最小化总发电成本
+model.obj = pyo.Objective(
+    expr=sum(cost[g] * model.P[g, t] for g in model.gen for t in model.t),
+    sense=pyo.minimize
+)
+
+# 约束 1：每个时段满足负荷
+def load_balance(model, t):
+    return sum(model.P[g, t] for g in model.gen) >= load[t]
+model.load_con = pyo.Constraint(model.t, rule=load_balance)
+
+# 约束 2：发电机容量
+def capacity(model, g, t):
+    return model.P[g, t] &lt;= cap_max[g]
+model.cap_con = pyo.Constraint(model.gen, model.t, rule=capacity)
+
+solver = pyo.SolverFactory('gurobi')
+solver.solve(model)</code></pre>`,
+  },
+  {
+    id: "deep-84", day: 84, week: 13, track: "deep",
+    title: "电力双层规划 + 预测优化级联",
+    description: "预测 + 优化的级联",
+    objectives: [
+      "理解双层规划",
+      "知道预测和优化的级联",
+      "了解 stochastic optimization",
+    ],
+    duration: 45,
+    cues: [
+      "上层：决策变量（如调度）",
+      "下层：市场响应（如价格）",
+      "级联：先用 TFT 预测价格，再优化调度",
+    ],
+    content: `<h3>预测优化级联</h3>
+<ol>
+<li><strong>预测：</strong>TFT 预测未来 24 小时电价</li>
+<li><strong>优化：</strong>用预测价格优化储能调度（低价充电、高价放电）</li>
+<li><strong>反馈：</strong>实际执行结果反馈给预测模型</li>
+</ol>
+<pre><code># 储能调度优化
+def optimize_storage(price_forecast, capacity=100, efficiency=0.9):
+    """低价充电、高价放电"""
+    model = pyo.ConcreteModel()
+    model.t = pyo.RangeSet(0, len(price_forecast)-1)
+    model.charge = pyo.Var(model.t, domain=pyo.NonNegativeReals)
+    model.discharge = pyo.Var(model.t, domain=pyo.NonNegativeReals)
+    model.soc = pyo.Var(model.t, domain=pyo.NonNegativeReals, bounds=(0, capacity))
+
+    # 目标：最大化套利收益
+    model.obj = pyo.Objective(
+        expr=sum(price_forecast[t] * (model.discharge[t] - model.charge[t])
+                 for t in model.t),
+        sense=pyo.maximize
+    )
+    # SOC 平衡
+    def soc_balance(model, t):
+        if t == 0:
+            return model.soc[t] == 0
+        return model.soc[t] == model.soc[t-1] + \
+               efficiency * model.charge[t] - model.discharge[t] / efficiency
+    model.soc_con = pyo.Constraint(model.t, rule=soc_balance)
+    return model</code></pre>`,
+  },
+  {
+    id: "deep-85", day: 85, week: 13, track: "deep",
+    title: "可再生能源预测",
+    description: "风电 / 光伏出力预测",
+    objectives: [
+      "理解新能源出力的特点",
+      "知道数值天气预报（NWP）",
+      "了解预测误差对市场的影响",
+    ],
+    duration: 45,
+    cues: [
+      "新能源出力强依赖天气",
+      "NWP = Numerical Weather Prediction",
+      "预测误差 → 不平衡成本",
+    ],
+    content: `<h3>新能源预测流程</h3>
+<ol>
+<li><strong>NWP：</strong>ECMWF / GFS 提供未来 7 天气象</li>
+<li><strong>统计模型：</strong>用历史 NWP + 实际出力训练</li>
+<li><strong>输出：</strong>未来 0-72 小时的发电预测</li>
+</ol>
+<pre><code># 用 LightGBM 预测光伏出力
+features = ['温度', '辐照度', '云量', '湿度', '风速']
+model = lgb.LGBMRegressor().fit(X_train[features], y_train)
+forecast = model.predict(X_test[features])</code></pre>
+<h3>预测误差的市场影响</h3>
+<p>不平衡电量 = 实际 - 计划。偏差大 → 不平衡成本高。所以新能源场站要做概率预测，量化不确定性。</p>`,
+  },
+  {
+    id: "deep-86", day: 86, week: 13, track: "deep",
+    title: "电力需求响应 + 虚拟电厂",
+    description: "需求侧管理",
+    objectives: [
+      "理解需求响应（DR）",
+      "知道虚拟电厂（VPP）",
+      "了解聚合商模式",
+    ],
+    duration: 45,
+    cues: [
+      "DR：用户响应价格信号调整负荷",
+      "VPP：聚合分布式资源",
+      "聚合商：把小用户打包成大玩家",
+    ],
+    content: `<h3>需求响应类型</h3>
+<ul>
+<li><strong>价格型：</strong>分时电价 / 实时电价</li>
+<li><strong>激励型：</strong>削峰补偿 / 紧急响应</li>
+<li><strong>调节型：</strong>自动参与调频</li>
+</ul>
+<h3>虚拟电厂（VPP）</h3>
+<p>聚合大量分布式资源（储能 / EV / 可调负荷），统一调度参与市场。</p>
+<pre><code># VPP 聚合优化
+def vpp_dispatch(resources, market_price):
+    """在市场价格下，调度所有资源"""
+    total = 0
+    for r in resources:
+        if market_price &gt; r.marginal_cost:
+            total += r.capacity  # 放电
+        elif market_price &lt; r.charge_cost:
+            total -= r.capacity  # 充电
+    return total</code></pre>`,
+  },
+  {
+    id: "deep-87", day: 87, week: 13, track: "deep",
+    title: "Week 13 复习 + 电力案例",
+    description: "电价预测 + 调度优化案例",
+    objectives: [
+      "完成一个电价预测 + 储能调度案例",
+      "知道和供应链的差异",
+      "形成跨场景迁移能力",
+    ],
+    duration: 60,
+    cues: [
+      "电价：尖峰 + 季节",
+      "供应链：促销 + 节假日",
+      "方法论相同，数据不同",
+    ],
+    content: `<h3>跨场景迁移对照</h3>
+<table>
+<tr><th></th><th>供应链</th><th>电力</th></tr>
+<tr><td>目标</td><td>销量</td><td>电价 / 负荷</td></tr>
+<tr><td>季节</td><td>节假日</td><td>日/周/年</td></tr>
+<tr><td>外生</td><td>促销 / 广告</td><td>天气 / 检修</td></tr>
+<tr><td>决策</td><td>补货</td><td>调度 / 储能</td></tr>
+<tr><td>方法</td><td>LightGBM + 概率</td><td>TFT + 优化</td></tr>
+</table>`,
+  },
+
+  // ===== Week 14 · Day 88-95 · 大宗商品 + 套保 =====
+  {
+    id: "deep-88", day: 88, week: 14, track: "deep",
+    title: "大宗商品市场入门",
+    description: "铜 / 铝 / 原油 / 农产品",
+    objectives: [
+      "理解大宗商品的分类",
+      "知道价格驱动因素",
+      "了解现货 vs 期货",
+    ],
+    duration: 45,
+    cues: [
+      "金属：铜 / 铝 / 锌（工业需求）",
+      "能源：原油 / 天然气 / 煤炭",
+      "农产品：大豆 / 玉米 / 小麦",
+      "现货 vs 期货：期货有套保和投机",
+    ],
+    content: `<h3>大宗商品分类</h3>
+<table>
+<tr><th>类别</th><th>代表</th><th>价格驱动</th></tr>
+<tr><td>金属</td><td>铜 / 铝</td><td>工业需求 / 库存</td></tr>
+<tr><td>能源</td><td>原油 / 天然气</td><td>OPEC / 地缘</td></tr>
+<tr><td>农产品</td><td>大豆 / 玉米</td><td>天气 / 季节</td></tr>
+<tr><td>贵金属</td><td>金 / 银</td><td>避险 / 实际利率</td></tr>
+</table>
+<h3>价格形成</h3>
+<p>现货价格 = 即时交割价格；期货价格 = 未来交割价格。<br>
+基差 = 现货 - 期货，反映供需紧张程度。</p>`,
+  },
+  {
+    id: "deep-89", day: 89, week: 14, track: "deep",
+    title: "商品因子 + 周期分析",
+    description: "大宗商品的因子体系",
+    objectives: [
+      "设计商品因子",
+      "理解库存周期",
+      "知道跨品种关联",
+    ],
+    duration: 45,
+    cues: [
+      "库存因子：LME / SHFE 库存",
+      "期限结构：近月 vs 远月",
+      "跨品种：铜油比 / 金银比",
+    ],
+    content: `<h3>大宗商品因子库</h3>
+<table>
+<tr><th>类别</th><th>因子</th></tr>
+<tr><td>库存</td><td>LME 库存变化 / 可用天数</td></tr>
+<tr><td>期限</td><td>近远月价差 / 基差</td></tr>
+<tr><td>持仓</td><td>基金净多 / 商业空头</td></tr>
+<tr><td>跨品种</td><td>铜油比 / 金银比 / 螺纹-铁矿</td></tr>
+<tr><td>宏观</td><td>美元指数 / 实际利率</td></tr>
+<tr><td>技术</td><td>动量 / 波动率 / 均值回归</td></tr>
+</table>`,
+  },
+  {
+    id: "deep-90", day: 90, week: 14, track: "deep",
+    title: "套保策略设计",
+    description: "用期货对冲现货风险",
+    objectives: [
+      "理解套保原理",
+      "会算最优套保比",
+      "知道基差风险",
+    ],
+    duration: 45,
+    cues: [
+      "套保 = 用期货锁定价格",
+      "最优套保比 = cov(现货, 期货) / var(期货)",
+      "基差风险：现货和期货的价格差波动",
+    ],
+    content: `<pre><code>import numpy as np
+# 最小方差套保比
+spot_returns = np.diff(np.log(spot_prices))
+fut_returns = np.diff(np.log(fut_prices))
+hedge_ratio = np.cov(spot_returns, fut_returns)[0, 1] / np.var(fut_returns)
+
+# 套保效果
+hedged_portfolio = spot_returns - hedge_ratio * fut_returns
+print(f"套保后方差: {np.var(hedged_portfolio):.6f}")
+print(f"原始方差: {np.var(spot_returns):.6f}")
+print(f"方差降低: {1 - np.var(hedged_portfolio)/np.var(spot_returns):.1%}")</code></pre>
+<h3>套保类型</h3>
+<ul>
+<li><strong>多头套保：</strong>未来要买，现在买期货锁价</li>
+<li><strong>空头套保：</strong>持有现货，卖期货防跌</li>
+<li><strong>交叉套保：</strong>用相关品种对冲（如用铝期货对冲铝合金）</li>
+</ul>`,
+  },
+  {
+    id: "deep-91", day: 91, week: 14, track: "deep",
+    title: "Monte Carlo 回测 + 策略稳健性",
+    description: "策略的统计检验",
+    objectives: [
+      "理解 Monte Carlo 在策略检验的应用",
+      "掌握 White's Reality Check",
+      "知道 PBO（Probability of Backtest Overfitting）",
+    ],
+    duration: 45,
+    cues: [
+      "Monte Carlo：重采样评估策略",
+      "PBO：过拟合的概率",
+      "稳健策略：PBO 低",
+    ],
+    content: `<pre><code># Monte Carlo 回测
+def monte_carlo_backtest(strategy, data, n_simulations=10000):
+    returns = []
+    for _ in range(n_simulations):
+        sampled = data.sample(len(data), replace=True)
+        r = strategy(sampled)
+        returns.append(r)
+    return np.percentile(returns, [5, 50, 95])
+
+# PBO（Bailey 2017）
+def pbo(strategy_matrix):
+    """概率回测过拟合"""
+    # 在多组参数中，最优策略在样本外的排名分布
+    n = len(strategy_matrix)
+    ranks = np.array([np.argsort(s) for s in strategy_matrix])
+    pbo_value = (ranks[:, 0] &lt; n/2).mean()  # 简化版
+    return pbo_value</code></pre>`,
+  },
+  {
+    id: "deep-92", day: 92, week: 14, track: "deep",
+    title: "大宗商品 + Agent",
+    description: "用 RD-Agent 自动挖商品因子",
+    objectives: [
+      "把 RD-Agent 迁移到商品市场",
+      "知道商品因子的特殊性",
+      "整合到 Multi-Agent 投研",
+    ],
+    duration: 60,
+    cues: [
+      "商品因子：库存 / 期限 / 持仓",
+      "RD-Agent：自动生成 + 测试",
+      "Multi-Agent：整合到投研流程",
+    ],
+    content: `<pre><code># 商品因子 RD-Agent
+from rd_agent import RDAgent
+agent = RDAgent(
+    data_config='commodity_config.yaml',
+    llm='deepseek-v4-pro',
+    factor_universe=['库存', '期限结构', '持仓', '宏观', '技术'],
+    target='未来 5 日收益',
+)
+factors = agent.run(iterations=100)
+print(f"发现有效因子 {len(factors)} 个")</code></pre>
+<h3>Multi-Agent 商品投研</h3>
+<ul>
+<li>数据 Agent：拉 LME / SHFE / USDA 数据</li>
+<li>因子 Agent：RD-Agent 挖因子</li>
+<li>策略 Agent：组合因子 + 回测</li>
+<li>风控 Agent：止损 / 仓位</li>
+</ul>`,
+  },
+  {
+    id: "deep-93", day: 93, week: 14, track: "deep",
+    title: "风险预算 + 仓位管理",
+    description: "凯利公式 + 风险平价",
+    objectives: [
+      "理解凯利公式",
+      "掌握风险平价",
+      "知道 VaR / CVaR",
+    ],
+    duration: 45,
+    cues: [
+      "凯利：最优仓位 = 期望收益 / 方差",
+      "风险平价：按风险贡献分配资金",
+      "VaR：95% 置信下的最大损失",
+    ],
+    content: `<pre><code># 凯利公式
+def kelly_fraction(win_prob, win_loss_ratio):
+    """凯利仓位"""
+    return win_prob - (1 - win_prob) / win_loss_ratio
+
+# 风险平价
+from scipy.optimize import minimize
+def risk_parity_objective(weights, cov_matrix):
+    margins = weights @ cov_matrix  # 边际风险
+    risk_contrib = weights * margins
+    target = risk_contrib.sum() / len(weights)
+    return np.sum((risk_contrib - target) ** 2)
+
+# VaR
+from scipy.stats import norm
+var_95 = norm.ppf(0.05, mu, sigma)  # 5% 分位</code></pre>`,
+  },
+  {
+    id: "deep-94", day: 94, week: 14, track: "deep",
+    title: "跨场景迁移案例",
+    description: "把供应链方法用到电力和商品",
+    objectives: [
+      "完成一个跨场景案例",
+      "知道方法论的通用性",
+      "形成迁移能力",
+    ],
+    duration: 60,
+    cues: [
+      "供应链 → 电力：库存 ↔ 储能",
+      "供应链 → 商品：销量 ↔ 成交",
+      "方法论相同，业务语言不同",
+    ],
+    content: `<h3>跨场景迁移对照</h3>
+<table>
+<tr><th>概念</th><th>供应链</th><th>电力</th><th>商品</th></tr>
+<tr><td>目标</td><td>销量</td><td>负荷 / 电价</td><td>价格 / 成交</td></tr>
+<tr><td>库存</td><td>仓库</td><td>储能</td><td>交易所库存</td></tr>
+<tr><td>补货</td><td>(s,S)</td><td>充放电</td><td>建仓 / 平仓</td></tr>
+<tr><td>风险</td><td>缺货</td><td>不平衡</td><td>价格波动</td></tr>
+<tr><td>套保</td><td>安全库存</td><td>合约</td><td>期货</td></tr>
+<tr><td>方法</td><td>LightGBM + 概率</td><td>TFT + 优化</td><td>因子 + 套保</td></tr>
+</table>`,
+  },
+  {
+    id: "deep-95", day: 95, week: 14, track: "deep",
+    title: "电力大宗阶段总结",
+    description: "回顾 15 天电力大宗",
+    objectives: [
+      "形成跨场景能力",
+      "整理作品",
+      "准备毕业",
+    ],
+    duration: 60,
+    cues: [
+      "方法论可迁移",
+      "三个场景：供应链 + 电力 + 商品",
+      "毕业项目：选一个场景做深",
+    ],
+    content: `<h3>电力大宗完成标志</h3>
+<ul>
+<li>✅ 理解电力市场四子市场</li>
+<li>✅ 会用 TFT / PatchTST 预测电价</li>
+<li>✅ 会用 Gurobi 做调度优化</li>
+<li>✅ 理解大宗商品因子</li>
+<li>✅ 会设计套保策略</li>
+<li>✅ 能跨场景迁移方法论</li>
+</ul>`,
+  },
+
+  // ===== Week 15 · Day 96-100 · 最终毕业 =====
+  {
+    id: "deep-96", day: 96, week: 15, track: "deep",
+    title: "最终毕业项目：选场景深化",
+    description: "把 100 天学到的所有能力整合",
+    objectives: [
+      "选一个场景（供应链/电力/商品）",
+      "整合 P4 因果 + P5 库存 + P6 Agent + 因子",
+      "做一个完整作品",
+    ],
+    duration: 90,
+    cues: [
+      "推荐选供应链（最对口）",
+      "整合：预测 + 决策 + 归因 + Agent",
+      "产出：代码 + 报告 + Demo + 答辩",
+    ],
+    content: `<h3>毕业项目选项</h3>
+<ol>
+<li><strong>选项 A · 供应链决策系统（推荐）：</strong>预测 + 库存 + 营销归因 + Agent 化</li>
+<li><strong>选项 B · 电力交易系统：</strong>电价预测 + 储能调度 + 套保</li>
+<li><strong>选项 C · 商品量化：</strong>因子挖掘 + 策略 + 套保</li>
+</ol>
+<h3>无论选哪个，都要包含</h3>
+<ul>
+<li>数据层：多源数据整合</li>
+<li>预测层：SOTA 模型 + 概率预测</li>
+<li>决策层：业务可执行的决策</li>
+<li>归因层：因果推断 + SHAP</li>
+<li>Agent 层：LangGraph 自动化</li>
+<li>工程层：Docker + MLflow</li>
+</ul>`,
+  },
+  {
+    id: "deep-97", day: 97, week: 15, track: "deep",
+    title: "毕业项目开发 + AI 辅助",
+    description: "用 AI 加速开发",
+    objectives: [
+      "用 AI 辅助写代码",
+      "用 AI 做代码 review",
+      "保持高效迭代",
+    ],
+    duration: 90,
+    cues: [
+      "AI 写模板，你改业务逻辑",
+      "AI review 代码，找 bug",
+      "每天推进一个模块",
+    ],
+    content: `<h3>AI 辅助开发流程</h3>
+<ol>
+<li><strong>需求：</strong>用自然语言描述给 AI</li>
+<li><strong>模板：</strong>AI 生成代码骨架</li>
+<li><strong>填充：</strong>你填业务逻辑和数据</li>
+<li><strong>Review：</strong>AI 检查 bug 和防泄漏</li>
+<li><strong>迭代：</strong>跑起来后让 AI 提改进建议</li>
+</ol>
+<div class="ex-box"><h4>✏️ 高效 Prompt</h4>
+<p><em>"我要做一个 SKU 销量预测系统，含数据加载 / 特征工程 / LightGBM 训练 / 概率预测 / 库存决策。给我完整的模块化代码骨架，每块留 TODO 给我填。"</em></p></div>`,
+  },
+  {
+    id: "deep-98", day: 98, week: 15, track: "deep",
+    title: "毕业项目打磨 + 文档",
+    description: "把作品打磨到位",
+    objectives: [
       "代码清理",
       "文档完善",
       "Demo 上线",
     ],
-    "duration": 60,
-    "cues": [
+    duration: 90,
+    cues: [
       "代码 PEP8 合规",
-      "README 完整",
-      "Demo 在线可访问",
+      "README 含架构图 + Demo 链接",
+      "HuggingFace Space / Streamlit Cloud",
     ],
-    "content": `<h3>最终检查清单</h3>
+    content: `<h3>最终检查清单</h3>
 <ul>
-<li>代码 lint 通过（black/flake8）</li>
+<li>代码 lint 通过</li>
 <li>所有测试通过</li>
 <li>README 含截图和 Demo 链接</li>
 <li>报告 PDF 导出</li>
 <li>Demo 部署到 HuggingFace Space</li>
 <li>GitHub repo 公开 + 标星</li>
+<li>LinkedIn 更新</li>
 </ul>`,
   },
   {
-    "id": "deep-95", "day": 95, "week": 15, "track": "deep",
-    "title": "毕业答辩 Day",
-    "description": "正式答辩日",
-    "objectives": [
+    id: "deep-99", day: 99, week: 15, track: "deep",
+    title: "毕业答辩 + 100 天复盘",
+    description: "正式答辩 + 总结",
+    objectives: [
       "完成 15 分钟答辩",
-      "回答 Q&A",
-      "总结学习成果",
+      "总结 100 天成长",
+      "规划下一步",
     ],
-    "duration": 90,
-    "cues": [
+    duration: 90,
+    cues: [
       "自信讲解",
       "Q&A 诚实回答",
-      "总结 100 天成长",
+      "100 天能力地图",
     ],
-    "content": `<h3>答辩日 Check-list</h3>
-<ol>
-<li>Demo 提前 1 小时测试</li>
-<li>PPT 转为 PDF 备份</li>
-<li>准备笔记（关键数字 + 业务结论）</li>
-<li>15 分钟讲解 + 15 分钟 Q&A</li>
-<li>结束后总结反馈</li>
-</ol>`,
-  },
-
-  // ===== Day 96-100 · 总结与未来 =====
-  {
-    "id": "deep-96", "day": 96, "week": 15, "track": "deep",
-    "title": "100 天复盘：我学到了什么",
-    "description": "系统回顾 100 天的学习",
-    "objectives": [
-      "复盘三大阶段的核心收获",
-      "识别强弱项",
-      "规划下一步学习",
-    ],
-    "duration": 60,
-    "cues": [
-      "5 天：地基（数学/Python/工具）",
-      "30 天：应用（时序+因果）",
-      "30 天：理论（统计学深入）",
-      "35 天：业务（供应链库存）",
-    ],
-    "content": `<h3>100 天能力地图</h3>
+    content: `<h3>🎓 100 天能力地图</h3>
 <table>
-<tr><th>领域</th><th>入门</th><th>熟练</th><th>专家</th></tr>
-<tr><td>Python / pandas</td><td></td><td>✅</td><td></td></tr>
-<tr><td>统计学</td><td></td><td>✅</td><td></td></tr>
-<tr><td>时序预测</td><td></td><td></td><td>✅</td></tr>
-<tr><td>因果推断</td><td></td><td>✅</td><td></td></tr>
-<tr><td>机器学习</td><td></td><td>✅</td><td></td></tr>
-<tr><td>供应链业务</td><td></td><td>✅</td><td></td></tr>
-<tr><td>工程化</td><td>✅</td><td></td><td></td></tr>
-</table>`,
-  },
-  {
-    "id": "deep-97", "day": 97, "week": 15, "track": "deep",
-    "title": "作品集整理 + LinkedIn 更新",
-    "description": "把成果展示给世界",
-    "objectives": [
-      "整理 GitHub 作品集",
-      "更新 LinkedIn / 简历",
-      "在社区分享经验",
-    ],
-    "duration": 45,
-    "cues": [
-      "GitHub Pinned 6 个项目",
-      "LinkedIn 写项目经验",
-      "知乎/博客发学习总结",
-    ],
-    "content": `<h3>作品集要素</h3>
+<tr><th>领域</th><th>熟练</th><th>专家</th></tr>
+<tr><td>因果归因（P4）</td><td></td><td>✅</td></tr>
+<tr><td>库存补货（P5）</td><td></td><td>✅</td></tr>
+<tr><td>Agent 化（P6）</td><td>✅</td><td></td></tr>
+<tr><td>因子挖掘</td><td>✅</td><td></td></tr>
+<tr><td>电力市场</td><td>✅</td><td></td></tr>
+<tr><td>大宗商品</td><td>✅</td><td></td></tr>
+<tr><td>工程化</td><td>✅</td><td></td></tr>
+</table>
+<h3>核心能力</h3>
 <ol>
-<li><strong>GitHub：</strong>毕业项目 + 日常练习 + RAG 知识库</li>
-<li><strong>LinkedIn：</strong>3 个项目经验（时序/因果/供应链）</li>
-<li><strong>博客：</strong>100 天学习总结 + 踩坑经验</li>
-<li><strong>社区：</strong>Kaggle / 知乎 / GitHub Discussions</li>
+<li>能预测（ARIMA/LightGBM/TFT/概率预测）</li>
+<li>能归因（DID/CausalImpact/DoubleML/MMM）</li>
+<li>能决策（库存/补货/套保/调度）</li>
+<li>能工程化（Docker/MLflow/Airflow）</li>
+<li>能 Agent 化（LangGraph/RD-Agent）</li>
 </ol>`,
   },
   {
-    "id": "deep-98", "day": 98, "week": 15, "track": "deep",
-    "title": "下一步学习路径规划",
-    "description": "100 天后的方向",
-    "objectives": [
-      "识别兴趣方向",
-      "规划深度学习路径",
-      "建立持续学习机制",
+    id: "deep-100", day: 100, week: 15, track: "deep",
+    title: "Day 100：毕业 · 下一步",
+    description: "100 天的终点，新的起点",
+    objectives: [
+      "正式毕业",
+      "规划持续学习路径",
+      "展望职业方向",
     ],
-    "duration": 45,
-    "cues": [
-      "选项 A：深度学习时序（TFT/PatchTST）",
-      "选项 B：Agent + 自动化",
-      "选项 C：金融量化",
-      "选项 D：电力市场",
+    duration: 30,
+    cues: [
+      "100 天建立了完整能力栈",
+      "持续学习：每周论文 + 每月项目",
+      "职业方向：分析师 / 算法工程师 / 投研",
     ],
-    "content": `<h3>四个深化方向</h3>
+    content: `<h3>🎓 100 天毕业总结</h3>
+<p>恭喜你完成了 100 天的量化分析师修炼之路。回顾这 100 天：</p>
 <ul>
-<li><strong>深度学习时序：</strong>TFT / PatchTST / Chronos / TimeGPT</li>
-<li><strong>Agent 自动化：</strong>LangGraph / RD-Agent / Multi-Agent</li>
-<li><strong>金融量化：</strong>因子挖掘 / 套保 / 高频</li>
-<li><strong>电力市场：</strong>日前/实时价格 + 调度优化</li>
+<li><strong>Day 1-5：</strong>地基（数学 / Python / 工具）</li>
+<li><strong>Day 6-25：</strong>★ P4 因果归因（营销 ROI 评估）</li>
+<li><strong>Day 26-45：</strong>★ P5 库存补货（从预测到决策）</li>
+<li><strong>Day 46-65：</strong>P6 Agent + 毕业项目</li>
+<li><strong>Day 66-80：</strong>因子挖掘深化</li>
+<li><strong>Day 81-100：</strong>电力 + 大宗商品（扩展视野）</li>
 </ul>
-<div class="ex-box"><h4>✏️ 持续学习机制</h4>
+<h3>持续学习机制</h3>
 <ul>
 <li>每周读 1 篇论文（Papers with Code）</li>
 <li>每月做 1 个小项目</li>
 <li>每季度更新作品集</li>
-</ul></div>`,
-  },
-  {
-    "id": "deep-99", "day": 99, "week": 15, "track": "deep",
-    "title": "面试准备 + 常见问题",
-    "description": "准备数据科学家面试",
-    "objectives": [
-      "掌握常见面试题",
-      "准备项目讲解",
-      "练习手撕代码",
-    ],
-    "duration": 60,
-    "cues": [
-      "项目 STAR 法讲解",
-      "ML 八股文",
-      "LeetCode 中等难度",
-    ],
-    "content": `<h3>常见面试题（举例）</h3>
-<ol>
-<li>解释过拟合，怎么检测和防止？</li>
-<li>XGBoost 和 LightGBM 的差异？</li>
-<li>ARIMA 和 Prophet 什么时候用哪个？</li>
-<li>相关 vs 因果？怎么从相关推出因果？</li>
-<li>SHAP 的原理？</li>
-<li>怎么处理不平衡数据？</li>
-<li>解释 A/B 测试和它的陷阱</li>
-<li>怎么评估时序模型？</li>
-</ol>`,
-  },
-  {
-    "id": "deep-100", "day": 100, "week": 15, "track": "deep",
-    "title": "Day 100：毕业总结",
-    "description": "100 天的终点，新的起点",
-    "objectives": [
-      "正式毕业",
-      "总结核心能力",
-      "展望未来",
-    ],
-    "duration": 30,
-    "cues": [
-      "从『会用』到『懂为什么』到『做业务』",
-      "毕业项目是简历核心",
-      "持续学习是终身事业",
-    ],
-    "content": `<h3>🎓 100 天毕业总结</h3>
-<p>恭喜你完成了 100 天的量化分析师修炼之路。回顾这 100 天：</p>
-<ul>
-<li><strong>Day 1-5：</strong>建立了量化分析的地基（Python / 统计 / 工具）</li>
-<li><strong>Day 6-35：</strong>用 30 天做出了 2 个作品（时序预测 + 因果归因）</li>
-<li><strong>Day 36-65：</strong>深入统计学，从『会用』到『懂为什么』</li>
-<li><strong>Day 66-95：</strong>把所有技能整合到供应链决策系统</li>
-<li><strong>Day 96-100：</strong>整理作品集，准备下一步</li>
+<li>每年选 1 个新方向深化</li>
 </ul>
-<p>现在你已经具备了：</p>
-<ol>
-<li>完整的时序预测能力（ARIMA / SARIMA / LightGBM / Prophet / 概率预测）</li>
-<li>因果分析能力（DID / CausalImpact / DoubleML）</li>
-<li>统计学功底（回归诊断 / 贝叶斯 / 协整）</li>
-<li>供应链业务理解（库存 / 补货 / S&OP / MMM）</li>
-<li>工程化能力（FastAPI / Docker / MLflow / Airflow）</li>
-</ol>
-<p><span class="key-pt">下一步：选一个方向（深度学习/Agent/金融/电力）继续深化，并保持每周读论文、每月做项目的节奏。</span></p>
-<p>这 100 天只是开始，量化的世界很大，保持好奇心和执行力，你会走得很远。🚀</p>`,
+<h3>下一步方向（任选）</h3>
+<ul>
+<li><strong>深度学习时序：</strong>TFT / PatchTST / Chronos 深入</li>
+<li><strong>Agent 工程化：</strong>LangGraph / Multi-Agent 产品化</li>
+<li><strong>金融量化：</strong>因子挖掘 + 套保 + 高频</li>
+<li><strong>电力市场：</strong>调度优化 + 储能 + VPP</li>
+</ul>
+<p><span class="key-pt">100 天只是开始。保持好奇心和执行力，量化的世界很大，你会走得很远。🚀</span></p>`,
   },
 ];

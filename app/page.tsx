@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { crashDays } from "@/content/crash-course";
 import { deepDays } from "@/content/deep-track";
+import { LevelBadge, GlossarySection, MindMapSection } from "@/components/LearningEnhancements";
 import { power90Days } from "@/content/track-power90";
 import { books } from "@/content/books";
 import type { DayContent, TrackKind, ChatMessage, BookChapter, QuestionNote, QuestionStatus } from "@/lib/types";
@@ -388,7 +389,13 @@ export default function Home() {
               <div className="cornell">
                 <div className="day-hdr">
                   <h2>{day.day}. {day.title}</h2>
-                  <div className="meta">
+                  {day.subtitle && (
+                    <div style={{ fontSize: 12, color: "var(--text2)", marginTop: 2, lineHeight: 1.4 }}>
+                      💡 {day.subtitle}
+                    </div>
+                  )}
+                  <div className="meta" style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
+                    <LevelBadge level={day.level} />
                     <span>⏱ {day.duration} min</span>
                     <span>📅 W{day.week}</span>
                   </div>
@@ -408,6 +415,16 @@ export default function Home() {
                   {/* Notes Column */}
                   <div className="notes-col">
                     <div className="notes" dangerouslySetInnerHTML={{ __html: day.content }} />
+
+                    {/* Glossary 术语词条 */}
+                    {day.glossary && day.glossary.length > 0 && (
+                      <GlossarySection terms={day.glossary} />
+                    )}
+
+                    {/* Mind Map 每日脑图 */}
+                    {day.mindMap && (
+                      <MindMapSection root={day.mindMap} />
+                    )}
 
                     {/* Quiz */}
                     {quizzes.filter((q) => q.dayId === day.id).length > 0 && (

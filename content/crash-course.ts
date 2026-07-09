@@ -24,27 +24,115 @@ export const crashDays: DayContent[] = [
     week: 1,
     track: "crash",
     duration: 120,
-    title: "描述性统计：均值、方差、分布——所有数字的基础",
-    description: "后 14 天学 pandas / LightGBM / ARIMA 时，所有指标都建立在这一天的概念上。把均值、方差、正态 vs 对数正态一次讲清。",
+    level: "L2",
+    title: "分布选择决定成败",
+    subtitle: "为什么我的销量预测会预测出负数？——分布选择 + IQR 识别异常值",
+    description: "Day 1 地基中的地基。所有后续指标（MAE/RMSE/loss 函数）都建立在「数据是什么分布」这个前提上。今天解决一个最常见的实战问题：为什么模型会预测出负数销量。",
     objectives: [
-      "理解均值、中位数、众数的区别",
-      "理解方差和标准差的物理意义",
-      "区分正态分布和对数正态分布",
-      "理解百分位数和四分位距",
+      "理解均值、中位数、众数的区别——右偏数据看哪个",
+      "理解方差和标准差的物理意义——预测稳定性从哪来",
+      "区分正态分布和对数正态分布——为什么销量要用对数正态",
+      "掌握百分位数和 IQR——异常值识别标准方法",
     ],
     cues: [
       "Q: 为什么销量预测用对数正态而不是正态？",
       "Q: 均值 vs 中位数——右偏数据用哪个？",
       "Q: 标准差 = 0 意味着什么？",
+      "Q: MAE 和 RMSE 哪个对异常值更敏感？",
     ],
+    glossary: [
+      {
+        term: "右偏分布（Right-skewed / Positive skew）",
+        definition: "长尾在右侧的分布，少数极大值会把均值拉高。",
+        analogy: "像超市收银台——90% 的人买 10-50 元，但偶尔有人买 3000 元，平均数被他们拉爆。",
+        code: "skew > 0 时分布右偏；log 变换可以把它变成接近正态",
+        pitfall: "右偏数据的均值 > 中位数，误用均值做决策会高估典型水平",
+      },
+      {
+        term: "对数正态分布（Lognormal Distribution）",
+        definition: "取对数后服从正态分布的分布，天然非负，长尾在右。",
+        analogy: "像股价——不会跌到负数，但可以涨到天上去。",
+        code: "sales = np.random.lognormal(mean=3, sigma=0.8)  # 永远 > 0",
+        pitfall: "直接用正态建模销量 → 会预测出负数，这是新手最常见的 bug",
+      },
+      {
+        term: "IQR（Interquartile Range / 四分位距）",
+        definition: "第 75 百分位（Q3）与第 25 百分位（Q1）之差，衡量数据中间 50% 的离散程度。",
+        analogy: "像马拉松——只看中间 50% 选手的配速差，剔除掉跑最慢和最快的人。",
+        code: "iqr = np.percentile(x,[75])[0] - np.percentile(x,[25])[0]",
+        pitfall: "对极端异常值不敏感，比标准差更稳健——这就是为什么箱线图用 IQR 而不用 std",
+      },
+      {
+        term: "MAE（Mean Absolute Error / 平均绝对误差）",
+        definition: "预测值与真实值之差的绝对值的平均。",
+        analogy: "像导航误差——平均每次偏离目的地多少米。",
+        code: "from sklearn.metrics import mean_absolute_error",
+        pitfall: "对异常值不敏感，和业务直觉一致（误差就是误差，不会平方放大）",
+      },
+      {
+        term: "RMSE（Root Mean Squared Error / 均方根误差）",
+        definition: "预测误差平方求均值再开根号。",
+        analogy: "像导航误差，但偏离 100 米的惩罚是偏离 10 米的 100 倍——大错罚更狠。",
+        code: "from sklearn.metrics import mean_squared_error\nrmse = mean_squared_error(y_true, y_pred, squared=False)",
+        pitfall: "对异常值非常敏感，一个极端预测会让 RMSE 翻几倍——训练时选 RMSE 模型会偏向大样本",
+      },
+    ],
+    mindMap: {
+      label: "Day 1 描述性统计",
+      children: [
+        {
+          label: "核心概念",
+          children: [
+            { label: "均值/中位数/众数" },
+            { label: "方差/标准差" },
+            { label: "百分位/IQR" },
+            { label: "正态 vs 对数正态" },
+          ],
+        },
+        {
+          label: "代码操作",
+          children: [
+            { label: "np.mean / np.median" },
+            { label: "np.std / np.var" },
+            { label: "np.percentile" },
+            { label: "np.random.lognormal" },
+          ],
+        },
+        {
+          label: "踩坑点",
+          children: [
+            { label: "右偏数据误用均值" },
+            { label: "销量用正态 → 预测出负数" },
+            { label: "RMSE 被异常值支配" },
+          ],
+        },
+        {
+          label: "前后连接",
+          children: [
+            { label: "← 准备阶段：还没有前置" },
+            { label: "→ Day 2 相关性 vs 因果" },
+            { label: "→ Day 3 梯度下降（loss 函数依赖这些分布）" },
+            { label: "→ Day 5 LightGBM（MAE/RMSE 作为 loss）" },
+          ],
+        },
+        {
+          label: "明日预告",
+          children: [{ label: "Day 2：相关不等于因果——辛普森悖论 + 贝叶斯更新" }],
+        },
+      ],
+    },
     content: `
-<h3>1. 均值、中位数、众数</h3>
+<h3>核心问题：为什么模型会预测出负数销量？</h3>
+<p>这是 Day 1 最真实的实战痛点。假设你用线性回归预测某商品的日销量，训练数据都是正数（销量不会为负），但模型在新数据上输出了 <code>-15 件</code>——这在物理上不可能。原因 99% 出在「分布选错了」。</p>
+
+<h3>1. 均值、中位数、众数——三个「代表值」各管什么</h3>
 <p><strong>一句话类比：</strong> 均值是「平均分」，中位数是「中间那个人的分」，众数是「最多人考的分」。</p>
 <p><strong>踩坑点：</strong> 右偏数据（如收入、销量）的均值会被少数极大值拉高，中位数更稳健。</p>
 <pre><code class="language-python">import numpy as np
 sales = [10, 12, 15, 11, 13, 14, 12, 10, 11, 500]
 print(f"均值: {np.mean(sales):.1f}")    # 60.8（被 500 拉爆）
 print(f"中位数: {np.median(sales):.1f}") # 12.0（真实水平）</code></pre>
+<p><strong>业务直觉：</strong> 向老板汇报「日均销量」时，请先画直方图看分布形状。右偏就用中位数，否则你会被 1 个双 11 异常值带偏整年的备货决策。</p>
 
 <h3>2. 方差和标准差——数据有多散</h3>
 <p><strong>一句话类比：</strong> 方差衡量「大家的销量离平均值有多远」。方差大 = 销量忽高忽低。</p>
@@ -52,41 +140,68 @@ print(f"中位数: {np.median(sales):.1f}") # 12.0（真实水平）</code></pre
 shop_b = [50, 200, 80, 20, 150, 100]    # 忽高忽低
 print(f"店铺A 标准差: {np.std(shop_a):.1f}")  # 1.4
 print(f"店铺B 标准差: {np.std(shop_b):.1f}")  # 65.0</code></pre>
+<p><strong>预测含义：</strong> 标准差越大，预测越难——Day 7 学概率预测时，标准差直接决定了预测区间的宽度。</p>
 
-<h3>3. 正态分布 vs 对数正态分布</h3>
-<p><strong>正态分布：</strong> 钟形曲线，对称（如身高）。</p>
-<p><strong>对数正态分布：</strong> 右偏，有长尾（如销量、收入）。</p>
-<p><strong>踩坑点：</strong> 销量数据直接用正态建模会预测出负数。</p>
+<h3>3. 正态分布 vs 对数正态分布——今天最关键的概念</h3>
+<p><strong>正态分布：</strong> 钟形曲线，对称（如身高、温度）。</p>
+<p><strong>对数正态分布：</strong> 右偏，有长尾，<strong>取值永远 > 0</strong>（如销量、收入、股价）。</p>
+<p><strong>踩坑点（核心）： </strong> 销量数据直接用正态建模会预测出负数。这是 Day 1 最致命的错误。</p>
 <pre><code class="language-python">np.random.seed(42)
 sales = np.random.lognormal(mean=3, sigma=0.8, size=10000)
 print(f"最小值: {sales.min():.0f}")  # 2（不会是负数）</code></pre>
+<p><strong>解决方案：</strong> 把销量取对数（<code>np.log1p</code>）再建模，预测完取回 <code>np.expm1</code>——这是销量预测的标准预处理。</p>
 
-<h3>4. 百分位数和 IQR——异常值识别</h3>
-<p><strong>IQR = Q3 - Q1</strong>，异常值 = 低于 Q1-1.5×IQR 或高于 Q3+1.5×IQR</p>
+<h3>4. 百分位数和 IQR——异常值识别的标准方法</h3>
+<p><strong>IQR = Q3 - Q1</strong>，异常值 = 低于 Q1-1.5×IQR 或高于 Q3+1.5×IQR（Tukey 法则）。</p>
 <pre><code class="language-python">q1, q3 = np.percentile(sales, [25, 75])
 iqr = q3 - q1
 lower = q1 - 1.5 * iqr
 upper = q3 + 1.5 * iqr</code></pre>
+<p><strong>为什么不用均值±3 倍标准差？</strong> 因为标准差本身被异常值污染。IQR 是基于排名的，对极端值稳健。</p>
 
-<h3>5. MAE vs RMSE</h3>
+<h3>5. MAE vs RMSE——评估指标也有分布选择</h3>
 <p><strong>MAE：</strong> 对异常值不敏感。<strong>RMSE：</strong> 对大误差惩罚更重。</p>
 <pre><code class="language-python">from sklearn.metrics import mean_absolute_error, mean_squared_error
 y_true = [10, 12, 11, 13, 200]  # 最后是异常值
 y_pred = [10, 12, 11, 13, 20]
 print(f"MAE: {mean_absolute_error(y_true, y_pred):.1f}")   # 36（稳健）
 print(f"RMSE: {np.sqrt(mean_squared_error(y_true, y_pred)):.1f}")  # 80.6</code></pre>
+<p><strong>决策原则：</strong> 给老板看用 MAE（直观，单位一致）；训练模型时若希望「大错不发生」用 RMSE。</p>
+
+<h3>今日实战：自检你的销量数据是哪种分布</h3>
+<pre><code class="language-python">import numpy as np
+import pandas as pd
+
+def diagnose_distribution(x):
+    \"\"\"一键诊断数据分布类型\"\"\"
+    skew = pd.Series(x).skew()
+    print(f"偏度 skew = {skew:.2f}")
+    if skew > 1:
+        print("→ 强右偏，应该用对数正态建模")
+    elif skew < -1:
+        print("→ 强左偏，少见，检查数据采集")
+    else:
+        print("→ 近似对称，正态可以接受")
+    print(f"最小值: {min(x):.1f}  最大值: {max(x):.1f}")
+    if min(x) < 0:
+        print("⚠️ 数据有负值，不能直接取 log")
+
+# 测试
+diagnose_distribution(sales)
+</code></pre>
 
 <h3>今日小结：3 个关键洞察</h3>
 <ol>
-<li><strong>右偏数据看中位数</strong></li>
-<li><strong>销量用对数正态</strong></li>
-<li><strong>异常值识别用 IQR</strong></li>
+<li><strong>右偏数据看中位数，不看均值</strong>——避免被极端值带偏</li>
+<li><strong>销量用对数正态</strong>——这是避免预测出负数的根本方法</li>
+<li><strong>异常值识别用 IQR</strong>——比 3σ 法更稳健</li>
 </ol>
-<p><strong>明日预告：</strong> 相关性 vs 因果性——辛普森悖论。</p>
+<p><strong>明日预告：</strong> 相关不等于因果——辛普森悖论怎么破？</p>
 `,
     resources: [
       { label: "3Blue1Brown 正态分布可视化", url: "https://www.3blue1brown.com/topics/probability" },
       { label: "numpy 统计函数文档", url: "https://numpy.org/doc/stable/reference/routines.statistics.html" },
+      { label: " sklearn metrics 文档", url: "https://scikit-learn.org/stable/modules/model_evaluation.html" },
     ],
   },
 

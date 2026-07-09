@@ -12,11 +12,30 @@ export interface DayResource {
   url: string;
 }
 
+/** 知识权重等级（决定篇幅 + UI 徽章） */
+export type KnowledgeLevel = "L1" | "L2" | "L3" | "L4";
+
+/** 术语词条卡片 */
+export interface GlossaryTerm {
+  term: string;        // 术语名（中英对照）
+  definition: string;  // 一句话定义
+  analogy: string;     // 一句话类比
+  code?: string;       // 代码示例（可选）
+  pitfall?: string;    // 踩坑点（可选）
+}
+
+/** 脑图节点 */
+export interface MindMapNode {
+  label: string;
+  children?: MindMapNode[];
+}
+
 export interface DayContent {
   id: string;
   day: number;
   week: number;
-  title: string;
+  title: string;          // 主标题（术语+结论）
+  subtitle?: string;      // 副标题（解决的业务问题，问题驱动）
   description: string;
   track: TrackKind;
   /** HTML body content */
@@ -29,6 +48,12 @@ export interface DayContent {
   duration: number;
   /** External resources (optional) */
   resources?: DayResource[];
+  /** 知识权重等级（L1 通识 / L2 理解 / L3 深刻 / L4 灵活） */
+  level?: KnowledgeLevel;
+  /** 术语词条卡片（每日 4-6 个，累积成全局词汇表） */
+  glossary?: GlossaryTerm[];
+  /** 每日脑图（SVG 字符串或 MindMapNode 树） */
+  mindMap?: MindMapNode;
 }
 
 export interface Module {
